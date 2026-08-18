@@ -17,11 +17,11 @@ NO_CONVERT = {"CLAUDE.md"}
 EXCLUDE_DIRS = {"raw", ".claude", ".git", "__pycache__"}
 
 ART = {
- "ref":  ("https://claude.ai/code/artifact/2b1b1ea1-7f4f-4f40-9e8e-2af6049b3d6a", "Reference architecture", "Ten bands, three archetypes, the card-auth hot path, and the reconciliation subsystem both regulators now mandate."),
- "vend": ("https://claude.ai/code/artifact/fc08f1f1-eef4-4e57-8617-7ca7f431a6b9", "Vendor map — who runs what", "40 vendors across 8 layers, with the banks publicly named as using each — and the gaps marked honestly."),
- "deep": ("https://claude.ai/code/artifact/1efb55a6-2b1c-487f-abe0-d6cc6f6ba246", "The four you build", "Reconciliation, rail adapters, KYC orchestration, fraud — with real architectures and 30+ named packages."),
- "rails": ("https://claude.ai/code/artifact/6a4be261-f66f-4f2d-bc89-e075b9a96379", "Payment rails", "Why authorisation, clearing and settlement are three events \u2014 reversal windows to scale, prefunding, and the return codes that gate network access."),
- "brief":("https://claude.ai/code/artifact/10168ec5-9832-4b67-b785-9de2c91ff0a2", "Executive brief", "Nine minutes: six findings, three archetypes, where the two markets diverge, build-vs-buy defaults."),
+ "ref":  ("https://fernfant.github.io/neobank-stack/diagrams/reference-architecture.html", "Reference architecture", "Ten bands, three archetypes, the card-auth hot path, and Monzo Stand-in — a complete backup bank on a second cloud."),
+ "rails":("https://fernfant.github.io/neobank-stack/summary/payment-rails.html", "Payment rails", "Auth vs clearing vs settlement, reversal windows to scale, and four payment archetypes with named vendor options."),
+ "vend": ("https://fernfant.github.io/neobank-stack/summary/vendor-map.html", "Vendor map — who runs what", "43 vendors across 8 layers, with the banks publicly named as using each — and the gaps marked honestly."),
+ "deep": ("https://fernfant.github.io/neobank-stack/summary/deep-dive.html", "The four you build", "Reconciliation, rail adapters, KYC orchestration, fraud — with real architectures and 30+ named packages."),
+ "brief":("https://fernfant.github.io/neobank-stack/summary/summary-with-diagram.html", "Executive brief", "Nine minutes: six findings, three archetypes, where the two markets diverge, build-vs-buy defaults."),
 }
 
 def parse(f):
