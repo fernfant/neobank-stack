@@ -20,7 +20,8 @@ ART = {
  "ref":  ("https://claude.ai/code/artifact/2b1b1ea1-7f4f-4f40-9e8e-2af6049b3d6a", "Reference architecture", "Ten bands, three archetypes, the card-auth hot path, and the reconciliation subsystem both regulators now mandate."),
  "vend": ("https://claude.ai/code/artifact/fc08f1f1-eef4-4e57-8617-7ca7f431a6b9", "Vendor map — who runs what", "40 vendors across 8 layers, with the banks publicly named as using each — and the gaps marked honestly."),
  "deep": ("https://claude.ai/code/artifact/1efb55a6-2b1c-487f-abe0-d6cc6f6ba246", "The four you build", "Reconciliation, rail adapters, KYC orchestration, fraud — with real architectures and 30+ named packages."),
- "brief":("https://claude.ai/code/artifact/10168ec5-9832-4b67-b785-9de2c91ff0a2", "Executive brief", "Nine minutes: five findings, three archetypes, where the two markets diverge, build-vs-buy defaults."),
+ "rails": ("https://claude.ai/code/artifact/6a4be261-f66f-4f2d-bc89-e075b9a96379", "Payment rails", "Why authorisation, clearing and settlement are three events \u2014 reversal windows to scale, prefunding, and the return codes that gate network access."),
+ "brief":("https://claude.ai/code/artifact/10168ec5-9832-4b67-b785-9de2c91ff0a2", "Executive brief", "Nine minutes: six findings, three archetypes, where the two markets diverge, build-vs-buy defaults."),
 }
 
 def parse(f):
@@ -125,7 +126,7 @@ html = f"""<!doctype html>
 <div class="prose"><h2>Start here</h2>
 <p class="lede">Four rendered reads. Everything below is the source material behind them.</p></div>
 <div class="cards prose">
-{''.join(f'<a class="card" href="{u}"><span class="k">{k}</span><span class="h">{t}</span><span class="p">{d}</span></a>' for k,(u,t,d) in [("Architecture",ART["ref"]),("Attribution",ART["vend"]),("Deep dive",ART["deep"]),("Summary",ART["brief"])])}
+{''.join(f'<a class="card" href="{u}"><span class="k">{k}</span><span class="h">{t}</span><span class="p">{d}</span></a>' for k,(u,t,d) in [("Architecture",ART["ref"]),("Payment rails",ART["rails"]),("Attribution",ART["vend"]),("Deep dive",ART["deep"]),("Summary",ART["brief"])])}
 </div>
 
 <div class="prose"><div class="new">

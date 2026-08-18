@@ -9,6 +9,9 @@ tags: [payments, uk, usa, rails]
 
 ## Summary
 
+> **Deeper treatment:** settlement mechanics, prefunding, access models, Bacs message
+> taxonomy and ACH return-code risk are in [Deep dive — Payment rails](../deep-dives/05-payment-rails.md).
+
 Rails are the layer where your clean internal model meets other people's weak delivery
 guarantees. The engineering job is to normalise every rail behind an adapter into one
 internal money-movement model, and to make the ledger the only place financial state lives

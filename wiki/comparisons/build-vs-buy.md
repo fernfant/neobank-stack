@@ -52,7 +52,7 @@ ledger, your rails and your partners.
 
 Each of the four **build** rows above has a dedicated page with real implementations, named
 open-source packages and the vendors you still buy: [Deep dive — Reconciliation (build)](../deep-dives/01-reconciliation.md),
-[Deep dive — Rail adapters (buy access, build normalisation)](../deep-dives/02-rail-adapters.md), [Deep dive — KYC orchestration (build)](../deep-dives/03-kyc-orchestration.md), [Deep dive — Fraud and AML detection (build)](../deep-dives/04-fraud-aml.md).
+[Deep dive — Rail adapters (buy access, build normalisation)](../deep-dives/02-rail-adapters.md), [Deep dive — KYC orchestration (build)](../deep-dives/03-kyc-orchestration.md), [Deep dive — Fraud and AML detection (build)](../deep-dives/04-fraud-aml.md). Rails themselves — the schemes, settlement mechanics and access models you build against — are covered in [Deep dive — Payment rails](../deep-dives/05-payment-rails.md).
 
 ## Sources
 

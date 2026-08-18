@@ -1,0 +1,401 @@
+<title>Payment Rails</title>
+
+<style>
+  :root{
+    --ground:#FCFCFD; --surface:#FFFFFF; --surface-2:#F1F4F7; --band:#F7F9FB;
+    --ink:#11151B; --ink-2:#49535F; --ink-3:#7C8693;
+    --rule:#D6DCE3; --rule-2:#E7EBF0;
+    --money:#8F5300; --async:#54499F; --recon:#0A5F58; --flag:#9C3524;
+    --flag-soft:#F7E7E3; --recon-soft:#E0EFEC; --money-soft:#F5EADA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0C0F14; --surface:#131820; --surface-2:#1A202A; --band:#101419;
+      --ink:#E8ECF1; --ink-2:#A6B0BC; --ink-3:#78828E;
+      --rule:#2A323C; --rule-2:#1E252E;
+      --money:#E0A24F; --async:#9C92EE; --recon:#4FC5B9; --flag:#E8836F;
+      --flag-soft:#2A1D1A; --recon-soft:#122624; --money-soft:#2A2318;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0C0F14; --surface:#131820; --surface-2:#1A202A; --band:#101419;
+    --ink:#E8ECF1; --ink-2:#A6B0BC; --ink-3:#78828E;
+    --rule:#2A323C; --rule-2:#1E252E;
+    --money:#E0A24F; --async:#9C92EE; --recon:#4FC5B9; --flag:#E8836F;
+    --flag-soft:#2A1D1A; --recon-soft:#122624; --money-soft:#2A2318;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--ground); color:var(--ink); margin:0;
+    font-family:ui-serif,Georgia,"Iowan Old Style","Times New Roman",serif;
+    font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px 88px}
+  .prose{max-width:68ch; margin-left:auto; margin-right:auto}
+  h1,h2,h3,th,.eyebrow,figcaption,.meta,.tag{
+    font-family:ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif}
+  .eyebrow,.meta,.tag,td.n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  header.top{border-bottom:1px solid var(--rule); padding:56px 0 26px; margin-bottom:8px}
+  .eyebrow{font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-3); margin:0 0 18px}
+  h1{font-size:clamp(32px,5vw,50px); line-height:1.05; letter-spacing:-.028em;
+    font-weight:660; margin:0 0 18px; text-wrap:balance; max-width:19ch}
+  .standfirst{font-size:20px; line-height:1.55; color:var(--ink-2); max-width:58ch; margin:0 0 28px}
+  .meta{display:flex; flex-wrap:wrap; gap:0 26px; font-size:11.5px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3)}
+  .meta b{color:var(--ink); font-weight:600}
+  h2{font-size:13px; letter-spacing:.15em; text-transform:uppercase; font-weight:640;
+    color:var(--ink-3); margin:70px 0 8px; padding-bottom:10px; border-bottom:1px solid var(--rule)}
+  h2 + .lede{font-size:25px; line-height:1.32; letter-spacing:-.015em; font-weight:600;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif; margin:22px 0 18px; text-wrap:balance}
+  h3{font-size:17px; font-weight:640; letter-spacing:-.01em; margin:32px 0 6px}
+  p{margin:0 0 18px} strong{font-weight:600}
+  ul,ol{margin:0 0 18px; padding-left:1.15em} li{margin-bottom:10px} li::marker{color:var(--ink-3)}
+  .findings{counter-reset:f; list-style:none; padding:0; margin:26px 0}
+  .findings li{counter-increment:f; position:relative; padding-left:44px; margin-bottom:24px}
+  .findings li::before{content:counter(f,decimal-leading-zero); position:absolute; left:0; top:3px;
+    font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--money);
+    border:1px solid var(--money); border-radius:2px; padding:2px 5px; background:var(--money-soft)}
+  .findings b{display:block; font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;
+    font-size:17px; font-weight:640; letter-spacing:-.01em; margin-bottom:3px; color:var(--ink)}
+  .findings span{color:var(--ink-2); font-size:16px}
+  .tbl{overflow-x:auto; margin:26px 0}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:14px;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif; line-height:1.45}
+  th{text-align:left; font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+    font-weight:640; color:var(--ink-3); padding:0 14px 9px 0; border-bottom:1px solid var(--rule); white-space:nowrap}
+  td{padding:11px 14px 11px 0; border-bottom:1px solid var(--rule-2); vertical-align:top; color:var(--ink-2)}
+  td:first-child{color:var(--ink); font-weight:560}
+  td.n{font-variant-numeric:tabular-nums; white-space:nowrap; font-size:12.5px}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block; font-size:10px; letter-spacing:.05em; padding:2px 6px;
+    border-radius:2px; border:1px solid var(--rule); color:var(--ink-3); white-space:nowrap}
+  .tag.build{color:var(--money); border-color:var(--money); background:var(--money-soft)}
+  .callout{border-left:2px solid var(--flag); background:var(--flag-soft);
+    padding:18px 22px; margin:30px 0; border-radius:0 3px 3px 0}
+  .callout p:last-child{margin-bottom:0}
+  .callout .eyebrow{color:var(--flag); margin-bottom:10px}
+  a{color:inherit; text-decoration-color:var(--rule); text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--async); outline-offset:3px; border-radius:2px}
+  footer{margin-top:76px; padding-top:24px; border-top:1px solid var(--rule);
+    font-size:12.5px; color:var(--ink-3);
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif}
+  figure{margin:36px 0 12px}
+  .bleed{max-width:1120px; margin-left:auto; margin-right:auto}
+  .scroller{overflow-x:auto; padding-bottom:6px}
+  .scroller svg{display:block; min-width:700px; max-width:100%; height:auto; color:var(--ink)}
+  figcaption{font-size:12.5px; line-height:1.5; color:var(--ink-3); margin-top:14px;
+    padding-top:12px; border-top:1px solid var(--rule-2); max-width:76ch}
+  figcaption b{color:var(--ink-2); font-weight:600}
+  .bx{fill:var(--surface); stroke:currentColor; stroke-opacity:.34; stroke-width:1}
+  .bx-v{fill:var(--surface-2); stroke:currentColor; stroke-opacity:.34; stroke-width:1; stroke-dasharray:4 3}
+  .bx-sor{fill:var(--surface); stroke:currentColor; stroke-opacity:.85; stroke-width:2}
+  .bx-in{fill:none; stroke:currentColor; stroke-opacity:.4; stroke-width:1}
+  .bandbg{fill:var(--band)}
+  .lbl{font-size:11px; fill:var(--ink); font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  .lbl-2{font-size:9.5px; fill:var(--ink-3); font-family:ui-monospace,Menlo,monospace}
+  .gut{font-size:10px; fill:var(--ink-3); letter-spacing:.1em; font-weight:600;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif}
+  .gut-n{font-size:10px; fill:var(--ink-3); font-family:ui-monospace,Menlo,monospace}
+  .f{stroke:currentColor; stroke-opacity:.5; stroke-width:1.4; fill:none}
+  .f-money{stroke:var(--money); stroke-width:2.6; fill:none}
+  .f-recon{stroke:var(--recon); stroke-width:1.6; stroke-dasharray:2 3; fill:none}
+  .h-plain{fill:currentColor; fill-opacity:.5} .h-money{fill:var(--money)} .h-recon{fill:var(--recon)}
+  .t-money{fill:var(--money); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
+  .t-recon{fill:var(--recon); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
+  .t-flag{fill:var(--flag); font-size:9.5px; font-family:ui-monospace,Menlo,monospace}
+  .boundary{stroke:var(--flag); stroke-width:1.6; stroke-dasharray:7 4; fill:none}
+  .legend{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px 24px;
+    margin:24px 0 0; padding:18px 20px; background:var(--surface-2);
+    border:1px solid var(--rule-2); border-radius:3px}
+  .legend div{display:flex; align-items:center; gap:10px; font-size:12px;
+    font-family:ui-monospace,Menlo,monospace; color:var(--ink-2)}
+  @media (max-width:640px){ body{font-size:16px} .wrap{padding:0 18px 60px} h2 + .lede{font-size:22px} }
+</style>
+<style>
+  pre{background:var(--surface-2);border:1px solid var(--rule-2);border-radius:3px;
+    padding:16px 18px;overflow-x:auto;font-size:12.5px;line-height:1.6;
+    font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--ink-2);margin:22px 0}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;
+    background:var(--surface-2);padding:1px 5px;border-radius:2px;border:1px solid var(--rule-2)}
+  h2 .n{color:var(--money);font-family:ui-monospace,Menlo,monospace;margin-right:10px}
+  .tag{display:inline-block;font-size:9.5px;letter-spacing:.05em;padding:1px 6px;border-radius:2px;
+    border:1px solid var(--rule);color:var(--ink-3);white-space:nowrap;
+    font-family:ui-monospace,Menlo,monospace}
+  .tag.no{color:var(--flag);border-color:var(--flag);background:var(--flag-soft)}
+  .tag.yes{color:var(--recon);border-color:var(--recon);background:var(--recon-soft)}
+  .keynum{border-left:2px solid var(--money);background:var(--money-soft);
+    padding:18px 22px;margin:26px 0;border-radius:0 3px 3px 0}
+  .keynum p:last-child{margin-bottom:0}
+  .keynum .eyebrow{color:var(--money);margin-bottom:10px}
+</style>
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">Neobank stack · deep dive</p>
+  <h1>Payment rails</h1>
+  <p class="standfirst">Where a clean internal model meets other people's guarantees — UK and USA, from the settlement mechanics down to the return codes that decide whether you keep network access.</p>
+  <p class="meta"><span>18 Aug 2026</span><span><b>2</b> markets</span><span><b>7</b> rails</span><span><b>19</b> sources</span></p>
+</header>
+
+<div class="prose">
+<p>Almost every expensive mistake in this layer traces to a single conceptual error: <strong>treating authorisation, clearing and settlement as the same event.</strong> They are three different things, at three different times, with three different failure modes — and a ledger that models only one of them will be wrong in a way that surfaces months later as a break nobody can explain.</p>
+<p>So start there.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 940 392" role="img" aria-label="The three stages of a card payment on a timeline. Authorisation happens in under a second and is only a promise — a hold is placed and no money moves. Clearing happens overnight, when transaction information is exchanged and netted and the final amount becomes certain, which may differ from the authorised amount; still no money moves. Settlement happens at T plus one or two days, when net positions actually transfer and interchange is applied. Each stage is a separate posting in the ledger.">
+<defs>
+  <marker id="r-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-plain"/></marker>
+  <marker id="r-ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-money"/></marker>
+  <marker id="r-ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-recon"/></marker>
+</defs>
+
+<rect class="bx" x="40" y="46" width="256" height="58" rx="2"/>
+<text x="168" y="70" class="lbl" text-anchor="middle">1 · AUTHORISATION</text><text x="168" y="88" class="lbl-2" text-anchor="middle">real-time · sub-second</text>
+<rect class="bx" x="332" y="46" width="256" height="58" rx="2"/>
+<text x="460" y="70" class="lbl" text-anchor="middle">2 · CLEARING</text><text x="460" y="88" class="lbl-2" text-anchor="middle">batched · usually overnight</text>
+<rect class="bx-sor" x="624" y="46" width="276" height="58" rx="2"/>
+<text x="762" y="70" class="lbl" text-anchor="middle">3 · SETTLEMENT</text><text x="762" y="88" class="lbl-2" text-anchor="middle">net positions transfer</text>
+
+<line class="f" x1="298" y1="75" x2="328" y2="75" marker-end="url(#r-ah)"/>
+<line class="f" x1="590" y1="75" x2="620" y2="75" marker-end="url(#r-ah)"/>
+
+<rect class="bx-v" x="40" y="120" width="256" height="72" rx="2"/>
+<text x="168" y="142" class="lbl-2" text-anchor="middle">A promise, not a payment.</text>
+<text x="168" y="157" class="lbl-2" text-anchor="middle">An obligation is created and</text>
+<text x="168" y="172" class="lbl-2" text-anchor="middle">a hold placed on the balance.</text>
+<rect class="bx-v" x="332" y="120" width="256" height="72" rx="2"/>
+<text x="460" y="142" class="lbl-2" text-anchor="middle">Information exchanged and</text>
+<text x="460" y="157" class="lbl-2" text-anchor="middle">netted. The final amount</text>
+<text x="460" y="172" class="lbl-2" text-anchor="middle">becomes certain — and may differ.</text>
+<rect class="bx-v" x="624" y="120" width="276" height="72" rx="2"/>
+<text x="762" y="142" class="lbl-2" text-anchor="middle">Funds actually move, in</text>
+<text x="762" y="157" class="lbl-2" text-anchor="middle">central bank money.</text>
+<text x="762" y="172" class="lbl-2" text-anchor="middle">Interchange is applied here.</text>
+
+<text x="20" y="222" class="gut">MONEY</text><text x="20" y="235" class="gut">MOVED?</text>
+<rect class="bx" x="40" y="208" width="256" height="34" rx="2"/><text x="168" y="230" class="t-flag" text-anchor="middle">NO</text>
+<rect class="bx" x="332" y="208" width="256" height="34" rx="2"/><text x="460" y="230" class="t-flag" text-anchor="middle">STILL NO</text>
+<rect class="bx" x="624" y="208" width="276" height="34" rx="2"/><text x="762" y="230" class="t-recon" text-anchor="middle">YES — FINALLY</text>
+
+<text x="20" y="272" class="gut">YOUR</text><text x="20" y="285" class="gut">LEDGER</text>
+<rect class="bx-sor" x="40" y="258" width="256" height="34" rx="2"/><text x="168" y="279" class="lbl" text-anchor="middle">post a HOLD</text>
+<rect class="bx-sor" x="332" y="258" width="256" height="34" rx="2"/><text x="460" y="279" class="lbl" text-anchor="middle">post the CLEARED amount</text>
+<rect class="bx-sor" x="624" y="258" width="276" height="34" rx="2"/><text x="762" y="279" class="lbl" text-anchor="middle">reconcile the NET POSITION</text>
+
+<line class="f" x1="40" y1="322" x2="900" y2="322"/>
+<line class="f" x1="168" y1="316" x2="168" y2="328"/><text x="168" y="344" class="lbl-2" text-anchor="middle">t = 0</text>
+<line class="f" x1="460" y1="316" x2="460" y2="328"/><text x="460" y="344" class="lbl-2" text-anchor="middle">overnight</text>
+<line class="f" x1="762" y1="316" x2="762" y2="328"/><text x="762" y="344" class="lbl-2" text-anchor="middle">T+1 / T+2</text>
+
+<text x="470" y="376" class="t-money" text-anchor="middle">THREE EVENTS · THREE POSTINGS · MODELLING THEM AS ONE IS THE CLASSIC ISSUER BUG</text>
+</svg>
+</div>
+<figcaption><b>Authorisation is not settlement.</b> When the customer sees "approved", nothing has moved — an obligation exists and a hold sits against available balance. Clearing exchanges and nets the information, and is where the amount becomes final; it can differ from what was authorised (tips, fuel, hotels) or never arrive at all. Only settlement moves money. If your ledger posts once, you cannot answer <em>"why does available balance differ from cleared balance"</em>, and you cannot reconcile against the scheme's daily files.</figcaption>
+</figure>
+
+<div class="prose">
+<h2><span class="n">01</span>The tail is the design constraint</h2>
+<p class="lede">Every rail can take money back. What separates them is how long they have to do it.</p>
+<p>Teams build the happy path and then discover the reversal branch in production. These windows should be sized before you write the state machine, because they decide how long you must retain the ability to reverse a posting cleanly — and how much exposure sits on your balance sheet at any moment.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 940 330" role="img" aria-label="Reversal windows by payment rail. RTP and FedNow are final on receipt with no reversal. Faster Payments allows a recall attempt within minutes to hours, not guaranteed. Most ACH returns arrive within two banking days. Consumer unauthorised ACH returns can arrive up to sixty days later. Card chargebacks run to one hundred and twenty days or more under scheme rules. Bacs Direct Debit indemnity claims under the Direct Debit Guarantee are effectively unbounded in time.">
+<line class="f" x1="185" y1="52" x2="185" y2="296" stroke-opacity=".25"/>
+<line class="f" x1="295" y1="52" x2="295" y2="296" stroke-opacity=".15"/>
+<line class="f" x1="405" y1="52" x2="405" y2="296" stroke-opacity=".15"/>
+<line class="f" x1="530" y1="52" x2="530" y2="296" stroke-opacity=".15"/>
+<line class="f" x1="655" y1="52" x2="655" y2="296" stroke-opacity=".15"/>
+<line class="f" x1="790" y1="52" x2="790" y2="296" stroke-opacity=".15"/>
+<text x="185" y="42" class="lbl-2" text-anchor="middle">instant</text>
+<text x="295" y="42" class="lbl-2" text-anchor="middle">hours</text>
+<text x="405" y="42" class="lbl-2" text-anchor="middle">2 days</text>
+<text x="530" y="42" class="lbl-2" text-anchor="middle">1 week</text>
+<text x="655" y="42" class="lbl-2" text-anchor="middle">60 days</text>
+<text x="790" y="42" class="lbl-2" text-anchor="middle">120 days</text>
+<text x="888" y="42" class="lbl-2" text-anchor="middle">unbounded</text>
+
+<text x="172" y="76" class="lbl" text-anchor="end">RTP · FedNow</text>
+<rect x="185" y="62" width="14" height="24" rx="2" fill="var(--recon)"/>
+<text x="212" y="79" class="t-recon">FINAL ON RECEIPT — NO REVERSAL</text>
+
+<text x="172" y="120" class="lbl" text-anchor="end">Faster Payments</text>
+<rect x="185" y="106" width="110" height="24" rx="2" fill="var(--money)" fill-opacity=".55"/>
+<text x="306" y="123" class="lbl-2">recall attempt only — not guaranteed</text>
+
+<text x="172" y="164" class="lbl" text-anchor="end">ACH — most returns</text>
+<rect x="185" y="150" width="220" height="24" rx="2" fill="var(--money)" fill-opacity=".55"/>
+<text x="416" y="167" class="lbl-2">R01 insufficient funds, R29 corporate: 2 banking days</text>
+
+<text x="172" y="208" class="lbl" text-anchor="end">ACH — consumer unauth.</text>
+<rect x="185" y="194" width="470" height="24" rx="2" fill="var(--money)" fill-opacity=".7"/>
+<text x="666" y="211" class="lbl-2">R10 — never retry</text>
+
+<text x="172" y="252" class="lbl" text-anchor="end">Cards</text>
+<rect x="185" y="238" width="605" height="24" rx="2" fill="var(--money)"/>
+<text x="801" y="255" class="lbl-2">chargebacks</text>
+
+<text x="172" y="296" class="lbl" text-anchor="end">Bacs Direct Debit</text>
+<rect x="185" y="282" width="700" height="24" rx="2" fill="var(--flag)" fill-opacity=".8"/>
+<path class="boundary" d="M885 294 L925 294" marker-end="url(#r-ahm)" stroke="var(--flag)"/>
+<text x="470" y="298" class="lbl" text-anchor="middle" fill="var(--ground)">INDEMNITY CLAIMS — EFFECTIVELY NO TIME LIMIT</text>
+</svg>
+</div>
+<figcaption><b>Reversal windows, to scale.</b> The two instant US rails are <b>credit-push and final</b> — there is no reversal, which is a feature and a risk. At the other end, a <b>Bacs Direct Debit indemnity claim under the Direct Debit Guarantee has effectively no time bound</b>: the payer's bank can claw the money back long after you have recognised it. If you support Direct Debit, your ledger must accept a reversal arriving a year later, and your product must price for it.</figcaption>
+</figure>
+
+<div class="prose">
+<h2><span class="n">02</span>United Kingdom</h2>
+<p class="lede">Instant to the customer, netted between the banks, and prefunded at the central bank.</p>
+
+<h3>Faster Payments — the settlement lag nobody sees</h3>
+<p>The customer sees money instantly. The banks settle <em>hours later</em>, on a net basis. The bridge between those two facts is <strong>prefunding</strong>: every participating institution holds a cash deposit covering its net position in a <strong>segregated, interest-bearing account at the Bank of England</strong>. That eliminates settlement risk — a failing participant cannot take others down — at the cost of tying up liquidity.</p>
+</div>
+
+<div class="prose">
+<div class="keynum">
+<p class="eyebrow">The 2026 change worth re-running your numbers for</p>
+<p>In <strong>July 2026 Pay.UK went live with a flexible liquidity model for Faster Payments Net Sender Caps</strong>, explicitly to reduce prefunding requirements and lower the cost of direct access for non-bank payment providers.</p>
+<p>Prefunding has been the single biggest economic barrier to direct participation. <strong>If you evaluated direct access before mid-2026 and rejected it on liquidity cost, that calculation has changed.</strong></p>
+</div>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Access model</th><th>Settlement account</th><th>Who clears</th><th>What you build</th></tr></thead>
+<tbody>
+<tr><td>Direct participant</td><td><strong>Yours</strong>, at the Bank of England</td><td>You</td><td>Scheme gateway, HSMs, liquidity management, 24/7 payments on-call</td></tr>
+<tr><td>Sponsored participant</td><td>Sponsor's</td><td>You — full real-time technical access</td><td>Scheme gateway; the sponsor carries settlement</td></tr>
+<tr><td>Indirect participant</td><td>Sponsor's, prefunded for your net activity</td><td>Sponsor</td><td>An API integration — and a dependency</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<h3>Bacs — a three-day cycle and a message taxonomy</h3>
+<p>Bacs is not an integration; it is a product. Three days (input, processing, entry) and four return services you must handle:</p>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Service</th><th>What it tells you</th></tr></thead>
+<tbody>
+<tr><td><strong>AUDDIS</strong></td><td>Problems setting up a mandate, or the payer cancelling the setup. Responses arrive on <strong>Day 2</strong></td></tr>
+<tr><td><strong>ADDACS</strong></td><td>Amendments and cancellations of mandates initiated by the customer</td></tr>
+<tr><td><strong>ARUDD</strong></td><td>Returned and unpaid Direct Debits</td></tr>
+<tr><td><strong>DDICA</strong></td><td><strong>Indemnity claims</strong> — the payer's bank clawing money back under the Guarantee</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p>Two traps that catch people. <strong>Reason code 1 means the payer explicitly cancelled</strong> — re-presenting after that produces an indemnity claim, so retry logic must branch on reason code, never on "it failed". And the eight DDICA reason codes cover everything from <em>the amount differing from the advance notice</em> to <em>no instruction held</em> to <em>a fraudulent signature</em> — each one a reversal you must accept, possibly months later.</p>
+
+<h3>CHAPS — already migrated, and it's the template</h3>
+<p>CHAPS matters beyond high-value payments because it shows where all UK payments are heading:</p>
+<ul>
+<li><strong>19 June 2023</strong> — CHAPS migrated to ISO 20022 messaging.</li>
+<li><strong>28 April 2025</strong> — the Bank of England's new RTGS core ledger and settlement engine went live.</li>
+<li><strong>1 May 2025</strong> — enhanced data became <strong>mandatory</strong>: Purpose Codes and LEIs on domestic interbank payments (pacs.009 CORE and certain pacs.008), and Purpose Codes on property transactions.</li>
+<li><strong>2026</strong> — the Bank is consulting on extending settlement hours toward <strong>near-24x7</strong>, which would allow more frequent net settlement and lower prefunding costs across every rail.</li>
+</ul>
+<p>The direction is unambiguous: <strong>structured, mandatory, machine-readable data attached to payments.</strong> Model your internal messages on ISO 20022 semantics now, even where today's rail doesn't require it.</p>
+</div>
+
+<div class="prose">
+<h2><span class="n">03</span>United States</h2>
+<p class="lede">Cheap and slow, or instant and irreversible — and neither of the instant rails can pull.</p>
+
+<h3>ACH — the return codes <em>are</em> the risk model</h3>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Code</th><th>Meaning</th><th>What to do</th></tr></thead>
+<tbody>
+<tr><td class="n">R01</td><td>Insufficient funds</td><td>Retry — but <strong>wait 3–5 business days</strong> first</td></tr>
+<tr><td class="n">R09</td><td>Uncollected funds</td><td>As R01</td></tr>
+<tr><td class="n">R10</td><td>Customer advises not authorised</td><td><span class="tag no">never retry</span></td></tr>
+<tr><td class="n">R29</td><td><em>Corporate</em> customer advises not authorised</td><td><span class="tag no">never retry</span> — must be returned within <strong>2 banking days</strong></td></tr>
+<tr><td class="n">R05 · R07 · R11 · R51</td><td>Other unauthorised variants</td><td><span class="tag no">never retry</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<div class="keynum">
+<p class="eyebrow">The number that can end your ACH access</p>
+<p>Nacha's <strong>Unauthorized Return Rate Threshold is 0.5%</strong>, measured across R05, R07, R10, R29 and R51. That is not a target — it is a threshold with enforcement behind it.</p>
+<p>Which makes unauthorised-return rate a metric your risk team must watch continuously, and makes clear consent capture and unambiguous billing descriptors an <em>engineering</em> concern rather than a marketing one. Same Day ACH's per-entry limit also rises from $1m to <strong>$10m on 17 September 2027</strong>.</p>
+</div>
+
+<h3>RTP and FedNow — two rails, not one</h3>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th></th><th>RTP <em>(The Clearing House)</em></th><th>FedNow <em>(Federal Reserve)</em></th></tr></thead>
+<tbody>
+<tr><td>Live since</td><td>2017</td><td>2023</td></tr>
+<tr><td>Transaction limit</td><td><strong>$10m</strong> — raised from $1m in Feb 2025</td><td><strong>$100k</strong> default, raisable to <strong>$500k</strong></td></tr>
+<tr><td>Messaging</td><td>ISO 20022</td><td>ISO 20022</td></tr>
+<tr><td>Direction</td><td><strong>Credit-push only</strong></td><td><strong>Credit-push only</strong></td></tr>
+<tr><td>Participants</td><td>550+ institutions</td><td>650+ institutions</td></tr>
+<tr><td>Reversal</td><td><span class="tag yes">final on receipt</span></td><td><span class="tag yes">final on receipt</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p><strong>Credit-push only is the design fact that matters.</strong> Neither instant rail can <em>pull</em> funds. Any product that needs to debit a customer — subscriptions, loan repayments, top-ups — still needs ACH or cards underneath, with request-for-payment as at best a nudge. That is the exact inverse of the UK, where Direct Debit makes pull the default.</p>
+<p>And because the two networks differ in reach, limits and price, a US neobank needs a <strong>routing layer</strong> that chooses per transaction on cost, speed and reachability — not a hardcoded rail.</p>
+
+<h2><span class="n">04</span>What this forces you to build</h2>
+<p class="lede">Five subsystems that are not optional, in the order they tend to bite.</p>
+
+<h3>1 · A state machine with a long tail</h3>
+<pre>initiated → risk-checked → authorised → submitted → accepted → settled
+     │            │             │            │           │
+     └─ blocked   └─ rejected   └─ failed    └─ <b>returned</b>   └─ <b>reversed</b>
+                                              <i>days later</i>   <i>months later</i></pre>
+<p>The happy path is the easy half. The reversal branch is where the money is.</p>
+
+<h3>2 · A liquidity management system, if you go direct</h3>
+<p>Prefunding is not a one-off deposit; it is a continuously managed position with caps, monitoring and top-up automation. This is the part teams underestimate when they model direct participation as a purely technical project — and it is what the July 2026 Net Sender Cap change made cheaper.</p>
+
+<h3>3 · Rail-aware retry</h3>
+<p>Branch on reason code, never on "it failed". Retrying an R10, or a Bacs reason code 1, is not a bug that costs you one payment — it is a compliance event that counts against a threshold.</p>
+
+<h3>4 · Cut-offs and value dating as first-class concepts</h3>
+<p>Every rail has a cut-off, and a payment submitted after it takes a different value date. Customers experience that as "the money vanished for a day", and support experiences it as a ticket you cannot answer without modelling value date explicitly.</p>
+
+<h3>5 · Reconciliation inputs, per rail</h3>
+<p>Every adapter must emit the statement side of the reconciliation as well as the payment side. Building both together is far cheaper than retrofitting — and reconciliation is the one subsystem both the FCA and the FDIC independently decided you must be able to prove.</p>
+
+<h2>The questions to ask</h2>
+</div>
+
+<div class="prose qgrid">
+<ol>
+<li>For each rail: are we direct, sponsored or indirect — and what breaks if the sponsor exits?</li>
+<li>Does our ledger model authorisation, clearing and settlement as <strong>three</strong> events?</li>
+<li>What is our unauthorised ACH return rate, and who watches it against the 0.5% threshold?</li>
+<li>Does retry logic branch on reason code, or on failure?</li>
+<li>Can we accept a Bacs indemnity claim arriving a year later and reverse it cleanly?</li>
+<li>Who manages the prefunded position, and what happens when it is exhausted mid-day?</li>
+<li>Is our internal message model ISO 20022-shaped?</li>
+<li>What routes a US payment between ACH, RTP and FedNow — a decision, or a hardcode?</li>
+</ol>
+</div>
+
+<div class="prose">
+<h2>Still unknown</h2>
+<p>The all-in cost of Faster Payments direct participation after the July 2026 Net Sender Cap change — the barrier is reported to have dropped, but no public number exists. Typical unauthorised-return rates for consumer neobanks against the 0.5% threshold. Whether any neobank has published its Direct Debit indemnity claim rate. Anyone who can supply a real figure for those is contributing more than another vendor comparison.</p>
+<footer>
+<p>Part of an open research base on UK and USA neobank technology — <a href="https://fernfant.github.io/neobank-stack/">fernfant.github.io/neobank-stack</a>. Sourced from the Bank of England's RTGS Renewal Programme, Pay.UK, Nacha, the Federal Reserve, Form3 and ClearBank connectivity documentation, and vendor technical material where marked. Corrections welcome via <a href="https://github.com/fernfant/neobank-stack/issues">issues</a>.</p>
+</footer>
+</div>
+
+</div>

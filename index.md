@@ -57,6 +57,7 @@ Updated on every ingest.
 | [01-reconciliation](wiki/deep-dives/01-reconciliation.md) | Uber's 3-service settlement system, the seven matching patterns, a worked break taxonomy, TigerBeetle/Formance/Temporal |
 | [02-rail-adapters](wiki/deep-dives/02-rail-adapters.md) | jPOS, the moov-io family, Prowide ISO 20022, the payment state machine, who to buy access from |
 | [03-kyc-orchestration](wiki/deep-dives/03-kyc-orchestration.md) | The router pattern, OPA/GoRules/Drools, self-hosted OpenSanctions+yente, Splink for KYB |
+| **[05-payment-rails](wiki/deep-dives/05-payment-rails.md)** | Auth vs clearing vs settlement; FPS prefunding and the July 2026 Net Sender Cap change; Bacs AUDDIS/ADDACS/ARUDD/DDICA; ACH return codes and the 0.5% threshold; RTP vs FedNow — **[published](https://claude.ai/code/artifact/6a4be261-f66f-4f2d-bc89-e075b9a96379)** |
 | [04-fraud-aml](wiki/deep-dives/04-fraud-aml.md) | Monzo's Starlark controls vs Stripe Radar, Chronon (open source, powers 100% of Stripe's charge-path models), Marble/Jube/Tazama |
 
 ## Vendors and comparisons
