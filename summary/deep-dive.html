@@ -1,0 +1,479 @@
+<title>The Four You Build</title>
+
+<style>
+  :root{
+    --ground:#FCFCFD; --surface:#FFFFFF; --surface-2:#F1F4F7; --band:#F7F9FB;
+    --ink:#11151B; --ink-2:#49535F; --ink-3:#7C8693;
+    --rule:#D6DCE3; --rule-2:#E7EBF0;
+    --money:#8F5300; --async:#54499F; --recon:#0A5F58; --flag:#9C3524;
+    --flag-soft:#F7E7E3; --recon-soft:#E0EFEC; --money-soft:#F5EADA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0C0F14; --surface:#131820; --surface-2:#1A202A; --band:#101419;
+      --ink:#E8ECF1; --ink-2:#A6B0BC; --ink-3:#78828E;
+      --rule:#2A323C; --rule-2:#1E252E;
+      --money:#E0A24F; --async:#9C92EE; --recon:#4FC5B9; --flag:#E8836F;
+      --flag-soft:#2A1D1A; --recon-soft:#122624; --money-soft:#2A2318;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0C0F14; --surface:#131820; --surface-2:#1A202A; --band:#101419;
+    --ink:#E8ECF1; --ink-2:#A6B0BC; --ink-3:#78828E;
+    --rule:#2A323C; --rule-2:#1E252E;
+    --money:#E0A24F; --async:#9C92EE; --recon:#4FC5B9; --flag:#E8836F;
+    --flag-soft:#2A1D1A; --recon-soft:#122624; --money-soft:#2A2318;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--ground); color:var(--ink); margin:0;
+    font-family:ui-serif,Georgia,"Iowan Old Style","Times New Roman",serif;
+    font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px 88px}
+  .prose{max-width:68ch; margin-left:auto; margin-right:auto}
+  h1,h2,h3,th,.eyebrow,figcaption,.meta,.tag{
+    font-family:ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif}
+  .eyebrow,.meta,.tag,td.n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  header.top{border-bottom:1px solid var(--rule); padding:56px 0 26px; margin-bottom:8px}
+  .eyebrow{font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-3); margin:0 0 18px}
+  h1{font-size:clamp(32px,5vw,50px); line-height:1.05; letter-spacing:-.028em;
+    font-weight:660; margin:0 0 18px; text-wrap:balance; max-width:19ch}
+  .standfirst{font-size:20px; line-height:1.55; color:var(--ink-2); max-width:58ch; margin:0 0 28px}
+  .meta{display:flex; flex-wrap:wrap; gap:0 26px; font-size:11.5px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3)}
+  .meta b{color:var(--ink); font-weight:600}
+  h2{font-size:13px; letter-spacing:.15em; text-transform:uppercase; font-weight:640;
+    color:var(--ink-3); margin:70px 0 8px; padding-bottom:10px; border-bottom:1px solid var(--rule)}
+  h2 + .lede{font-size:25px; line-height:1.32; letter-spacing:-.015em; font-weight:600;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif; margin:22px 0 18px; text-wrap:balance}
+  h3{font-size:17px; font-weight:640; letter-spacing:-.01em; margin:32px 0 6px}
+  p{margin:0 0 18px} strong{font-weight:600}
+  ul,ol{margin:0 0 18px; padding-left:1.15em} li{margin-bottom:10px} li::marker{color:var(--ink-3)}
+  .findings{counter-reset:f; list-style:none; padding:0; margin:26px 0}
+  .findings li{counter-increment:f; position:relative; padding-left:44px; margin-bottom:24px}
+  .findings li::before{content:counter(f,decimal-leading-zero); position:absolute; left:0; top:3px;
+    font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--money);
+    border:1px solid var(--money); border-radius:2px; padding:2px 5px; background:var(--money-soft)}
+  .findings b{display:block; font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;
+    font-size:17px; font-weight:640; letter-spacing:-.01em; margin-bottom:3px; color:var(--ink)}
+  .findings span{color:var(--ink-2); font-size:16px}
+  .tbl{overflow-x:auto; margin:26px 0}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:14px;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif; line-height:1.45}
+  th{text-align:left; font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+    font-weight:640; color:var(--ink-3); padding:0 14px 9px 0; border-bottom:1px solid var(--rule); white-space:nowrap}
+  td{padding:11px 14px 11px 0; border-bottom:1px solid var(--rule-2); vertical-align:top; color:var(--ink-2)}
+  td:first-child{color:var(--ink); font-weight:560}
+  td.n{font-variant-numeric:tabular-nums; white-space:nowrap; font-size:12.5px}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block; font-size:10px; letter-spacing:.05em; padding:2px 6px;
+    border-radius:2px; border:1px solid var(--rule); color:var(--ink-3); white-space:nowrap}
+  .tag.build{color:var(--money); border-color:var(--money); background:var(--money-soft)}
+  .callout{border-left:2px solid var(--flag); background:var(--flag-soft);
+    padding:18px 22px; margin:30px 0; border-radius:0 3px 3px 0}
+  .callout p:last-child{margin-bottom:0}
+  .callout .eyebrow{color:var(--flag); margin-bottom:10px}
+  a{color:inherit; text-decoration-color:var(--rule); text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--async); outline-offset:3px; border-radius:2px}
+  footer{margin-top:76px; padding-top:24px; border-top:1px solid var(--rule);
+    font-size:12.5px; color:var(--ink-3);
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif}
+  figure{margin:36px 0 12px}
+  .bleed{max-width:1120px; margin-left:auto; margin-right:auto}
+  .scroller{overflow-x:auto; padding-bottom:6px}
+  .scroller svg{display:block; min-width:700px; max-width:100%; height:auto; color:var(--ink)}
+  figcaption{font-size:12.5px; line-height:1.5; color:var(--ink-3); margin-top:14px;
+    padding-top:12px; border-top:1px solid var(--rule-2); max-width:76ch}
+  figcaption b{color:var(--ink-2); font-weight:600}
+  .bx{fill:var(--surface); stroke:currentColor; stroke-opacity:.34; stroke-width:1}
+  .bx-v{fill:var(--surface-2); stroke:currentColor; stroke-opacity:.34; stroke-width:1; stroke-dasharray:4 3}
+  .bx-sor{fill:var(--surface); stroke:currentColor; stroke-opacity:.85; stroke-width:2}
+  .bx-in{fill:none; stroke:currentColor; stroke-opacity:.4; stroke-width:1}
+  .bandbg{fill:var(--band)}
+  .lbl{font-size:11px; fill:var(--ink); font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  .lbl-2{font-size:9.5px; fill:var(--ink-3); font-family:ui-monospace,Menlo,monospace}
+  .gut{font-size:10px; fill:var(--ink-3); letter-spacing:.1em; font-weight:600;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif}
+  .gut-n{font-size:10px; fill:var(--ink-3); font-family:ui-monospace,Menlo,monospace}
+  .f{stroke:currentColor; stroke-opacity:.5; stroke-width:1.4; fill:none}
+  .f-money{stroke:var(--money); stroke-width:2.6; fill:none}
+  .f-recon{stroke:var(--recon); stroke-width:1.6; stroke-dasharray:2 3; fill:none}
+  .h-plain{fill:currentColor; fill-opacity:.5} .h-money{fill:var(--money)} .h-recon{fill:var(--recon)}
+  .t-money{fill:var(--money); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
+  .t-recon{fill:var(--recon); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
+  .t-flag{fill:var(--flag); font-size:9.5px; font-family:ui-monospace,Menlo,monospace}
+  .boundary{stroke:var(--flag); stroke-width:1.6; stroke-dasharray:7 4; fill:none}
+  .legend{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px 24px;
+    margin:24px 0 0; padding:18px 20px; background:var(--surface-2);
+    border:1px solid var(--rule-2); border-radius:3px}
+  .legend div{display:flex; align-items:center; gap:10px; font-size:12px;
+    font-family:ui-monospace,Menlo,monospace; color:var(--ink-2)}
+  @media (max-width:640px){ body{font-size:16px} .wrap{padding:0 18px 60px} h2 + .lede{font-size:22px} }
+</style>
+<style>
+  pre{background:var(--surface-2); border:1px solid var(--rule-2); border-radius:3px;
+    padding:16px 18px; overflow-x:auto; font-size:12.5px; line-height:1.6;
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; color:var(--ink-2); margin:22px 0}
+  pre b{color:var(--flag); font-weight:600}
+  pre i{color:var(--ink-3); font-style:normal}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.88em;
+    background:var(--surface-2); padding:1px 5px; border-radius:2px; border:1px solid var(--rule-2)}
+  h2 .n{color:var(--money); font-family:ui-monospace,Menlo,monospace; margin-right:10px}
+  .osrow td:first-child code{background:none; border:none; padding:0; color:var(--ink); font-weight:600}
+  .pill{display:inline-block; font-size:9.5px; letter-spacing:.06em; padding:1px 5px; border-radius:2px;
+    border:1px solid var(--recon); color:var(--recon); background:var(--recon-soft);
+    font-family:ui-monospace,Menlo,monospace; white-space:nowrap}
+  .pill.c{border-color:var(--money); color:var(--money); background:var(--money-soft)}
+</style>
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">Neobank stack · deep dive</p>
+  <h1>The four layers you build</h1>
+  <p class="standfirst">Reconciliation, rail adapters, KYC orchestration and fraud detection — with the real architectures behind them, the open-source packages that already exist, and the vendors worth paying.</p>
+  <p class="meta"><span>18 Aug 2026</span><span><b>4</b> layers</span><span><b>30+</b> packages</span><span><b>139</b> sources</span></p>
+</header>
+
+<div class="prose">
+<p>The build-vs-buy table in the main research marks four layers <b>build</b>. This is the argument for each, checked against what companies actually run and what software already exists. The general rule underneath: <strong>buy anything whose correctness is defined by somebody else</strong> — list data, document forensics, scheme connectivity — <strong>and build anything whose iteration speed is your loss rate or your margin.</strong></p>
+<p>One thing worth saying up front, because it changed while this research was being done: several of these layers now have credible open-source foundations that did not exist a few years ago. You are not choosing between a blank editor and a vendor contract.</p>
+</div>
+
+<div class="prose">
+<h2><span class="n">01</span>Reconciliation</h2>
+<p class="lede">The only layer with no trigger to reconsider. You can buy a matching engine; you cannot buy a break taxonomy.</p>
+<p>Vendors in this space are real and mature — Duco, AutoRek, SmartStream TLM, Gresham Clareti. Read what they are built for and the mismatch is obvious: capital markets, prime brokerage, asset management, securities and cash. None was designed for a neobank reconciling a card processor, three rails, a sponsor bank and a safeguarding account against one product ledger, daily, with regulator-facing output.</p>
+<p>The best-documented real system is Uber's.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 900 320" role="img" aria-label="Uber's settlement accounting pipeline. Settlement files arrive from over fifty payment service providers by SFTP, API and blob store. A File Ingestion Service normalises them into a single PSPEvent type. A Feed Processor processes them in parallel splits and routes failures to a dead-letter queue for retry. A Reconciliation and Accounting Service matches each event against internal payment records on a deterministic transaction reference, enriches from fifteen upstream sources, and applies accounting rules to emit ledger entries.">
+<defs>
+  <marker id="d-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-plain"/></marker>
+  <marker id="d-ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-money"/></marker>
+  <marker id="d-ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-recon"/></marker>
+</defs>
+
+<rect class="bx-v" x="15" y="86" width="130" height="66" rx="2"/>
+<text x="80" y="112" class="lbl" text-anchor="middle">50+ PSPs</text><text x="80" y="127" class="lbl-2" text-anchor="middle">SFTP · API</text><text x="80" y="140" class="lbl-2" text-anchor="middle">blob store</text>
+
+<rect class="bx" x="185" y="86" width="150" height="66" rx="2"/>
+<text x="260" y="110" class="lbl" text-anchor="middle">File Ingestion</text><text x="260" y="125" class="lbl-2" text-anchor="middle">normalises every format</text><text x="260" y="138" class="lbl-2" text-anchor="middle">into one PSPEvent</text>
+
+<rect class="bx" x="375" y="86" width="150" height="66" rx="2"/>
+<text x="450" y="110" class="lbl" text-anchor="middle">Feed Processor</text><text x="450" y="125" class="lbl-2" text-anchor="middle">parallel splits</text><text x="450" y="138" class="lbl-2" text-anchor="middle">routes failures out</text>
+
+<rect class="bx-sor" x="565" y="86" width="175" height="66" rx="2"/>
+<text x="652" y="107" class="lbl" text-anchor="middle">Reconciliation</text><text x="652" y="121" class="lbl" text-anchor="middle">&amp; Accounting</text><text x="652" y="137" class="lbl-2" text-anchor="middle">match · enrich · post</text>
+
+<rect class="bx-sor" x="780" y="86" width="105" height="66" rx="2"/>
+<text x="832" y="112" class="lbl" text-anchor="middle">Ledger</text><text x="832" y="128" class="lbl-2" text-anchor="middle">entries</text>
+
+<line class="f" x1="147" y1="119" x2="181" y2="119" marker-end="url(#d-ah)"/>
+<line class="f" x1="337" y1="119" x2="371" y2="119" marker-end="url(#d-ah)"/>
+<line class="f" x1="527" y1="119" x2="561" y2="119" marker-end="url(#d-ah)"/>
+<line class="f-money" x1="742" y1="119" x2="776" y2="119" marker-end="url(#d-ahm)"/>
+
+<text x="260" y="76" class="lbl-2" text-anchor="middle">— normalisation is its own service —</text>
+<text x="652" y="70" class="lbl-2" text-anchor="middle">deterministic match on transactionReference</text>
+<text x="652" y="82" class="lbl-2" text-anchor="middle">then enriched from 15 upstream sources</text>
+
+<rect class="bx" x="375" y="212" width="150" height="52" rx="2"/>
+<text x="450" y="234" class="lbl" text-anchor="middle">Dead-letter queue</text><text x="450" y="249" class="lbl-2" text-anchor="middle">retry — mostly timing</text>
+<path class="f-recon" d="M450 154 L450 208" marker-end="url(#d-ahr)"/>
+<path class="f-recon" d="M525 238 L560 238 L560 156" marker-end="url(#d-ahr)"/>
+<text x="462" y="182" class="t-recon">UNMATCHED</text>
+
+<rect class="bx-v" x="15" y="212" width="348" height="52" rx="2"/>
+<text x="189" y="234" class="lbl" text-anchor="middle">Balancing identity: Settlements − Deductions = Payout</text>
+<text x="189" y="249" class="lbl-2" text-anchor="middle">one equation that must hold; violations are investigations</text>
+
+<text x="450" y="294" class="t-money" text-anchor="middle">1.2 BILLION SETTLEMENTS / MONTH · ~$130BN / YEAR · RECONCILED T+7</text>
+</svg>
+</div>
+<figcaption><b>Uber's settlement accounting.</b> Three services, and the boundary between the first two is the whole lesson: normalisation exists as its own service so that PSP-specific quirks never reach accounting logic. Note also that unmatched records go to a <b>queue</b>, not an exception handler — an acknowledgement that most breaks are timing and timing resolves itself.</figcaption>
+</figure>
+
+<div class="prose">
+<h3>The seven matching patterns</h3>
+<p>Run them as a rule chain, cheapest first. Pattern 6 is what UK e-money firms are now legally required to run daily; pattern 4 is what will eat your compute budget if you leave it unbounded.</p>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>#</th><th>Pattern</th><th>Where it applies</th></tr></thead>
+<tbody>
+<tr><td class="n">1</td><td>1:1 — exact on ID, amount, date</td><td>Wires, single invoice payments with stable references</td></tr>
+<tr><td class="n">2</td><td>N:1 — group internal, sum to one external credit</td><td>Card network net settlement</td></tr>
+<tr><td class="n">3</td><td>1:N — sum of external equals one internal, within tolerance</td><td>Partial payments, instalments</td></tr>
+<tr><td class="n">4</td><td>N:M — bounded subset-sum search</td><td>B2B netting, cross-currency. Expensive — last resort only</td></tr>
+<tr><td class="n">5</td><td>Time-window — tolerance defined <em>per rail</em></td><td>Auth/capture/settle, timezone cut-offs</td></tr>
+<tr><td class="n">6</td><td>Balance-level — internal sum equals external balance at a point in time</td><td>Omnibus accounts, <strong>safeguarding</strong></td></tr>
+<tr><td class="n">7</td><td>Exception — residual after the chain</td><td>Everything left</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<h3>The break taxonomy — the part no vendor can sell you</h3>
+<p>Three top-level classes (data quality, identifier, timing) are the right skeleton. The granularity that actually helps an operations team looks more like this, and it is specific to your rails and partners:</p>
+<pre>timing/
+  timing.settlement-lag          <i>expected, auto-close after N days</i>
+  timing.cutoff-crossed          <i>posted after rail cut-off</i>
+  timing.auth-capture-gap        <i>card lifecycle, not a break at all</i>
+identifier/
+  identifier.reference-rewritten <i>counterparty replaced our reference</i>
+  identifier.duplicate-key       <b>same idempotency key, two postings</b>
+amount/
+  amount.fx-rounding             <i>within tolerance, auto-close</i>
+  amount.fee-undisclosed         <b>PSP deducted a fee we did not model — revenue leak</b>
+  amount.partial-settlement      <i>expect a sibling record</i>
+missing/
+  missing.internal               <b>external has it, we do not — money we cannot explain</b>
+  missing.external               <i>we have it, the rail does not — in flight, or lost</i></pre>
+<p>The two marked in red are the ones that end companies. Everything else is operations. A break register without <strong>owner, age and amount</strong> is not a control — unaged breaks are exactly how a shortfall hides until it is too large to absorb.</p>
+
+<h3>What to build on</h3>
+</div>
+
+<div class="tbl prose">
+<table class="osrow">
+<thead><tr><th>Package</th><th></th><th>What it gives you</th></tr></thead>
+<tbody>
+<tr><td><code>TigerBeetle</code></td><td><span class="pill">Apache 2.0</span></td><td>Purpose-built financial database — accounts and transfers are the schema, not a convention</td></tr>
+<tr><td><code>Formance Ledger</code></td><td><span class="pill">open core</span></td><td>Double-entry core with Numscript atomic multi-party transactions, plus separate Connectivity, Reconciliation and Flows modules. Commonly deployed as a <em>sidecar</em> beside an existing core</td></tr>
+<tr><td><code>Blnk</code></td><td><span class="pill">open source</span></td><td>Double-entry ledger core</td></tr>
+<tr><td><code>Temporal</code></td><td><span class="pill">MIT</span></td><td>Durable execution for the retry-heavy parts. Stripe standardised on it; Coinbase used it to delete a homegrown SAGA implementation</td></tr>
+<tr><td>Modern Treasury Ledgers</td><td><span class="pill c">commercial</span></td><td>Immutable double-entry ledger as an API; sub-account reconciliation is their stated core problem</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<div class="callout">
+<p class="eyebrow">The idempotency trap</p>
+<p>The most common way a correct-looking system produces a phantom: <strong>a retried payout that reuses the same idempotency key books the same transfer twice.</strong> The defence is atomic multi-party posting — the whole transaction lands or none of it does — not an application-level duplicate check, which is itself subject to races.</p>
+</div>
+</div>
+
+<div class="prose">
+<h2><span class="n">02</span>Rail adapters</h2>
+<p class="lede">Buy the access. Build the normalisation layer. And stop writing bitmap parsers — that work is solved.</p>
+<p>The layer between scheme access and your ledger is always yours, because it encodes what a payment <em>means</em> in your product. Uber's version normalises 50+ PSP formats into one internal type. But the wire-format work underneath — ISO 8583, ISO 20022, Nacha ACH, Fedwire — has mature open-source implementations that most teams rediscover only after building worse ones.</p>
+</div>
+
+<div class="tbl prose">
+<table class="osrow">
+<thead><tr><th>Package</th><th></th><th>Format</th></tr></thead>
+<tbody>
+<tr><td><code>jPOS</code></td><td><span class="pill c">AGPL + commercial</span></td><td>The de-facto open-source ISO 8583. In production in <strong>120+ countries</strong> — switches, gateways, acquiring and <em>issuer</em> systems. Proprietary use needs a commercial licence from Transactility</td></tr>
+<tr><td><code>moov-io/iso8583</code></td><td><span class="pill">Apache 2.0</span></td><td>ISO 8583 in Go, modern ergonomics</td></tr>
+<tr><td><code>moov-io/ach</code></td><td><span class="pill">Apache 2.0</span></td><td>ACH generation and parsing — <strong>all Standard Entry Class codes</strong></td></tr>
+<tr><td><code>moov-io/wire</code></td><td><span class="pill">Apache 2.0</span></td><td>Fedwire Funds Service files</td></tr>
+<tr><td><code>moov-io/imagecashletter</code></td><td><span class="pill">Apache 2.0</span></td><td>Check21 / X9 image cash letter</td></tr>
+<tr><td><code>moov-io/metro2</code></td><td><span class="pill">Apache 2.0</span></td><td>Metro 2 — consumer credit reporting to the US bureaus</td></tr>
+<tr><td><code>moov-io/fed</code></td><td><span class="pill">Apache 2.0</span></td><td>FedACH and Fedwire participant directories — routing number lookup</td></tr>
+<tr><td><code>prowide-iso20022</code></td><td><span class="pill">Apache 2.0</span></td><td>Complete typed model and parser for <strong>all</strong> ISO 20022 MX messages — pain, pacs, camt, every version. Auto-detects type from the XML namespace</td></tr>
+<tr><td><code>prowide-core</code></td><td><span class="pill">Apache 2.0</span></td><td>The legacy SWIFT MT side, for MT↔MX migration work</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p>For a US neobank the <code>moov-io</code> family alone covers most of the file-format surface. Given the UK's ISO 20022 direction — the NPA work narrowed to replacing Faster Payments, with the RPIB consultation opened in June 2026 — modelling your internal messages on ISO 20022 now is the cheap option.</p>
+
+<h3>What you build on top</h3>
+<p>Five parts, of which the state machine is the one teams under-build:</p>
+<pre>initiated → risk-checked → authorised → submitted → accepted → settled
+     │            │             │            │           │
+     └─ blocked   └─ rejected   └─ failed    └─ <b>returned</b>   └─ <b>reversed</b>
+                                                <i>days later</i>   <i>months later</i></pre>
+<p>ACH returns arrive with R-codes days after the fact. Direct Debit indemnity claims can arrive <em>months</em> later and are effectively unbounded. Both must reverse cleanly against the ledger, and both are the branch that gets written last and tested least.</p>
+<p>The other four: one canonical money-movement event with rail specifics pushed into adapters; a corridor as configuration rather than a code branch; idempotency keys <em>you</em> choose, because the rail's identifier is exactly what gets rewritten; and every adapter also emitting the statement side of the reconciliation input — far cheaper built together than retrofitted.</p>
+<p>For the long-running orchestration, <strong>Temporal</strong> is the current default. The instructive datapoint is not that Stripe uses it but that <strong>Coinbase migrated onto it specifically to delete a homegrown SAGA implementation</strong> — homegrown saga orchestration is the thing teams build, regret, and replace.</p>
+
+<h3>Access you buy</h3>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Market</th><th>Providers</th></tr></thead>
+<tbody>
+<tr><td>UK / EU</td><td>ClearBank, LHV, Banking Circle (agency access to FPS, Bacs, CHAPS, SEPA); Form3, Modulr (payments-as-a-service)</td></tr>
+<tr><td>US</td><td>Column, Increase, Moov, Dwolla; or sponsor bank direct</td></tr>
+<tr><td>Cards</td><td>Marqeta, Galileo, Lithic, Highnote, Thredd</td></tr>
+<tr><td>Bank-scale messaging</td><td>Icon Solutions IPF, Volante</td></tr>
+<tr><td>Stablecoin settlement</td><td>Bridge (Stripe), BVNK (Mastercard), Circle</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p>The question to ask any of them is not "do you support FPS" but <strong>"what happens when you have an incident, and what is my failover?"</strong> A single access provider is a single point of failure for all outbound money — and it is precisely the concentration risk DORA Article 29 asks about.</p>
+
+<h2><span class="n">03</span>KYC orchestration</h2>
+<p class="lede">You buy the signals. You build the router that decides which to gather, in what order, and what to do when one is down.</p>
+<p>An onboarding funnel is a decision tree over unreliable third parties. Vendors have different coverage by geography and document type, so a multi-market neobank routes. Vendors fail — not rarely — and without a fallback chain their availability <em>is</em> your conversion rate. Alloy exists as a company because of exactly this, marketing 270+ data sources behind one vendor-neutral layer. The question is whether you rent that or own it.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 900 300" role="img" aria-label="KYC orchestration pattern. An orchestrator routes each application by geography, product and risk band through four swappable verification steps — device signals, document and liveness, identity data, and sanctions screening — each with a primary and a fallback provider. Results feed a decision engine that separates model score from policy rules, and every input, provider response and version is written to an immutable decision log.">
+<rect class="bx" x="15" y="120" width="120" height="56" rx="2"/><text x="75" y="145" class="lbl" text-anchor="middle">Application</text><text x="75" y="160" class="lbl-2" text-anchor="middle">+ device signals</text>
+
+<rect class="bx-sor" x="175" y="106" width="140" height="84" rx="2"/>
+<text x="245" y="136" class="lbl" text-anchor="middle">ORCHESTRATOR</text>
+<text x="245" y="152" class="lbl-2" text-anchor="middle">routes by geography ·</text>
+<text x="245" y="165" class="lbl-2" text-anchor="middle">product · risk band</text>
+<text x="245" y="178" class="lbl-2" text-anchor="middle">owns retry &amp; breakers</text>
+
+<rect class="bx-v" x="375" y="28"  width="175" height="46" rx="2"/><text x="462" y="47"  class="lbl" text-anchor="middle">Document + liveness</text><text x="462" y="62" class="lbl-2" text-anchor="middle">Onfido → Veriff</text>
+<rect class="bx-v" x="375" y="88"  width="175" height="46" rx="2"/><text x="462" y="107" class="lbl" text-anchor="middle">Identity data</text><text x="462" y="122" class="lbl-2" text-anchor="middle">Socure → Experian</text>
+<rect class="bx-v" x="375" y="148" width="175" height="46" rx="2"/><text x="462" y="167" class="lbl" text-anchor="middle">Sanctions · PEP</text><text x="462" y="182" class="lbl-2" text-anchor="middle">yente (self-hosted)</text>
+<rect class="bx-v" x="375" y="208" width="175" height="46" rx="2"/><text x="462" y="227" class="lbl" text-anchor="middle">Entity resolution</text><text x="462" y="242" class="lbl-2" text-anchor="middle">Splink · Senzing</text>
+
+<line class="f" x1="137" y1="148" x2="171" y2="148" marker-end="url(#d-ah)"/>
+<line class="f" x1="317" y1="140" x2="371" y2="52"  marker-end="url(#d-ah)"/>
+<line class="f" x1="317" y1="145" x2="371" y2="111" marker-end="url(#d-ah)"/>
+<line class="f" x1="317" y1="152" x2="371" y2="171" marker-end="url(#d-ah)"/>
+<line class="f" x1="317" y1="158" x2="371" y2="231" marker-end="url(#d-ah)"/>
+<text x="345" y="100" class="lbl-2" text-anchor="middle">→</text>
+
+<rect class="bx" x="595" y="88" width="150" height="106" rx="2"/>
+<text x="670" y="116" class="lbl" text-anchor="middle">Decision engine</text>
+<text x="670" y="134" class="lbl-2" text-anchor="middle">model → probability</text>
+<text x="670" y="148" class="lbl-2" text-anchor="middle">─────────────</text>
+<text x="670" y="162" class="lbl-2" text-anchor="middle">policy → decision</text>
+<text x="670" y="180" class="lbl-2" text-anchor="middle">versioned separately</text>
+<line class="f" x1="552" y1="115" x2="591" y2="130" marker-end="url(#d-ah)"/>
+<line class="f" x1="552" y1="171" x2="591" y2="152" marker-end="url(#d-ah)"/>
+
+<rect class="bx-sor" x="785" y="88" width="100" height="106" rx="2"/>
+<text x="835" y="122" class="lbl" text-anchor="middle">Decision</text><text x="835" y="136" class="lbl" text-anchor="middle">log</text>
+<text x="835" y="154" class="lbl-2" text-anchor="middle">inputs ·</text><text x="835" y="167" class="lbl-2" text-anchor="middle">responses ·</text><text x="835" y="180" class="lbl-2" text-anchor="middle">versions</text>
+<line class="f-recon" x1="747" y1="141" x2="781" y2="141" marker-end="url(#d-ahr)"/>
+
+<text x="462" y="278" class="lbl-2" text-anchor="middle">every step is a contract, not a vendor — each has a timeout, a fallback and a cost</text>
+</svg>
+</div>
+<figcaption><b>The orchestrator pattern.</b> A step is defined by the question it answers, not the vendor answering it, so swapping providers in one market is configuration. Two rules carry most of the value: the orchestrator owns retry, circuit-breaking and provider selection; and the <b>model emits a probability while policy emits a decision</b>, versioned separately, because policy changes weekly and models change quarterly.</figcaption>
+</figure>
+
+<div class="tbl prose">
+<table class="osrow">
+<thead><tr><th>Package</th><th></th><th>What it gives you</th></tr></thead>
+<tbody>
+<tr><td><code>Open Policy Agent</code> / Rego</td><td><span class="pill">Apache 2.0</span></td><td>Policy as code, decoupled from application code. Embeddable as a <strong>Go library</strong>, daemon or sidecar. Returns structured decisions — not just allow/deny but warnings, metadata and <strong>risk scores</strong>. Evaluates against pre-loaded in-memory data, so it fits a latency budget</td></tr>
+<tr><td><code>GoRules</code> / ZEN Engine</td><td><span class="pill">open core</span></td><td>Visual decision tables over a JSON Decision Model, DMN support, no heavy infrastructure</td></tr>
+<tr><td><code>Drools</code></td><td><span class="pill">Apache 2.0</span></td><td>The most battle-tested open-source rule engine in production — DMN, BPMN, decision tables, authoring workbench</td></tr>
+<tr><td><code>Camunda</code> / <code>Kogito</code></td><td><span class="pill c">mixed</span></td><td>BPMN orchestration plus DMN decisions; Kogito is the Kubernetes-native Drools lineage</td></tr>
+<tr><td><code>yente</code> + OpenSanctions</td><td><span class="pill">open source</span></td><td>The screening API that powers the hosted OpenSanctions service. Ships as <strong>two Docker containers</strong> (app + Elasticsearch), runs on Kubernetes, can be run <strong>on-premises as a KYC appliance so no customer data leaves your deployment</strong>. Screens against your own watchlists too</td></tr>
+<tr><td><code>Splink</code></td><td><span class="pill">open source</span></td><td>Probabilistic record linkage from the <strong>UK Ministry of Justice</strong>. Fellegi-Sunter with EM estimation; 3m+ downloads; a million records <strong>on a laptop in about a minute</strong>; 100m+ on Spark or Athena</td></tr>
+<tr><td>Senzing · Quantexa</td><td><span class="pill c">commercial</span></td><td>Entity resolution for KYB and fraud rings; Quantexa adds network graph analytics</td></tr>
+<tr><td><code>Temporal</code></td><td><span class="pill">MIT</span></td><td>Referrals sit with humans for days. If your orchestrator is webhook handlers plus a status column, you will rebuild it as a workflow engine eventually</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p>OPA is the underrated choice here. "Policy separated from application code, returning structured decisions including risk scores, embeddable as a library" is precisely the model-versus-policy separation the architecture needs — and it is the closest widely-adopted analogue to what Monzo built for fraud, which is the next section.</p>
+<p><code>yente</code> matters for a different reason: it removes the assumption that screening must be SaaS. Open data, open matching engine, fully self-hosted, no customer data leaving your infrastructure. It does not remove the need for curated adverse-media and enhanced-diligence content — that is where ComplyAdvantage, Dow Jones and LexisNexis still earn their fee.</p>
+
+<h2><span class="n">04</span>Fraud &amp; AML detection</h2>
+<p class="lede">Two public architectures define the state of the art, and they agree on the shape.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 900 340" role="img" aria-label="Monzo's control platform compared with Stripe Radar. Monzo selects applicable controls, loads features from a three-tier service, executes controls as pure Starlark functions typed as detectors, action controls and action-selection controls, then applies the action, logging every execution to BigQuery. Stripe Radar extracts features, serves a model to produce a risk score, then applies a decision layer combining the score with merchant rules to allow, block or challenge, inside a sub-100 millisecond budget with labels arriving automatically from disputes.">
+<text x="15"  y="22" class="lbl">MONZO — control platform</text><text x="15"  y="38" class="lbl-2">UK bank · in-house</text>
+<text x="475" y="22" class="lbl">STRIPE RADAR</text><text x="475" y="38" class="lbl-2">payments network · in-house</text>
+
+<rect class="bx" x="15" y="56"  width="410" height="44" rx="2"/><text x="220" y="75"  class="lbl" text-anchor="middle">1 · Control selection</text><text x="220" y="90" class="lbl-2" text-anchor="middle">from transaction context, behaviour, risk scores</text>
+<rect class="bx" x="15" y="110" width="410" height="44" rx="2"/><text x="220" y="129" class="lbl" text-anchor="middle">2 · Feature loading</text><text x="220" y="144" class="lbl-2" text-anchor="middle">DAG pipeline — just-in-time · near-real-time · batch</text>
+<rect class="bx-sor" x="15" y="164" width="410" height="58" rx="2"/><text x="220" y="185" class="lbl" text-anchor="middle">3 · Control execution — pure functions in Starlark</text><text x="220" y="200" class="lbl-2" text-anchor="middle">detectors · action controls · action-selection controls</text><text x="220" y="214" class="lbl-2" text-anchor="middle">back-testable against history without touching live traffic</text>
+<rect class="bx" x="15" y="232" width="410" height="44" rx="2"/><text x="220" y="251" class="lbl" text-anchor="middle">4 · Action applier</text><text x="220" y="266" class="lbl-2" text-anchor="middle">enforces decision, applies rate limits</text>
+
+<rect class="bx" x="475" y="56"  width="410" height="44" rx="2"/><text x="680" y="75"  class="lbl" text-anchor="middle">1 · Feature extraction</text><text x="680" y="90" class="lbl-2" text-anchor="middle">from the transaction and recent history</text>
+<rect class="bx" x="475" y="110" width="410" height="44" rx="2"/><text x="680" y="129" class="lbl" text-anchor="middle">2 · Model serving → risk score</text><text x="680" y="144" class="lbl-2" text-anchor="middle">moved off XGBoost to a ResNeXt-inspired architecture</text>
+<rect class="bx-sor" x="475" y="164" width="410" height="58" rx="2"/><text x="680" y="185" class="lbl" text-anchor="middle">3 · Decision layer — score + merchant rules</text><text x="680" y="200" class="lbl-2" text-anchor="middle">allow · block · challenge</text><text x="680" y="214" class="lbl-2" text-anchor="middle">rules sit on top of the score, never replace it</text>
+<rect class="bx-v" x="475" y="232" width="410" height="44" rx="2"/><text x="680" y="251" class="lbl" text-anchor="middle">Labels arrive automatically from disputes</text><text x="680" y="266" class="lbl-2" text-anchor="middle">a free, continuous, correctly-timed label stream</text>
+
+<rect class="bx-sor" x="15" y="292" width="410" height="34" rx="2"/><text x="220" y="313" class="lbl" text-anchor="middle">Every execution → BigQuery: features, decision, version</text>
+<rect class="bx-v" x="475" y="292" width="410" height="34" rx="2"/><text x="680" y="313" class="lbl" text-anchor="middle">Sub-100ms, inside the authorisation path</text>
+</svg>
+</div>
+<figcaption><b>Same shape, different constants.</b> Both put scoring and rules in the hot path under a hard latency budget; both separate the score from the decision; both treat the decision record as a first-class output. Monzo's distinctive move is <b>controls as sandboxed pure functions</b>, which is what makes back-testing and analyst-authored controls possible. Stripe's is the <b>automatic label stream</b> from chargebacks — a structural advantage a bank has to work much harder to reproduce.</figcaption>
+</figure>
+
+<div class="prose">
+<div class="callout">
+<p class="eyebrow">The finding that changes the build calculus</p>
+<p><strong>Chronon</strong> — Airbnb's declarative feature platform, which computes features once for both offline training and online low-latency serving — was <em>first deployed at Airbnb specifically to combat payments fraud</em>. It is now Apache 2.0. And <strong>Stripe integrated it: it powers 100% of Stripe's charge-path fraud prediction models.</strong></p>
+<p>A neobank building a fraud feature platform in 2026 can start from the same substrate two of the most sophisticated payments fraud teams in the world are running.</p>
+</div>
+</div>
+
+<div class="tbl prose">
+<table class="osrow">
+<thead><tr><th>Package</th><th></th><th>Position</th></tr></thead>
+<tbody>
+<tr><td><code>Chronon</code></td><td><span class="pill">Apache 2.0</span></td><td>One feature definition for batch and streaming — eliminates training/serving skew by construction. Fraud-origin</td></tr>
+<tr><td><code>Feast</code></td><td><span class="pill">Apache 2.0</span></td><td>Benchmarked at <strong>sub-millisecond</strong> retrieval with a Java gRPC server and Redis. Cost control, no lock-in</td></tr>
+<tr><td>Tecton</td><td><span class="pill c">managed</span></td><td><strong>Sub-10ms p99</strong> serving out of the box, positioned squarely at real-time fraud</td></tr>
+<tr><td>Hopsworks</td><td><span class="pill c">both</span></td><td>Self-hosted or managed — often the only acceptable option where data cannot leave</td></tr>
+<tr><td><code>starlark-go</code></td><td><span class="pill">BSD</span></td><td>Deterministic, sandboxed, no I/O — exactly the properties back-testing needs. Monzo's choice</td></tr>
+<tr><td><code>CEL</code></td><td><span class="pill">Apache 2.0</span></td><td>Google's expression language, built for safe sub-millisecond evaluation in hot paths</td></tr>
+<tr><td><code>checkmarble/marble</code></td><td><span class="pill">open core</span></td><td>Real-time decision engine for fraud and AML — monitoring, screening, case investigation. On-premise or SaaS. Positions directly against ComplyAdvantage, Actimize and Fiserv</td></tr>
+<tr><td><code>Jube</code></td><td><span class="pill">AGPLv3</span></td><td>Real-time transaction monitoring with ML, containerised, multi-tenant</td></tr>
+<tr><td><code>Tazama</code></td><td><span class="pill">open source</span></td><td>Charity-run transaction monitoring built around <strong>ISO 20022</strong> messages</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p>The durable split stays: <strong>buy case management, SAR filing and list data; build detection.</strong> Case management is workflow software and building it wins nothing. Detection is where your iteration speed <em>is</em> your loss rate.</p>
+
+<h3>Why the UK forces this early</h3>
+<p>Since 7 October 2024, UK payment firms must reimburse most authorised push payment fraud up to <strong>£85,000</strong>, split <strong>50/50</strong> between sending and receiving institution, with the burden on the firm to prove gross negligence and reimbursement within five working days. The regulator's July 2026 evaluation found APP losses over Faster Payments down about 21% — roughly £73m a year — with 97% of in-scope claims reimbursed.</p>
+<p>Three architectural consequences, not policy ones:</p>
+<ol>
+<li><strong>In-flight intervention, not post-hoc alerting.</strong> The control must warn, add friction or block <em>before</em> the payment leaves.</li>
+<li><strong>Inbound mule detection is revenue.</strong> Receiving-side liability puts a direct P&amp;L line on your inbound risk model — and mule networks are a graph problem, which is why Splink and Senzing appear in a fraud section at all.</li>
+<li><strong>Evidence, because you carry the burden of proof.</strong> Proving gross negligence means showing the warning you displayed, when, and what the customer did next.</li>
+</ol>
+
+<h2>The consolidated shortlist</h2>
+<p class="lede">If you take one thing from this: these exist, they are permissively licensed, and they are running in production somewhere serious.</p>
+</div>
+
+<div class="tbl prose">
+<table class="osrow">
+<thead><tr><th>Layer</th><th>Start here</th><th>Because</th></tr></thead>
+<tbody>
+<tr><td>Ledger substrate</td><td><code>TigerBeetle</code> · <code>Formance</code></td><td>Double-entry as the schema, not a convention you have to enforce</td></tr>
+<tr><td>Workflow / state</td><td><code>Temporal</code></td><td>Coinbase replaced a homegrown SAGA with it. So will you</td></tr>
+<tr><td>Card messaging</td><td><code>jPOS</code> · <code>moov-io/iso8583</code></td><td>120+ countries in production. Do not write a bitmap parser</td></tr>
+<tr><td>US file formats</td><td><code>moov-io/*</code></td><td>ACH, Fedwire, Check21, Metro 2, routing directories — all of it</td></tr>
+<tr><td>ISO 20022</td><td><code>prowide-iso20022</code></td><td>Every MX message, typed, Apache 2.0</td></tr>
+<tr><td>Decisions / policy</td><td><code>OPA</code> · <code>GoRules</code> · <code>Drools</code></td><td>Policy versioned apart from code, returning structured risk scores</td></tr>
+<tr><td>Screening</td><td><code>yente</code> + OpenSanctions</td><td>Self-hosted, so customer data never leaves</td></tr>
+<tr><td>Entity resolution</td><td><code>Splink</code></td><td>Government-built, principled, a million records a minute on a laptop</td></tr>
+<tr><td>Feature platform</td><td><code>Chronon</code> · <code>Feast</code></td><td>Chronon runs 100% of Stripe's charge-path fraud models</td></tr>
+<tr><td>Control language</td><td><code>starlark-go</code> · <code>CEL</code></td><td>Deterministic and sandboxed — the precondition for back-testing</td></tr>
+<tr><td>Monitoring core</td><td><code>marble</code> · <code>Jube</code> · <code>Tazama</code></td><td>The engine no longer has to be bought</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<h3>What is still missing</h3>
+<p>The numbers that would settle these arguments are not public, and no amount of searching produced them: cost per card authorisation at scale, a jPOS commercial licence at neobank volume, realistic false-positive rates for a mature monitoring stack, all-in cost per verified account. Neither Marble nor Jube publishes a production reference. No neobank publishes its break taxonomy or its auto-match rate by rail.</p>
+<p>Those gaps are the standing research agenda — anyone who can supply a real number for any of them is contributing more than another vendor comparison.</p>
+<footer>
+<p>Compiled 18 August 2026 from 139 public sources. Grounded in engineering blogs from Uber, Monzo, Airbnb and Stripe; regulator publications from the FCA, PSR and FDIC; and the source repositories of every package named. Vendor-published figures are marked as such in the underlying research at <code>~/neobank-stack/wiki/deep-dives/</code>.</p>
+</footer>
+</div>
+
+</div>

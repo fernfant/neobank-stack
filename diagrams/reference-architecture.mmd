@@ -1,0 +1,84 @@
+%% Neobank reference architecture — generated from wiki/ on 2026-08-18
+%% Legend: [[double]] = system of record / regulated · [/vendor/] = third party
+%%         ==> money movement · -.-> async event · ~~~ reconciliation/evidence
+flowchart TB
+  subgraph L1["① Channels"]
+    direction LR
+    IOS["iOS"]; AND["Android"]; WEB["Web"]; OPSC["Ops console + AI agent"]
+  end
+  subgraph L2["② Edge"]
+    direction LR
+    GW["API gateway / BFF"]; AUTH["AuthN/Z · device binding"]
+  end
+  subgraph L3["③ Product services"]
+    direction LR
+    ACCT["Accounts & pots"]; PAY["Payment orchestration"]; CARDM["Card management"]; LEND["Lending & limits"]
+  end
+  subgraph L4["④ Decisioning — hot path, sub-second"]
+    direction LR
+    FEAT["Feature service<br/>JIT · near-real-time · batch"]
+    ENG["Control engine<br/>sandboxed pure functions"]
+    MODEL["Model serving"]
+    POL["Policy layer<br/>hard cuts · affordability"]
+  end
+  subgraph L5["⑤ Core — system of record"]
+    LEDGER[["Ledger<br/>double-entry · append-only<br/>idempotent · bi-temporal"]]
+    PRODENG["Product engine<br/>interest · fees"]
+  end
+  subgraph L6["⑥ Money movement — rail adapters"]
+    direction LR
+    UKR["UK: FPS · Bacs/DD · CHAPS"]
+    USR["US: ACH · RTP · FedNow · Wire"]
+    CARDR["Card scheme interface"]
+    FXR["FX & cross-border corridors"]
+  end
+  subgraph L7["⑦ External providers"]
+    direction LR
+    KYCV[/"KYC/KYB"/]; SCRV[/"Sanctions · PEP · adverse media"/]; TMV[/"TM / fraud"/]
+    BURV[/"Bureaus"/]; OBV[/"Open banking / aggregator"/]; PROCV[/"Issuer-processor"/]; SPON[/"Sponsor or partner bank"/]
+  end
+  subgraph L8["⑧ Data & ML platform"]
+    direction LR
+    BUS["Event bus"]; STR["Stream processing"]; ONF["Online feature store"]; DWH["Warehouse"]; MLP["ML platform<br/>registry · monitoring · LLM orchestration"]
+  end
+  subgraph L9["⑨ Runtime"]
+    direction LR
+    K8S["Kubernetes on cloud"]; DBS["Ledger datastore"]; OBSV["Observability & SLOs"]
+  end
+  subgraph L10["⑩ Reconciliation · evidence · resilience"]
+    direction LR
+    RECON["Reconciliation workers<br/>stateless · replayable · per-rail"]
+    BRK["Break register<br/>owner · age · amount"]
+    EVID["Evidence store<br/>immutable decision logs"]
+    REG["Regulatory reporting"]
+  end
+
+  L1 --> L2 --> L3
+  L3 --> L4
+  L4 --> POL
+  L3 --> LEDGER
+  L4 --> LEDGER
+  LEDGER ==> L6
+  L6 ==> CARDR
+  CARDR ==> PROCV
+  L6 ==> SPON
+  L4 --> TMV
+  L3 --> KYCV
+  L4 --> SCRV
+  LEND --> BURV
+  LEND --> OBV
+  L3 -.-> BUS
+  L4 -.-> BUS
+  LEDGER -.-> BUS
+  BUS --> STR --> ONF --> FEAT
+  BUS -.-> DWH
+  DWH --> MLP --> MODEL
+  LEDGER ~~~ RECON
+  L6 ~~~ RECON
+  SPON ~~~ RECON
+  PROCV ~~~ RECON
+  RECON --> BRK
+  L4 ~~~ EVID
+  LEDGER ~~~ EVID
+  EVID --> REG
+  EVID -.-> DWH

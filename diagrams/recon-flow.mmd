@@ -1,0 +1,18 @@
+%% Reconciliation — the subsystem most diagrams omit
+flowchart LR
+  LED[["Our ledger — postings"]]
+  RAIL["Rail statements / scheme clearing files"]
+  PART["Sponsor or partner bank balances"]
+  PROC["Processor clearing files"]
+  W["Reconciliation workers<br/>stateless · replayable · per-rail · per-partner"]
+  B["Break register<br/>owner · age · amount · aging report"]
+  RPT["Regulatory output<br/>UK: daily safeguarding recon, monthly returns<br/>US: near-real-time partner-account recon"]
+  PACK["CASS 10 resolution pack<br/>retrievable in 48h"]
+  LED --> W
+  RAIL --> W
+  PART --> W
+  PROC --> W
+  W --> B
+  W --> RPT
+  B --> RPT
+  RPT --> PACK

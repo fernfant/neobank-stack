@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neobank Stack — how UK and USA neobanks are actually built</title>
+<meta name="description" content="A sourced, self-maintaining knowledge base on neobank technology stacks: ledger, payment rails, card issuing, financial crime, credit and infrastructure.">
+<style>
+  :root{
+    --ground:#FCFCFD; --surface:#FFFFFF; --surface-2:#F1F4F7; --band:#F7F9FB;
+    --ink:#11151B; --ink-2:#49535F; --ink-3:#7C8693;
+    --rule:#D6DCE3; --rule-2:#E7EBF0;
+    --money:#8F5300; --async:#54499F; --recon:#0A5F58; --flag:#9C3524;
+    --flag-soft:#F7E7E3; --recon-soft:#E0EFEC; --money-soft:#F5EADA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0C0F14; --surface:#131820; --surface-2:#1A202A; --band:#101419;
+      --ink:#E8ECF1; --ink-2:#A6B0BC; --ink-3:#78828E;
+      --rule:#2A323C; --rule-2:#1E252E;
+      --money:#E0A24F; --async:#9C92EE; --recon:#4FC5B9; --flag:#E8836F;
+      --flag-soft:#2A1D1A; --recon-soft:#122624; --money-soft:#2A2318;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0C0F14; --surface:#131820; --surface-2:#1A202A; --band:#101419;
+    --ink:#E8ECF1; --ink-2:#A6B0BC; --ink-3:#78828E;
+    --rule:#2A323C; --rule-2:#1E252E;
+    --money:#E0A24F; --async:#9C92EE; --recon:#4FC5B9; --flag:#E8836F;
+    --flag-soft:#2A1D1A; --recon-soft:#122624; --money-soft:#2A2318;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--ground); color:var(--ink); margin:0;
+    font-family:ui-serif,Georgia,"Iowan Old Style","Times New Roman",serif;
+    font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px 88px}
+  .prose{max-width:68ch; margin-left:auto; margin-right:auto}
+  h1,h2,h3,th,.eyebrow,figcaption,.meta,.tag{
+    font-family:ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif}
+  .eyebrow,.meta,.tag,td.n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  header.top{border-bottom:1px solid var(--rule); padding:56px 0 26px; margin-bottom:8px}
+  .eyebrow{font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-3); margin:0 0 18px}
+  h1{font-size:clamp(32px,5vw,50px); line-height:1.05; letter-spacing:-.028em;
+    font-weight:660; margin:0 0 18px; text-wrap:balance; max-width:19ch}
+  .standfirst{font-size:20px; line-height:1.55; color:var(--ink-2); max-width:58ch; margin:0 0 28px}
+  .meta{display:flex; flex-wrap:wrap; gap:0 26px; font-size:11.5px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3)}
+  .meta b{color:var(--ink); font-weight:600}
+  h2{font-size:13px; letter-spacing:.15em; text-transform:uppercase; font-weight:640;
+    color:var(--ink-3); margin:70px 0 8px; padding-bottom:10px; border-bottom:1px solid var(--rule)}
+  h2 + .lede{font-size:25px; line-height:1.32; letter-spacing:-.015em; font-weight:600;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif; margin:22px 0 18px; text-wrap:balance}
+  h3{font-size:17px; font-weight:640; letter-spacing:-.01em; margin:32px 0 6px}
+  p{margin:0 0 18px} strong{font-weight:600}
+  ul,ol{margin:0 0 18px; padding-left:1.15em} li{margin-bottom:10px} li::marker{color:var(--ink-3)}
+  .findings{counter-reset:f; list-style:none; padding:0; margin:26px 0}
+  .findings li{counter-increment:f; position:relative; padding-left:44px; margin-bottom:24px}
+  .findings li::before{content:counter(f,decimal-leading-zero); position:absolute; left:0; top:3px;
+    font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--money);
+    border:1px solid var(--money); border-radius:2px; padding:2px 5px; background:var(--money-soft)}
+  .findings b{display:block; font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;
+    font-size:17px; font-weight:640; letter-spacing:-.01em; margin-bottom:3px; color:var(--ink)}
+  .findings span{color:var(--ink-2); font-size:16px}
+  .tbl{overflow-x:auto; margin:26px 0}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:14px;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif; line-height:1.45}
+  th{text-align:left; font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+    font-weight:640; color:var(--ink-3); padding:0 14px 9px 0; border-bottom:1px solid var(--rule); white-space:nowrap}
+  td{padding:11px 14px 11px 0; border-bottom:1px solid var(--rule-2); vertical-align:top; color:var(--ink-2)}
+  td:first-child{color:var(--ink); font-weight:560}
+  td.n{font-variant-numeric:tabular-nums; white-space:nowrap; font-size:12.5px}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block; font-size:10px; letter-spacing:.05em; padding:2px 6px;
+    border-radius:2px; border:1px solid var(--rule); color:var(--ink-3); white-space:nowrap}
+  .tag.build{color:var(--money); border-color:var(--money); background:var(--money-soft)}
+  .callout{border-left:2px solid var(--flag); background:var(--flag-soft);
+    padding:18px 22px; margin:30px 0; border-radius:0 3px 3px 0}
+  .callout p:last-child{margin-bottom:0}
+  .callout .eyebrow{color:var(--flag); margin-bottom:10px}
+  a{color:inherit; text-decoration-color:var(--rule); text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--async); outline-offset:3px; border-radius:2px}
+  footer{margin-top:76px; padding-top:24px; border-top:1px solid var(--rule);
+    font-size:12.5px; color:var(--ink-3);
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif}
+  figure{margin:36px 0 12px}
+  .bleed{max-width:1120px; margin-left:auto; margin-right:auto}
+  .scroller{overflow-x:auto; padding-bottom:6px}
+  .scroller svg{display:block; min-width:700px; max-width:100%; height:auto; color:var(--ink)}
+  figcaption{font-size:12.5px; line-height:1.5; color:var(--ink-3); margin-top:14px;
+    padding-top:12px; border-top:1px solid var(--rule-2); max-width:76ch}
+  figcaption b{color:var(--ink-2); font-weight:600}
+  .bx{fill:var(--surface); stroke:currentColor; stroke-opacity:.34; stroke-width:1}
+  .bx-v{fill:var(--surface-2); stroke:currentColor; stroke-opacity:.34; stroke-width:1; stroke-dasharray:4 3}
+  .bx-sor{fill:var(--surface); stroke:currentColor; stroke-opacity:.85; stroke-width:2}
+  .bx-in{fill:none; stroke:currentColor; stroke-opacity:.4; stroke-width:1}
+  .bandbg{fill:var(--band)}
+  .lbl{font-size:11px; fill:var(--ink); font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  .lbl-2{font-size:9.5px; fill:var(--ink-3); font-family:ui-monospace,Menlo,monospace}
+  .gut{font-size:10px; fill:var(--ink-3); letter-spacing:.1em; font-weight:600;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif}
+  .gut-n{font-size:10px; fill:var(--ink-3); font-family:ui-monospace,Menlo,monospace}
+  .f{stroke:currentColor; stroke-opacity:.5; stroke-width:1.4; fill:none}
+  .f-money{stroke:var(--money); stroke-width:2.6; fill:none}
+  .f-recon{stroke:var(--recon); stroke-width:1.6; stroke-dasharray:2 3; fill:none}
+  .h-plain{fill:currentColor; fill-opacity:.5} .h-money{fill:var(--money)} .h-recon{fill:var(--recon)}
+  .t-money{fill:var(--money); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
+  .t-recon{fill:var(--recon); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
+  .t-flag{fill:var(--flag); font-size:9.5px; font-family:ui-monospace,Menlo,monospace}
+  .boundary{stroke:var(--flag); stroke-width:1.6; stroke-dasharray:7 4; fill:none}
+  .legend{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px 24px;
+    margin:24px 0 0; padding:18px 20px; background:var(--surface-2);
+    border:1px solid var(--rule-2); border-radius:3px}
+  .legend div{display:flex; align-items:center; gap:10px; font-size:12px;
+    font-family:ui-monospace,Menlo,monospace; color:var(--ink-2)}
+  @media (max-width:640px){ body{font-size:16px} .wrap{padding:0 18px 60px} h2 + .lede{font-size:22px} }
+</style>
+<style>
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:14px;margin:26px 0 8px}
+  .card{display:block;padding:20px 20px 18px;border:1px solid var(--rule);border-radius:4px;
+    background:var(--surface);text-decoration:none;transition:border-color .15s,transform .15s}
+  .card:hover{border-color:var(--money);transform:translateY(-2px)}
+  .card .k{font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--money);display:block;margin-bottom:9px}
+  .card .h{font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:17px;font-weight:640;
+    letter-spacing:-.012em;color:var(--ink);display:block;margin-bottom:6px}
+  .card .p{font-size:13.5px;line-height:1.5;color:var(--ink-2);display:block}
+  ul.idx{list-style:none;padding:0;margin:18px 0 0}
+  ul.idx li{margin:0;border-bottom:1px solid var(--rule-2)}
+  ul.idx li:last-child{border-bottom:none}
+  ul.idx a{display:block;padding:11px 4px;text-decoration:none;border-radius:3px}
+  ul.idx a:hover{background:var(--surface-2)}
+  ul.idx .t{display:block;font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;
+    font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.008em}
+  ul.idx .d{display:block;font-size:13px;line-height:1.5;color:var(--ink-3);margin-top:3px}
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:0 44px}
+  .two h3{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);
+    margin:30px 0 0;font-weight:640}
+  .files{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0}
+  .files a{font-family:ui-monospace,Menlo,monospace;font-size:12px;padding:6px 10px;
+    border:1px solid var(--rule);border-radius:3px;color:var(--ink-2);text-decoration:none}
+  .files a:hover{border-color:var(--money);color:var(--ink)}
+  .new{border-left:2px solid var(--money);background:var(--money-soft);padding:18px 22px;
+    margin:26px 0;border-radius:0 3px 3px 0}
+  .new p:last-child{margin-bottom:0}
+  .new .eyebrow{color:var(--money);margin-bottom:10px}
+</style></head><body>
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">UK &amp; USA neobank technology research</p>
+  <h1>Neobank Stack</h1>
+  <p class="standfirst">How UK and USA neobanks are actually built — the ledger, the rails, the card stack, financial crime, credit, data and the infrastructure underneath. Every non-obvious claim is sourced and confidence-tagged.</p>
+  <p class="meta"><span><b>31</b> pages</span><span><b>194</b> sources</span><span><b>32,311</b> words</span><span><b>11</b> banks</span><span><a href="https://github.com/fernfant/neobank-stack">GitHub</a></span></p>
+</header>
+
+<div class="prose"><h2>Start here</h2>
+<p class="lede">Four rendered reads. Everything below is the source material behind them.</p></div>
+<div class="cards prose">
+<a class="card" href="https://claude.ai/code/artifact/2b1b1ea1-7f4f-4f40-9e8e-2af6049b3d6a"><span class="k">Architecture</span><span class="h">Reference architecture</span><span class="p">Ten bands, three archetypes, the card-auth hot path, and the reconciliation subsystem both regulators now mandate.</span></a><a class="card" href="https://claude.ai/code/artifact/fc08f1f1-eef4-4e57-8617-7ca7f431a6b9"><span class="k">Attribution</span><span class="h">Vendor map — who runs what</span><span class="p">40 vendors across 8 layers, with the banks publicly named as using each — and the gaps marked honestly.</span></a><a class="card" href="https://claude.ai/code/artifact/1efb55a6-2b1c-487f-abe0-d6cc6f6ba246"><span class="k">Deep dive</span><span class="h">The four you build</span><span class="p">Reconciliation, rail adapters, KYC orchestration, fraud — with real architectures and 30+ named packages.</span></a><a class="card" href="https://claude.ai/code/artifact/10168ec5-9832-4b67-b785-9de2c91ff0a2"><span class="k">Summary</span><span class="h">Executive brief</span><span class="p">Nine minutes: five findings, three archetypes, where the two markets diverge, build-vs-buy defaults.</span></a>
+</div>
+
+<div class="prose"><div class="new">
+<p class="eyebrow">Selected findings</p>
+<p><strong>Monzo Stand-in</strong> — a complete backup bank on a different cloud: 18 services on GCP against ~3,000 on AWS, at ~1% of the cost, with real customers running on it continuously. The strongest public answer to the cloud-concentration question.</p>
+<p><strong>Balance reads amplify with account age</strong> — and if the read is too slow during card authorisation, the scheme approves on your behalf, beyond available balance, with your fraud checks never running.</p>
+<p><strong>Both regulators converged independently</strong> on continuous, provable reconciliation — the FCA through safeguarding rules, the FDIC through a bankruptcy. Build that subsystem first, in either market.</p>
+</div>
+<h2>The thesis</h2></div>
+<ul class="idx prose"><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/overview.md"><span class="t">Overview — how a neobank is built in 2026</span><span class="d">A neobank is not one system. It is a thin, fast product layer over a slow, regulated money layer, and almost every interesting engineering decision is about where you draw the line…</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/layers/00-layer-map.md"><span class="t">The ten-layer map</span><span class="d">Ten strata. Read top-to-bottom as request flow, bottom-to-top as dependency.</span></a></li></ul>
+
+<div class="prose"><h2>The ten layers</h2>
+<p class="lede">What the options are, what the trade-off is, and what each choice forces downstream.</p></div>
+<ul class="idx prose"><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/layers/01-licence-and-charter.md"><span class="t">Licence and charter — whose balance sheet?</span><span class="d">The licence determines what your ledger means. A deposit at a licensed bank is a liability on your balance sheet, insured by FSCS/FDIC, settled from your own central-bank account.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/layers/02-core-ledger.md"><span class="t">Core ledger and product engine</span><span class="d">The ledger is the system of record for "how much money is there". Everything else in the bank is, in a sense, a cache of it.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/layers/03-payment-rails.md"><span class="t">Payment rails and money movement</span><span class="d">Rails are the layer where your clean internal model meets other people's weak delivery guarantees.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/layers/04-card-issuing.md"><span class="t">Card issuing and processing</span><span class="d">The issuer-processor answers scheme authorisation requests in the hot path — a hard latency budget, no acceptable downtime, and the place where your balance, your fraud controls and your…</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/layers/05-kyc-onboarding.md"><span class="t">Identity and onboarding (KYC / KYB)</span><span class="d">Onboarding is where conversion and risk trade off most directly, and where a neobank's cost per account is set.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/layers/06-fincrime.md"><span class="t">Financial crime — AML, transaction monitoring, fraud</span><span class="d">Three overlapping problems that vendors sell as one: AML (is this money dirty?), fraud (is this person being robbed, or robbing us?), and sanctions (is this party prohibited?).</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/layers/07-credit-scoring.md"><span class="t">Credit and decisioning</span><span class="d">A neobank has an asymmetric advantage in credit: it can see the applicant's actual cash flow.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/layers/08-data-ml-platform.md"><span class="t">Data and ML platform</span><span class="d">The data platform is where a neobank's two hardest latency requirements meet: a sub-second decision in the payment path, and a full-history analytical view for models, regulators and…</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/layers/09-infrastructure-runtime.md"><span class="t">Runtime and infrastructure</span><span class="d">There is more convergence here than anywhere else in the stack: containers on Kubernetes, a statically-typed backend language, a horizontally-scalable datastore, and one primary cloud.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/layers/10-resilience-regulatory.md"><span class="t">Resilience, regulatory reporting and operations</span><span class="d">This is the layer that turns a working system into a defensible one. Three subsystems do most of the work: reconciliation, the evidence store, and exit/continuity planning.</span></a></li></ul>
+
+<div class="prose"><h2>Deep dives — the four you build</h2>
+<p class="lede">Real implementations, named open-source packages, and the vendors still worth paying.</p></div>
+<ul class="idx prose"><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/deep-dives/01-reconciliation.md"><span class="t">Deep dive — Reconciliation (build)</span><span class="d">Reconciliation is the only layer in the stack where the default is build, with no trigger to reconsider.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/deep-dives/02-rail-adapters.md"><span class="t">Deep dive — Rail adapters (buy access, build normalisation)</span><span class="d">Nobody sensible builds scheme connectivity from scratch — you buy access from Form3, ClearBank, Modulr, Column or a sponsor bank.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/deep-dives/03-kyc-orchestration.md"><span class="t">Deep dive — KYC orchestration (build)</span><span class="d">You buy the signals — documents, liveness, identity data, sanctions lists.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/deep-dives/04-fraud-aml.md"><span class="t">Deep dive — Fraud and AML detection (build)</span><span class="d">Two public architectures define the state of the art, and they agree on the shape: Monzo's control platform and Stripe Radar.</span></a></li></ul>
+
+<div class="prose"><h2>The banks</h2></div>
+<div class="prose two">
+<section><h3>UK &amp; Europe</h3><ul class="idx"><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/banks/chase-uk.md"><span class="t">Chase UK (JPMorgan) — and 10x</span><span class="d">An incumbent building a challenger. JPMorgan launched Chase in the UK on 10x SuperCore, a cloud-native core from a British vendor — the highest-profile proof that a tier-one bank will…</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/banks/monzo.md"><span class="t">Monzo (UK)</span><span class="d">The most transparent neobank engineering organisation in the world, and therefore the de-facto reference architecture for Archetype A ("full-stack bank").</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/banks/n26.md"><span class="t">N26 (Germany/EU)</span><span class="d">The European Archetype B: full German banking licence, bought core (Mambu), everything above it in-house on AWS.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/banks/revolut.md"><span class="t">Revolut (UK/EU)</span><span class="d">The JVM-and-GCP counterexample to Monzo. Event-driven microservices in Java/Kotlin over a Postgres event store, multi-currency ledger with ACID guarantees, and a published foundation…</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/banks/starling.md"><span class="t">Starling Bank and Engine by Starling (UK)</span><span class="d">A UK licensed bank that turned its own core into a product. Java microservices on AWS, built famously fast (a working bank in about a year), now sold to other banks as Engine by Starling…</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/banks/zopa.md"><span class="t">Zopa Bank (UK)</span><span class="d">The clearest recent UK example of Archetype B: own banking licence, bought core.</span></a></li></ul></section>
+<section><h3>United States</h3><ul class="idx"><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/banks/cash-app.md"><span class="t">Cash App / Block (USA)</span><span class="d">Block runs a dedicated Ledgering team maintaining the accounting core that holds authoritative balances for both Square and Cash App, plus the transaction and settlement machinery that…</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/banks/chime.md"><span class="t">Chime (USA)</span><span class="d">The most important US datapoint in this research. Chime is not a bank — it says so explicitly in its S-1 — yet it built its own payments processor (ChimeCore) and made vertical…</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/banks/remitly.md"><span class="t">Remitly (USA / cross-border)</span><span class="d">Not a neobank, but the best public example of the money-movement layer done at scale across dozens of corridors.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/banks/sofi.md"><span class="t">SoFi (USA) — and Galileo / Technisys</span><span class="d">The full vertical stack, assembled by acquisition. SoFi holds a US national bank charter, owns its issuer-processor (Galileo, 2020) and its core banking platform (Technisys / Cyberbank…</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/banks/varo.md"><span class="t">Varo Bank (USA)</span><span class="d">The first US consumer fintech granted a national bank charter, and the clearest US example of Archetype B: own charter, bought core.</span></a></li></ul></section>
+</div>
+
+<div class="prose"><h2>Vendors &amp; comparisons</h2></div>
+<ul class="idx prose"><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/comparisons/build-vs-buy.md"><span class="t">Build vs buy, layer by layer</span><span class="d">A default recommendation per layer, with the trigger that should make you change your mind.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/comparisons/uk-vs-usa.md"><span class="t">UK vs USA — where the stacks diverge</span><span class="d">The application layer looks the same on both sides of the Atlantic. Everything underneath is different, and four differences dominate: licence structure, payment rails, credit data, and…</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/vendors/vendor-landscape.md"><span class="t">Vendor landscape</span><span class="d">One table per layer. Caveat before you read any of it: most published vendor comparisons in this sector are SEO content marketing produced by vendors or their agencies.</span></a></li><li><a href="https://github.com/fernfant/neobank-stack/blob/main/wiki/vendors/vendor-map.md"><span class="t">Vendor map — who uses what</span><span class="d">The vendor landscape is well documented. Which neobank uses which vendor is not — and that asymmetry is the whole point of this page.</span></a></li></ul>
+
+<div class="prose">
+<h2>Templates &amp; diagrams</h2>
+<p class="lede">For designing your own stack, or interrogating someone else's.</p>
+<div class="files"><a href="https://github.com/fernfant/neobank-stack/blob/main/templates/architecture-diagram-template.md">architecture-diagram-template.md</a><a href="https://github.com/fernfant/neobank-stack/blob/main/templates/key-questions.md">key-questions.md — 100 questions</a><a href="https://github.com/fernfant/neobank-stack/blob/main/templates/vendor-evaluation-scorecard.md">vendor-evaluation-scorecard.md</a><a href="https://github.com/fernfant/neobank-stack/blob/main/diagrams/reference-architecture.mmd">reference-architecture.mmd</a><a href="https://github.com/fernfant/neobank-stack/blob/main/diagrams/uk-neobank.mmd">uk-neobank.mmd</a><a href="https://github.com/fernfant/neobank-stack/blob/main/diagrams/usa-neobank.mmd">usa-neobank.mmd</a><a href="https://github.com/fernfant/neobank-stack/blob/main/diagrams/card-auth-sequence.mmd">card-auth-sequence.mmd</a><a href="https://github.com/fernfant/neobank-stack/blob/main/diagrams/recon-flow.mmd">recon-flow.mmd</a></div>
+
+<h2>Method</h2>
+<p class="lede">Sourced, tagged, and maintained by scheduled agents rather than by hand.</p>
+<p>Every non-obvious claim carries a confidence tag — <strong>confirmed</strong> when a company or regulator said it, <strong>reported</strong> for credible third parties, <strong>inferred</strong> when deduced from job ads or vendor customer lists. Anything sourced from more than about eighteen months ago is dated, because a 2020 fact driving a 2026 recommendation is the most dangerous thing in a document like this. Vendor-published figures are marked as such: much of the vendor-comparison material in this sector is content marketing, usable for building a shortlist and close to worthless as evidence.</p>
+<p>A daily scout sweeps a watchlist of banks, vendors and regulators; a weekly lint hunts contradictions, stale claims and orphan pages. The schema they follow is in the repo.</p>
+<div class="files"><a href="https://github.com/fernfant/neobank-stack/blob/main/CLAUDE.md">CLAUDE.md — the schema</a><a href="https://github.com/fernfant/neobank-stack/blob/main/README.md">README.md</a><a href="https://github.com/fernfant/neobank-stack/blob/main/jobs/README.md">jobs/README.md</a></div>
+
+<footer>
+<p>Compiled from 194 public sources — engineering blogs from Monzo, Chime, Uber, Airbnb, Stripe, N26 and Revolut; S-1 filings; and regulator publications from the FCA, PSR, Bank of England and FDIC. Corrections and missing attributions welcome via <a href="https://github.com/fernfant/neobank-stack/issues">issues</a>.</p>
+</footer>
+</div>
+</div></body></html>

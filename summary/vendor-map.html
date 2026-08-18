@@ -1,0 +1,342 @@
+<title>Who Runs What</title>
+
+<style>
+  :root{
+    --ground:#FCFCFD; --surface:#FFFFFF; --surface-2:#F1F4F7; --band:#F7F9FB;
+    --ink:#11151B; --ink-2:#49535F; --ink-3:#7C8693;
+    --rule:#D6DCE3; --rule-2:#E7EBF0;
+    --money:#8F5300; --async:#54499F; --recon:#0A5F58; --flag:#9C3524;
+    --flag-soft:#F7E7E3; --recon-soft:#E0EFEC; --money-soft:#F5EADA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0C0F14; --surface:#131820; --surface-2:#1A202A; --band:#101419;
+      --ink:#E8ECF1; --ink-2:#A6B0BC; --ink-3:#78828E;
+      --rule:#2A323C; --rule-2:#1E252E;
+      --money:#E0A24F; --async:#9C92EE; --recon:#4FC5B9; --flag:#E8836F;
+      --flag-soft:#2A1D1A; --recon-soft:#122624; --money-soft:#2A2318;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0C0F14; --surface:#131820; --surface-2:#1A202A; --band:#101419;
+    --ink:#E8ECF1; --ink-2:#A6B0BC; --ink-3:#78828E;
+    --rule:#2A323C; --rule-2:#1E252E;
+    --money:#E0A24F; --async:#9C92EE; --recon:#4FC5B9; --flag:#E8836F;
+    --flag-soft:#2A1D1A; --recon-soft:#122624; --money-soft:#2A2318;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--ground); color:var(--ink); margin:0;
+    font-family:ui-serif,Georgia,"Iowan Old Style","Times New Roman",serif;
+    font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px 88px}
+  .prose{max-width:68ch; margin-left:auto; margin-right:auto}
+  h1,h2,h3,th,.eyebrow,figcaption,.meta,.tag{
+    font-family:ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif}
+  .eyebrow,.meta,.tag,td.n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  header.top{border-bottom:1px solid var(--rule); padding:56px 0 26px; margin-bottom:8px}
+  .eyebrow{font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-3); margin:0 0 18px}
+  h1{font-size:clamp(32px,5vw,50px); line-height:1.05; letter-spacing:-.028em;
+    font-weight:660; margin:0 0 18px; text-wrap:balance; max-width:19ch}
+  .standfirst{font-size:20px; line-height:1.55; color:var(--ink-2); max-width:58ch; margin:0 0 28px}
+  .meta{display:flex; flex-wrap:wrap; gap:0 26px; font-size:11.5px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3)}
+  .meta b{color:var(--ink); font-weight:600}
+  h2{font-size:13px; letter-spacing:.15em; text-transform:uppercase; font-weight:640;
+    color:var(--ink-3); margin:70px 0 8px; padding-bottom:10px; border-bottom:1px solid var(--rule)}
+  h2 + .lede{font-size:25px; line-height:1.32; letter-spacing:-.015em; font-weight:600;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif; margin:22px 0 18px; text-wrap:balance}
+  h3{font-size:17px; font-weight:640; letter-spacing:-.01em; margin:32px 0 6px}
+  p{margin:0 0 18px} strong{font-weight:600}
+  ul,ol{margin:0 0 18px; padding-left:1.15em} li{margin-bottom:10px} li::marker{color:var(--ink-3)}
+  .findings{counter-reset:f; list-style:none; padding:0; margin:26px 0}
+  .findings li{counter-increment:f; position:relative; padding-left:44px; margin-bottom:24px}
+  .findings li::before{content:counter(f,decimal-leading-zero); position:absolute; left:0; top:3px;
+    font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--money);
+    border:1px solid var(--money); border-radius:2px; padding:2px 5px; background:var(--money-soft)}
+  .findings b{display:block; font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;
+    font-size:17px; font-weight:640; letter-spacing:-.01em; margin-bottom:3px; color:var(--ink)}
+  .findings span{color:var(--ink-2); font-size:16px}
+  .tbl{overflow-x:auto; margin:26px 0}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:14px;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif; line-height:1.45}
+  th{text-align:left; font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+    font-weight:640; color:var(--ink-3); padding:0 14px 9px 0; border-bottom:1px solid var(--rule); white-space:nowrap}
+  td{padding:11px 14px 11px 0; border-bottom:1px solid var(--rule-2); vertical-align:top; color:var(--ink-2)}
+  td:first-child{color:var(--ink); font-weight:560}
+  td.n{font-variant-numeric:tabular-nums; white-space:nowrap; font-size:12.5px}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block; font-size:10px; letter-spacing:.05em; padding:2px 6px;
+    border-radius:2px; border:1px solid var(--rule); color:var(--ink-3); white-space:nowrap}
+  .tag.build{color:var(--money); border-color:var(--money); background:var(--money-soft)}
+  .callout{border-left:2px solid var(--flag); background:var(--flag-soft);
+    padding:18px 22px; margin:30px 0; border-radius:0 3px 3px 0}
+  .callout p:last-child{margin-bottom:0}
+  .callout .eyebrow{color:var(--flag); margin-bottom:10px}
+  a{color:inherit; text-decoration-color:var(--rule); text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--async); outline-offset:3px; border-radius:2px}
+  footer{margin-top:76px; padding-top:24px; border-top:1px solid var(--rule);
+    font-size:12.5px; color:var(--ink-3);
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif}
+  figure{margin:36px 0 12px}
+  .bleed{max-width:1120px; margin-left:auto; margin-right:auto}
+  .scroller{overflow-x:auto; padding-bottom:6px}
+  .scroller svg{display:block; min-width:700px; max-width:100%; height:auto; color:var(--ink)}
+  figcaption{font-size:12.5px; line-height:1.5; color:var(--ink-3); margin-top:14px;
+    padding-top:12px; border-top:1px solid var(--rule-2); max-width:76ch}
+  figcaption b{color:var(--ink-2); font-weight:600}
+  .bx{fill:var(--surface); stroke:currentColor; stroke-opacity:.34; stroke-width:1}
+  .bx-v{fill:var(--surface-2); stroke:currentColor; stroke-opacity:.34; stroke-width:1; stroke-dasharray:4 3}
+  .bx-sor{fill:var(--surface); stroke:currentColor; stroke-opacity:.85; stroke-width:2}
+  .bx-in{fill:none; stroke:currentColor; stroke-opacity:.4; stroke-width:1}
+  .bandbg{fill:var(--band)}
+  .lbl{font-size:11px; fill:var(--ink); font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  .lbl-2{font-size:9.5px; fill:var(--ink-3); font-family:ui-monospace,Menlo,monospace}
+  .gut{font-size:10px; fill:var(--ink-3); letter-spacing:.1em; font-weight:600;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif}
+  .gut-n{font-size:10px; fill:var(--ink-3); font-family:ui-monospace,Menlo,monospace}
+  .f{stroke:currentColor; stroke-opacity:.5; stroke-width:1.4; fill:none}
+  .f-money{stroke:var(--money); stroke-width:2.6; fill:none}
+  .f-recon{stroke:var(--recon); stroke-width:1.6; stroke-dasharray:2 3; fill:none}
+  .h-plain{fill:currentColor; fill-opacity:.5} .h-money{fill:var(--money)} .h-recon{fill:var(--recon)}
+  .t-money{fill:var(--money); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
+  .t-recon{fill:var(--recon); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
+  .t-flag{fill:var(--flag); font-size:9.5px; font-family:ui-monospace,Menlo,monospace}
+  .boundary{stroke:var(--flag); stroke-width:1.6; stroke-dasharray:7 4; fill:none}
+  .legend{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px 24px;
+    margin:24px 0 0; padding:18px 20px; background:var(--surface-2);
+    border:1px solid var(--rule-2); border-radius:3px}
+  .legend div{display:flex; align-items:center; gap:10px; font-size:12px;
+    font-family:ui-monospace,Menlo,monospace; color:var(--ink-2)}
+  @media (max-width:640px){ body{font-size:16px} .wrap{padding:0 18px 60px} h2 + .lede{font-size:22px} }
+</style>
+<style>
+  pre{background:var(--surface-2); border:1px solid var(--rule-2); border-radius:3px;
+    padding:16px 18px; overflow-x:auto; font-size:12.5px; line-height:1.6;
+    font-family:ui-monospace,Menlo,Consolas,monospace; color:var(--ink-2); margin:22px 0}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.88em;
+    background:var(--surface-2); padding:1px 5px; border-radius:2px; border:1px solid var(--rule-2)}
+  h2 .n{color:var(--money); font-family:ui-monospace,Menlo,monospace; margin-right:10px}
+  .tag{display:inline-block; font-size:9.5px; letter-spacing:.05em; padding:1px 6px; border-radius:2px;
+    border:1px solid var(--rule); color:var(--ink-3); white-space:nowrap;
+    font-family:ui-monospace,Menlo,monospace}
+  .tag.conf{color:var(--recon); border-color:var(--recon); background:var(--recon-soft)}
+  .tag.rep{color:var(--ink-2)}
+  .tag.none{color:var(--ink-3); border-style:dashed}
+  .tag.warn{color:var(--flag); border-color:var(--flag); background:var(--flag-soft)}
+  td strong{color:var(--ink)}
+</style>
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">Neobank stack · vendor attribution</p>
+  <h1>Who runs what</h1>
+  <p class="standfirst">The third-party vendors across every layer of a neobank stack — and, underneath each one, which banks are actually named as using them.</p>
+  <p class="meta"><span>18 Aug 2026</span><span><b>40</b> vendors</span><span><b>8</b> layers</span><span><b>14</b> sources</span></p>
+</header>
+
+<div class="prose">
+<p>The vendor landscape is well documented. <strong>Which neobank uses which vendor is not</strong> — and that asymmetry is the point of this page. Vendors publish logos; banks rarely confirm. Everything below traces to a company statement, a vendor's own named customer list, a filing, or credible trade press, with the confidence marked. Where nothing is public, it says so instead of guessing.</p>
+<p>In the map, a <strong>solid box</strong> means at least one bank is publicly named. A <strong>faded, dashed box</strong> means no neobank attribution could be found — which usually means customers who contractually avoid being named, not a vendor without customers.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 1000 648" role="img" aria-label="A vendor market map of the neobank stack in eight layers — core banking and ledger, issuer-processor, rails access, US sponsor banks, identity and KYC, financial crime, credit data, and data and cloud. Each layer lists five vendors, with the banks publicly named as using them written underneath. Solid boxes have at least one named bank; faded dashed boxes have no public attribution.">
+
+<rect class="bandbg" x="152" y="34"  width="836" height="60"/>
+<rect class="bandbg" x="152" y="182" width="836" height="60"/>
+<rect class="bandbg" x="152" y="330" width="836" height="60"/>
+<rect class="bandbg" x="152" y="478" width="836" height="60"/>
+
+<!-- 01 CORE -->
+<text x="8" y="56" class="gut-n">01</text><text x="32" y="56" class="gut">CORE BANKING</text><text x="32" y="69" class="gut">&amp; LEDGER</text>
+<rect class="bx" x="160" y="40" width="156" height="48" rx="2"/><text x="238" y="57" class="lbl" text-anchor="middle">Thought Machine</text><text x="238" y="70" class="lbl-2" text-anchor="middle">Zopa · Atom · Lloyds</text><text x="238" y="82" class="lbl-2" text-anchor="middle">Std Chartered · Intesa</text>
+<rect class="bx" x="326" y="40" width="156" height="48" rx="2"/><text x="404" y="57" class="lbl" text-anchor="middle">10x SuperCore</text><text x="404" y="70" class="lbl-2" text-anchor="middle">Chase UK · Westpac</text>
+<rect class="bx" x="492" y="40" width="156" height="48" rx="2"/><text x="570" y="57" class="lbl" text-anchor="middle">Temenos Transact</text><text x="570" y="70" class="lbl-2" text-anchor="middle">Varo · ~950 banks</text>
+<rect class="bx" x="658" y="40" width="156" height="48" rx="2"/><text x="736" y="57" class="lbl" text-anchor="middle">Mambu</text><text x="736" y="70" class="lbl-2" text-anchor="middle">N26 · ABN AMRO · Orange</text><text x="736" y="82" class="lbl-2" text-anchor="middle">260+ customers, 65 ctry</text>
+<rect class="bx" x="824" y="40" width="156" height="48" rx="2"/><text x="902" y="57" class="lbl" text-anchor="middle">Galileo Cyberbank</text><text x="902" y="70" class="lbl-2" text-anchor="middle">SoFi</text>
+
+<!-- 02 ISSUER -->
+<text x="8" y="130" class="gut-n">02</text><text x="32" y="130" class="gut">ISSUER-</text><text x="32" y="143" class="gut">PROCESSOR</text>
+<rect class="bx" x="160" y="114" width="156" height="48" rx="2"/><text x="238" y="131" class="lbl" text-anchor="middle">Galileo</text><text x="238" y="144" class="lbl-2" text-anchor="middle">Chime · SoFi · Robinhood</text><text x="238" y="156" class="lbl-2" text-anchor="middle">Varo · KOHO · Monzo (US)</text>
+<rect class="bx" x="326" y="114" width="156" height="48" rx="2"/><text x="404" y="131" class="lbl" text-anchor="middle">Marqeta</text><text x="404" y="144" class="lbl-2" text-anchor="middle">Block/Cash App · Klarna</text><text x="404" y="156" class="lbl-2" text-anchor="middle">Affirm · Branch</text>
+<rect class="bx" x="492" y="114" width="156" height="48" rx="2"/><text x="570" y="131" class="lbl" text-anchor="middle">Thredd (ex-GPS)</text><text x="570" y="144" class="lbl-2" text-anchor="middle">Curve · Zilch · Revolut</text><text x="570" y="156" class="lbl-2" text-anchor="middle">Starling · 100+ clients</text>
+<rect class="bx-v" x="658" y="114" width="156" height="48" rx="2"/><text x="736" y="131" class="lbl" text-anchor="middle">Lithic</text><text x="736" y="144" class="lbl-2" text-anchor="middle">no neobank named</text><text x="736" y="156" class="lbl-2" text-anchor="middle">&gt;$1bn / month</text>
+<rect class="bx-v" x="824" y="114" width="156" height="48" rx="2"/><text x="902" y="131" class="lbl" text-anchor="middle">Highnote · i2c</text><text x="902" y="144" class="lbl-2" text-anchor="middle">no neobank named</text>
+
+<!-- 03 RAILS -->
+<text x="8" y="204" class="gut-n">03</text><text x="32" y="204" class="gut">RAILS ACCESS</text><text x="32" y="217" class="gut">UK / EU / US</text>
+<rect class="bx" x="160" y="188" width="156" height="48" rx="2"/><text x="238" y="205" class="lbl" text-anchor="middle">ClearBank</text><text x="238" y="218" class="lbl-2" text-anchor="middle">Tide · Chip · Coinbase</text><text x="238" y="230" class="lbl-2" text-anchor="middle">OakNorth · 200+ clients</text>
+<rect class="bx-v" x="326" y="188" width="156" height="48" rx="2"/><text x="404" y="205" class="lbl" text-anchor="middle">Form3</text><text x="404" y="218" class="lbl-2" text-anchor="middle">banks &amp; regulated PSPs</text>
+<rect class="bx-v" x="492" y="188" width="156" height="48" rx="2"/><text x="570" y="205" class="lbl" text-anchor="middle">Modulr</text><text x="570" y="218" class="lbl-2" text-anchor="middle">UK/EU licensed EMI</text>
+<rect class="bx-v" x="658" y="188" width="156" height="48" rx="2"/><text x="736" y="205" class="lbl" text-anchor="middle">LHV · Banking Circle</text><text x="736" y="218" class="lbl-2" text-anchor="middle">agency access</text>
+<rect class="bx-v" x="824" y="188" width="156" height="48" rx="2"/><text x="902" y="205" class="lbl" text-anchor="middle">Column · Increase</text><text x="902" y="218" class="lbl-2" text-anchor="middle">US access</text>
+
+<!-- 04 SPONSOR -->
+<text x="8" y="278" class="gut-n">04</text><text x="32" y="278" class="gut">SPONSOR BANKS</text><text x="32" y="291" class="gut">UNITED STATES</text>
+<rect class="bx" x="160" y="262" width="156" height="48" rx="2"/><text x="238" y="279" class="lbl" text-anchor="middle">The Bancorp</text><text x="238" y="292" class="lbl-2" text-anchor="middle">Chime</text>
+<rect class="bx" x="326" y="262" width="156" height="48" rx="2"/><text x="404" y="279" class="lbl" text-anchor="middle">Stride Bank</text><text x="404" y="292" class="lbl-2" text-anchor="middle">Chime</text>
+<rect class="bx" x="492" y="262" width="156" height="48" rx="2"/><text x="570" y="279" class="lbl" text-anchor="middle">Cross River</text><text x="570" y="292" class="lbl-2" text-anchor="middle">X Money · Best Egg</text><text x="570" y="304" class="lbl-2" text-anchor="middle">+ Thredd pipeline</text>
+<rect class="bx-v" x="658" y="262" width="156" height="48" rx="2"/><text x="736" y="279" class="lbl" text-anchor="middle">Evolve Bank</text><text x="736" y="292" class="lbl-2" text-anchor="middle">Fed order, May 2025</text>
+<rect class="bx-v" x="824" y="262" width="156" height="48" rx="2"/><text x="902" y="279" class="lbl" text-anchor="middle">Column · Lead Bank</text><text x="902" y="292" class="lbl-2" text-anchor="middle">no neobank named</text>
+
+<!-- 05 IDENTITY -->
+<text x="8" y="352" class="gut-n">05</text><text x="32" y="352" class="gut">IDENTITY</text><text x="32" y="365" class="gut">KYC / KYB</text>
+<rect class="bx" x="160" y="336" width="156" height="48" rx="2"/><text x="238" y="353" class="lbl" text-anchor="middle">Onfido / Entrust</text><text x="238" y="366" class="lbl-2" text-anchor="middle">Monzo · Revolut</text><text x="238" y="378" class="lbl-2" text-anchor="middle">+293% checks, 38s faster</text>
+<rect class="bx-v" x="326" y="336" width="156" height="48" rx="2"/><text x="404" y="353" class="lbl" text-anchor="middle">Alloy</text><text x="404" y="366" class="lbl-2" text-anchor="middle">270+ data sources</text><text x="404" y="378" class="lbl-2" text-anchor="middle">orchestration layer</text>
+<rect class="bx-v" x="492" y="336" width="156" height="48" rx="2"/><text x="570" y="353" class="lbl" text-anchor="middle">Jumio · Veriff</text><text x="570" y="366" class="lbl-2" text-anchor="middle">no neobank named</text>
+<rect class="bx-v" x="658" y="336" width="156" height="48" rx="2"/><text x="736" y="353" class="lbl" text-anchor="middle">Persona · Sumsub</text><text x="736" y="366" class="lbl-2" text-anchor="middle">no neobank named</text>
+<rect class="bx-v" x="824" y="336" width="156" height="48" rx="2"/><text x="902" y="353" class="lbl" text-anchor="middle">Socure · Trulioo</text><text x="902" y="366" class="lbl-2" text-anchor="middle">no neobank named</text>
+
+<!-- 06 FINCRIME -->
+<text x="8" y="426" class="gut-n">06</text><text x="32" y="426" class="gut">FINANCIAL</text><text x="32" y="439" class="gut">CRIME</text>
+<rect class="bx" x="160" y="410" width="156" height="48" rx="2"/><text x="238" y="427" class="lbl" text-anchor="middle">Featurespace ARIC</text><text x="238" y="440" class="lbl-2" text-anchor="middle">NatWest · HSBC · Danske</text><text x="238" y="452" class="lbl-2" text-anchor="middle">ClearBank · Marqeta</text>
+<rect class="bx" x="326" y="410" width="156" height="48" rx="2"/><text x="404" y="427" class="lbl" text-anchor="middle">Unit21</text><text x="404" y="440" class="lbl-2" text-anchor="middle">Chime · Brex · Gusto</text><text x="404" y="452" class="lbl-2" text-anchor="middle">Wealthsimple · Intuit</text>
+<rect class="bx" x="492" y="410" width="156" height="48" rx="2"/><text x="570" y="427" class="lbl" text-anchor="middle">Sardine</text><text x="570" y="440" class="lbl-2" text-anchor="middle">Novo · Blockchain.com</text><text x="570" y="452" class="lbl-2" text-anchor="middle">Visa · Airbase</text>
+<rect class="bx-v" x="658" y="410" width="156" height="48" rx="2"/><text x="736" y="427" class="lbl" text-anchor="middle">ComplyAdvantage</text><text x="736" y="440" class="lbl-2" text-anchor="middle">3,000+ institutions</text><text x="736" y="452" class="lbl-2" text-anchor="middle">none named publicly</text>
+<rect class="bx-v" x="824" y="410" width="156" height="48" rx="2"/><text x="902" y="427" class="lbl" text-anchor="middle">Feedzai · Hawk AI</text><text x="902" y="440" class="lbl-2" text-anchor="middle">no neobank named</text>
+
+<!-- 07 CREDIT -->
+<text x="8" y="500" class="gut-n">07</text><text x="32" y="500" class="gut">CREDIT DATA</text><text x="32" y="513" class="gut">&amp; SCORING</text>
+<rect class="bx-v" x="160" y="484" width="156" height="48" rx="2"/><text x="238" y="501" class="lbl" text-anchor="middle">Experian · Equifax</text><text x="238" y="514" class="lbl-2" text-anchor="middle">TransUnion</text><text x="238" y="526" class="lbl-2" text-anchor="middle">universal, both markets</text>
+<rect class="bx-v" x="326" y="484" width="156" height="48" rx="2"/><text x="404" y="501" class="lbl" text-anchor="middle">FICO</text><text x="404" y="514" class="lbl-2" text-anchor="middle">cash-flow UltraFICO</text><text x="404" y="526" class="lbl-2" text-anchor="middle">with Plaid, Nov 2025</text>
+<rect class="bx" x="492" y="484" width="156" height="48" rx="2"/><text x="570" y="501" class="lbl" text-anchor="middle">Plaid</text><text x="570" y="514" class="lbl-2" text-anchor="middle">FICO partnership</text><text x="570" y="526" class="lbl-2" text-anchor="middle">largest US data network</text>
+<rect class="bx" x="658" y="484" width="156" height="48" rx="2"/><text x="736" y="501" class="lbl" text-anchor="middle">Nova Credit</text><text x="736" y="514" class="lbl-2" text-anchor="middle">PayPal (Cash Atlas)</text>
+<rect class="bx-v" x="824" y="484" width="156" height="48" rx="2"/><text x="902" y="501" class="lbl" text-anchor="middle">Ocrolus · Meridian</text><text x="902" y="514" class="lbl-2" text-anchor="middle">cash-flow data</text>
+
+<!-- 08 DATA -->
+<text x="8" y="574" class="gut-n">08</text><text x="32" y="574" class="gut">DATA</text><text x="32" y="587" class="gut">&amp; CLOUD</text>
+<rect class="bx" x="160" y="558" width="156" height="48" rx="2"/><text x="238" y="575" class="lbl" text-anchor="middle">AWS</text><text x="238" y="588" class="lbl-2" text-anchor="middle">Monzo · Starling · Remitly</text>
+<rect class="bx" x="326" y="558" width="156" height="48" rx="2"/><text x="404" y="575" class="lbl" text-anchor="middle">Google Cloud</text><text x="404" y="588" class="lbl-2" text-anchor="middle">Revolut · Monzo analytics</text>
+<rect class="bx" x="492" y="558" width="156" height="48" rx="2"/><text x="570" y="575" class="lbl" text-anchor="middle">BigQuery</text><text x="570" y="588" class="lbl-2" text-anchor="middle">Monzo decision logs</text><text x="570" y="600" class="lbl-2" text-anchor="middle">Starling</text>
+<rect class="bx" x="658" y="558" width="156" height="48" rx="2"/><text x="736" y="575" class="lbl" text-anchor="middle">Snowflake</text><text x="736" y="588" class="lbl-2" text-anchor="middle">Chime · Remitly</text>
+<rect class="bx" x="824" y="558" width="156" height="48" rx="2"/><text x="902" y="575" class="lbl" text-anchor="middle">Cassandra · Aurora</text><text x="902" y="588" class="lbl-2" text-anchor="middle">Monzo · Remitly</text>
+
+<text x="570" y="634" class="lbl-2" text-anchor="middle">solid = at least one bank publicly named   ·   faded dashed = no public attribution found</text>
+</svg>
+</div>
+<figcaption><b>The vendor map, with attribution.</b> Read the faded boxes carefully — they are not weak vendors. Identity is the thinnest attribution layer in the entire map, and predictably so: naming your document-verification vendor tells fraudsters which liveness check to defeat. The one row that carries a strategic story is <b>Galileo</b>, which simultaneously powers Chime, Robinhood, Varo <em>and</em> SoFi's own bank — while being owned by SoFi.</figcaption>
+</figure>
+
+<div class="prose">
+<h2><span class="n">01</span>Core banking &amp; ledger</h2>
+</div>
+<div class="tbl prose">
+<table>
+<thead><tr><th>Vendor</th><th>Banks named as using it</th><th></th></tr></thead>
+<tbody>
+<tr><td>Thought Machine Vault Core</td><td><strong>Zopa</strong> — Biscuit current account, beta Sept 2024, full launch June 2025 · <strong>Atom bank</strong> · Lloyds · Standard Chartered · Intesa Sanpaolo · C6 · Trust Bank</td><td><span class="tag conf">confirmed</span></td></tr>
+<tr><td>10x SuperCore</td><td><strong>Chase UK</strong> (JPMorgan) · Westpac</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>Temenos Transact</td><td><strong>Varo</strong> — cloud-hosted, at national charter go-live · ~950 banks in total</td><td><span class="tag conf">confirmed</span> <span class="tag">dated 2020</span></td></tr>
+<tr><td>Mambu</td><td><strong>N26</strong> · ABN AMRO (New10, and its neobank BUUT) · Western Union · Commonwealth Bank of Australia · Orange Bank · Wio Bank · Raiffeisen · BancoEstado. <strong>260+ customers in 65 countries</strong></td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>Galileo Cyberbank Core</td><td><strong>SoFi</strong> — for commercial payment services and its sponsor-banking programme</td><td><span class="tag conf">confirmed</span></td></tr>
+<tr><td>Finxact (Fiserv)</td><td>Mercantile Bank · Live Oak</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td><em>Built in-house</em></td><td><strong>Monzo</strong> · <strong>Starling</strong> · <strong>Revolut</strong> · <strong>Block</strong> (one Ledgering core shared by Square and Cash App) · <strong>Chime</strong> (ChimeCore)</td><td><span class="tag conf">confirmed</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<h2><span class="n">02</span>Issuer-processor</h2>
+</div>
+<div class="tbl prose">
+<table>
+<thead><tr><th>Vendor</th><th>Banks named as using it</th><th></th></tr></thead>
+<tbody>
+<tr><td>Galileo <em>(SoFi-owned)</em></td><td><strong>Chime</strong> · <strong>SoFi</strong> · <strong>Robinhood</strong> · <strong>Varo</strong> · KOHO — plus the <strong>US-based business of Monzo, Revolut and Wise</strong>, and Paysafe</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>Marqeta</td><td><strong>Block / Cash App</strong> — its largest customer at <strong>41% of revenue in Q2 2026</strong>, down from 46% a year earlier · Klarna · Affirm · Branch</td><td><span class="tag warn">winding down</span></td></tr>
+<tr><td>Thredd <em>(formerly GPS)</em></td><td><strong>Curve</strong> — since founding in 2016, now 4m+ customers · <strong>Zilch</strong> · <strong>Revolut</strong> · <strong>Starling Bank</strong>. 100+ customers across 44–50 countries</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>Lithic</td><td>No neobank publicly named. &gt;$1bn processed per month</td><td><span class="tag none">none found</span></td></tr>
+<tr><td>Highnote · i2c · Stripe Issuing · Wallester</td><td>No neobank publicly named</td><td><span class="tag none">none found</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<div class="callout">
+<p class="eyebrow">The one row with a strategic story</p>
+<p><strong>Galileo powers Chime, Robinhood and Varo — and it is owned by SoFi, which competes with all three.</strong> Chime's decision to insource its processor as ChimeCore is exactly what that conflict predicts, and Marqeta is watching the same dynamic play out from the other side as Block winds its programme down. Ask any issuer-processor whether its other customers are your competitors; the answer is a real input, not a debating point.</p>
+</div>
+
+<h2><span class="n">03</span>Rails access &amp; <span class="n">04</span>sponsor banks</h2>
+</div>
+<div class="tbl prose">
+<table>
+<thead><tr><th>Provider</th><th>Named users</th><th></th></tr></thead>
+<tbody>
+<tr><td>ClearBank <em>(UK)</em></td><td><strong>Tide</strong> · Chip · Coinbase · OakNorth. <strong>200+ customers</strong>, 13m accounts, ~$4bn assets. The first new UK clearing bank in 250+ years</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>Form3 · Modulr · LHV · Banking Circle</td><td>Banks and regulated PSPs; no neobank publicly named</td><td><span class="tag none">none found</span></td></tr>
+<tr><td>The Bancorp Bank, N.A.</td><td><strong>Chime</strong></td><td><span class="tag conf">confirmed</span></td></tr>
+<tr><td>Stride Bank, N.A.</td><td><strong>Chime</strong></td><td><span class="tag conf">confirmed</span></td></tr>
+<tr><td>Cross River Bank</td><td>X Money · Best Egg (since 2013) · strategic processing partnership with <strong>Thredd</strong> to route international fintechs into the US</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>Evolve Bank &amp; Trust</td><td>Federal Reserve cease-and-desist, May 2025, for failure to oversee fintech partners</td><td><span class="tag warn">enforcement</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p>Chime running <strong>two</strong> sponsor banks is itself an architectural fact, not just a commercial one: it implies continuous reconciliation across both, which is precisely what the FDIC's proposed post-Synapse rule targets.</p>
+
+<h2><span class="n">05</span>Identity &amp; <span class="n">06</span>financial crime</h2>
+</div>
+<div class="tbl prose">
+<table>
+<thead><tr><th>Vendor</th><th>Banks named as using it</th><th></th></tr></thead>
+<tbody>
+<tr><td>Onfido <em>(now Entrust IDV)</em></td><td><strong>Monzo</strong> and <strong>Revolut</strong>. Revolut case study: check volume <strong>+293%</strong>, checks completed <strong>38 seconds faster</strong> than the previous provider. Financial services ≈50% of Onfido revenue</td><td><span class="tag rep">vendor case study</span></td></tr>
+<tr><td>Alloy · Jumio · Persona · Socure · Sumsub · Veriff</td><td>No neobank publicly named. Alloy markets orchestration across 270+ data sources</td><td><span class="tag none">none found</span></td></tr>
+<tr><td>Featurespace <em>(ARIC Risk Hub)</em></td><td><strong>NatWest</strong> — enterprise-wide; <strong>scam detection +135%</strong>, false positives down within 24 hours of deployment · <strong>HSBC</strong> · <strong>Danske Bank</strong> · Permanent TSB · <strong>ClearBank</strong> · <strong>Marqeta</strong> · TSYS · Worldpay · Contis. 70+ direct customers</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>Unit21</td><td><strong>Chime</strong> · <strong>Brex</strong> · PrimeTrust · Yotta · Airbase — founding members of its Fintech Fraud DAO; plus Gusto, Intuit, Flywire, Piermont Bank, Crypto.com, Wealthsimple. Holds data from 100+ fintechs</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>Sardine</td><td>SardineX consortium founders: Novo · Blockchain.com · Airbase · Chesapeake Bank · Visa · Alloy Labs Alliance · iLex</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>ComplyAdvantage</td><td>1,000–3,000+ institutions claimed; <strong>no neobank publicly named</strong>. Monzo has appeared on a ComplyAdvantage-hosted panel — that is <em>not</em> evidence of a customer relationship and is not recorded as one here</td><td><span class="tag none">none found</span></td></tr>
+<tr><td>Feedzai · NICE Actimize · Hawk AI · Flagright</td><td>No neobank publicly named</td><td><span class="tag none">none found</span></td></tr>
+<tr><td><em>Built in-house</em></td><td><strong>Monzo</strong> (Starlark control platform) · <strong>Stripe</strong> (Radar) · <strong>Revolut</strong></td><td><span class="tag conf">confirmed</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<div class="callout">
+<p class="eyebrow">A necessary caveat on "built in-house"</p>
+<p>The FCA fined <strong>Monzo £21m in 2025</strong> for failing to design, implement and maintain adequate customer onboarding, customer risk assessment and transaction monitoring systems. The most sophisticated public fincrime architecture in this entire research belongs to a bank that was penalised for control failings.</p>
+<p>Both things are true at once, and a vendor map showing only the first would be misleading. Building your own platform is not the same as building an adequate one — and buying a vendor does not discharge the obligation either.</p>
+</div>
+
+<h2><span class="n">07</span>Credit data &amp; <span class="n">08</span>infrastructure</h2>
+</div>
+<div class="tbl prose">
+<table>
+<thead><tr><th>Technology</th><th>Named users</th><th></th></tr></thead>
+<tbody>
+<tr><td>Experian · Equifax · TransUnion</td><td>Universal in both markets. Experian launched Credit + Cashflow Score Nov 2025</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>FICO + Plaid</td><td>Cash-flow UltraFICO, built jointly, Nov 2025</td><td><span class="tag conf">confirmed</span></td></tr>
+<tr><td>Nova Credit</td><td><strong>PayPal</strong> selected its Cash Atlas platform, Sept 2025</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>AWS</td><td><strong>Monzo</strong> (primary) · <strong>Starling</strong> (primary) · <strong>Remitly</strong></td><td><span class="tag conf">confirmed</span></td></tr>
+<tr><td>Google Cloud</td><td><strong>Revolut</strong> (primary) · <strong>Monzo</strong> (analytics and training)</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>BigQuery</td><td><strong>Monzo</strong> — fraud control-execution metadata and decision logs · <strong>Starling</strong></td><td><span class="tag conf">confirmed</span></td></tr>
+<tr><td>Snowflake</td><td><strong>Chime</strong> — migrated large-file processing of Galileo RDF files off MySQL · <strong>Remitly</strong></td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>Cassandra</td><td><strong>Monzo</strong> — ledger and 150+ services</td><td><span class="tag conf">confirmed</span></td></tr>
+<tr><td>PostgreSQL · Amazon Aurora</td><td><strong>Revolut</strong> (single event store) · <strong>Starling</strong> · <strong>Remitly</strong> (migrated from RDS MySQL)</td><td><span class="tag rep">reported</span></td></tr>
+<tr><td>Apache Kafka</td><td><strong>Remitly</strong> · <strong>Uber</strong> (settlement pipeline)</td><td><span class="tag rep">reported</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<h2>Four limits on any map like this</h2>
+<ol>
+<li><strong>Absence of a name is not absence of a customer.</strong> Most banks contractually avoid being named, especially in financial crime and identity.</li>
+<li><strong>Vendor logo walls go stale, and nobody announces a departure.</strong> Chime still appears on Galileo material while moving to ChimeCore; Marqeta's Block programme is winding down. Assume every logo is at least a year behind.</li>
+<li><strong>"Uses vendor X" hides the scope.</strong> Galileo powering "the US business of Monzo" is a completely different claim from Galileo powering Monzo. Scope qualifiers matter far more than logos.</li>
+<li><strong>Nobody publishes what they pay.</strong> Every cost question in this research remains open.</li>
+</ol>
+
+<h3>What would improve this map</h3>
+<p>Five specific unknowns, each answerable by one good source: which fincrime vendor Monzo runs alongside its in-house platform after the fine; who processes Chime's <em>debit</em> volume in 2026 (Galileo, ChimeCore, or split); whether Revolut uses Thredd at home or only for specific programmes; which identity vendors Chime, Starling and Zopa use; and what replaced Cash App's Marqeta programme.</p>
+<footer>
+<p>Compiled 18 August 2026. Every attribution traces to a company statement, a vendor's own named customer list, a regulatory filing, or credible trade press — sourced in the underlying research at <code>~/neobank-stack/wiki/vendors/vendor-map.md</code>. Vendor case-study figures are marked as such and should be read as marketing claims that happen to name a customer.</p>
+</footer>
+</div>
+
+</div>

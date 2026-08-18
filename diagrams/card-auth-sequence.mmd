@@ -1,0 +1,21 @@
+%% Card authorisation — the hot path
+sequenceDiagram
+    autonumber
+    participant M as Merchant / Acquirer
+    participant S as Scheme
+    participant P as Issuer-processor
+    participant D as Decisioning
+    participant F as Feature store
+    participant L as Ledger
+    M->>S: Authorisation request
+    S->>P: ISO 8583 / API
+    P->>D: Risk check (latency budget)
+    D->>F: Fetch features (JIT + cached)
+    F-->>D: Features
+    D-->>P: approve / decline / step-up
+    P->>L: Idempotent hold
+    L-->>P: OK / insufficient funds
+    P-->>S: Response
+    S-->>M: Approved
+    Note over P,L: Stand-in policy if ledger unavailable —<br/>limits and exposure owner must be explicit
+    P->>L: Clearing & settlement (T+n)

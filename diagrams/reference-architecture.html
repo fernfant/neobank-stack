@@ -1,0 +1,610 @@
+<title>Neobank Stack Anatomy</title>
+
+<style>
+  :root{
+    --ground:#FCFCFD; --surface:#FFFFFF; --surface-2:#F1F4F7; --band:#F7F9FB;
+    --ink:#11151B; --ink-2:#49535F; --ink-3:#7C8693;
+    --rule:#D6DCE3; --rule-2:#E7EBF0;
+    --money:#8F5300; --async:#54499F; --recon:#0A5F58; --flag:#9C3524;
+    --money-soft:#F5EADA; --recon-soft:#E0EFEC; --flag-soft:#F7E7E3;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0C0F14; --surface:#131820; --surface-2:#1A202A; --band:#101419;
+      --ink:#E8ECF1; --ink-2:#A6B0BC; --ink-3:#78828E;
+      --rule:#2A323C; --rule-2:#1E252E;
+      --money:#E0A24F; --async:#9C92EE; --recon:#4FC5B9; --flag:#E8836F;
+      --money-soft:#2A2318; --recon-soft:#122624; --flag-soft:#2A1D1A;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0C0F14; --surface:#131820; --surface-2:#1A202A; --band:#101419;
+    --ink:#E8ECF1; --ink-2:#A6B0BC; --ink-3:#78828E;
+    --rule:#2A323C; --rule-2:#1E252E;
+    --money:#E0A24F; --async:#9C92EE; --recon:#4FC5B9; --flag:#E8836F;
+    --money-soft:#2A2318; --recon-soft:#122624; --flag-soft:#2A1D1A;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--ground); color:var(--ink);
+    font-family:ui-serif,Georgia,"Iowan Old Style","Times New Roman",serif;
+    font-size:17px; line-height:1.65; margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px 96px}
+  .prose{max-width:70ch; margin-left:auto; margin-right:auto}
+
+  h1,h2,h3,.mono,th,.eyebrow,figcaption,.tag,.meta{
+    font-family:ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif
+  }
+  .mono,.eyebrow,.tag,.meta,code,td.n{
+    font-family:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace
+  }
+
+  header.top{border-bottom:1px solid var(--rule); padding:56px 0 28px; margin-bottom:44px}
+  .eyebrow{
+    font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-3); margin:0 0 18px
+  }
+  h1{
+    font-size:clamp(34px,5.4vw,54px); line-height:1.04; letter-spacing:-.028em;
+    font-weight:660; margin:0 0 20px; text-wrap:balance; max-width:20ch
+  }
+  .standfirst{font-size:20px; line-height:1.55; color:var(--ink-2); max-width:60ch; margin:0 0 30px}
+  .meta{
+    display:flex; flex-wrap:wrap; gap:0 28px; font-size:11.5px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3)
+  }
+  .meta b{color:var(--ink); font-weight:600}
+
+  h2{
+    font-size:13px; letter-spacing:.15em; text-transform:uppercase; font-weight:640;
+    color:var(--ink-3); margin:76px 0 8px; padding-bottom:10px;
+    border-bottom:1px solid var(--rule)
+  }
+  h2 + .lede{font-size:26px; line-height:1.32; letter-spacing:-.015em; font-weight:600;
+    font-family:ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif;
+    margin:22px 0 18px; text-wrap:balance}
+  h3{font-size:17px; font-weight:640; letter-spacing:-.01em; margin:34px 0 6px}
+  p{margin:0 0 18px}
+  .prose > p:first-of-type{margin-top:18px}
+  strong{font-weight:600}
+  a{color:inherit; text-decoration-color:var(--rule); text-underline-offset:3px}
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--async); outline-offset:3px; border-radius:2px}
+
+  figure{margin:38px 0 12px}
+  .bleed{max-width:1180px; margin-left:auto; margin-right:auto}
+  .scroller{overflow-x:auto; padding-bottom:6px}
+  .scroller svg{display:block; min-width:760px; max-width:100%; height:auto; color:var(--ink)}
+  figcaption{
+    font-size:12.5px; line-height:1.5; color:var(--ink-3); margin-top:14px;
+    padding-top:12px; border-top:1px solid var(--rule-2); max-width:78ch
+  }
+  figcaption b{color:var(--ink-2); font-weight:600}
+
+  /* ---- SVG encoding ---- */
+  .bx{fill:var(--surface); stroke:currentColor; stroke-opacity:.34; stroke-width:1}
+  .bx-v{fill:var(--surface-2); stroke:currentColor; stroke-opacity:.34; stroke-width:1; stroke-dasharray:4 3}
+  .bx-sor{fill:var(--surface); stroke:currentColor; stroke-opacity:.85; stroke-width:2}
+  .bx-in{fill:none; stroke:currentColor; stroke-opacity:.4; stroke-width:1}
+  .bandbg{fill:var(--band)}
+  .lbl{font-size:10.5px; fill:var(--ink); font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  .lbl-2{font-size:9.5px; fill:var(--ink-3); font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  .gut{font-size:10px; fill:var(--ink-3); letter-spacing:.1em;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif; font-weight:600}
+  .gut-n{font-size:10px; fill:var(--ink-3); font-family:ui-monospace,Menlo,monospace}
+  .f{stroke:currentColor; stroke-opacity:.5; stroke-width:1.4; fill:none}
+  .f-money{stroke:var(--money); stroke-width:2.6; fill:none}
+  .f-async{stroke:var(--async); stroke-width:1.4; stroke-dasharray:5 4; fill:none}
+  .f-recon{stroke:var(--recon); stroke-width:1.6; stroke-dasharray:2 3; fill:none}
+  .h-plain{fill:currentColor; fill-opacity:.5}
+  .h-money{fill:var(--money)}
+  .h-async{fill:var(--async)}
+  .h-recon{fill:var(--recon)}
+  .t-money{fill:var(--money); font-size:9.5px; letter-spacing:.08em;
+    font-family:ui-monospace,Menlo,monospace}
+  .t-async{fill:var(--async); font-size:9.5px; letter-spacing:.08em;
+    font-family:ui-monospace,Menlo,monospace}
+  .t-recon{fill:var(--recon); font-size:9.5px; letter-spacing:.08em;
+    font-family:ui-monospace,Menlo,monospace}
+  .t-flag{fill:var(--flag); font-size:9.5px; font-family:ui-monospace,Menlo,monospace}
+  .boundary{stroke:var(--flag); stroke-width:1.6; stroke-dasharray:7 4; fill:none}
+
+  /* ---- legend ---- */
+  .legend{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(196px,1fr)); gap:12px 26px;
+    margin:26px 0 0; padding:20px 22px; background:var(--surface-2);
+    border:1px solid var(--rule-2); border-radius:3px
+  }
+  .legend div{display:flex; align-items:center; gap:10px; font-size:12px;
+    font-family:ui-monospace,Menlo,monospace; color:var(--ink-2)}
+  .legend svg{flex:0 0 34px}
+
+  /* ---- tables ---- */
+  .tbl{overflow-x:auto; margin:26px 0}
+  table{border-collapse:collapse; width:100%; min-width:600px; font-size:14px;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif; line-height:1.45}
+  th{
+    text-align:left; font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+    font-weight:640; color:var(--ink-3); padding:0 14px 9px 0;
+    border-bottom:1px solid var(--rule); white-space:nowrap
+  }
+  td{padding:11px 14px 11px 0; border-bottom:1px solid var(--rule-2); vertical-align:top; color:var(--ink-2)}
+  td:first-child{color:var(--ink); font-weight:560}
+  td.n{font-variant-numeric:tabular-nums; white-space:nowrap; font-size:12.5px}
+  tr:last-child td{border-bottom:none}
+
+  .tag{
+    display:inline-block; font-size:10px; letter-spacing:.05em; padding:2px 6px;
+    border-radius:2px; border:1px solid var(--rule); color:var(--ink-3); white-space:nowrap
+  }
+  .tag.c{color:var(--recon); border-color:var(--recon); background:var(--recon-soft)}
+  .tag.r{color:var(--ink-2)}
+  .tag.build{color:var(--money); border-color:var(--money); background:var(--money-soft)}
+
+  ul,ol{margin:0 0 18px; padding-left:1.15em}
+  li{margin-bottom:9px}
+  li::marker{color:var(--ink-3)}
+
+  .callout{
+    border-left:2px solid var(--flag); background:var(--flag-soft);
+    padding:18px 22px; margin:30px 0; border-radius:0 3px 3px 0
+  }
+  .callout p:last-child{margin-bottom:0}
+  .callout .eyebrow{color:var(--flag); margin-bottom:10px}
+
+  .qgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:0 40px}
+  .qgrid section{padding-top:6px}
+  .qgrid h3{font-size:11px; letter-spacing:.13em; text-transform:uppercase;
+    color:var(--ink-3); margin:26px 0 10px; font-weight:640}
+  .qgrid ol{list-style:none; padding:0; margin:0}
+  .qgrid li{font-size:14.5px; line-height:1.5; color:var(--ink-2);
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;
+    padding-left:22px; position:relative; margin-bottom:12px}
+  .qgrid li::before{content:"★"; position:absolute; left:0; top:1px;
+    color:var(--money); font-size:11px}
+
+  footer{margin-top:80px; padding-top:24px; border-top:1px solid var(--rule);
+    font-size:12.5px; color:var(--ink-3);
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif}
+  @media (max-width:640px){
+    body{font-size:16px}
+    .wrap{padding:0 18px 64px}
+    h2 + .lede{font-size:22px}
+  }
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">UK &amp; USA neobank technology research</p>
+  <h1>The anatomy of a neobank stack</h1>
+  <p class="standfirst">Ten layers, four decisions, three archetypes — and the one subsystem that both UK and US regulators independently decided you must be able to prove works.</p>
+  <p class="meta">
+    <span>Compiled <b>18 Aug 2026</b></span>
+    <span><b>10</b> banks profiled</span>
+    <span><b>2</b> markets</span>
+    <span><b>~24</b> sources</span>
+  </p>
+</header>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 1030 975" role="img" aria-label="Ten-layer neobank reference architecture: channels, edge, product services, decisioning, core ledger, money movement, external providers, data and machine learning platform, runtime, and reconciliation and evidence. Money flows down from the ledger through the rails to external providers; events flow between the product and decisioning layers and the data platform; reconciliation and evidence flows run from the ledger, rails and providers into the bottom control layer.">
+<defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-plain"/></marker>
+  <marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-money"/></marker>
+  <marker id="aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-async"/></marker>
+  <marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-recon"/></marker>
+</defs>
+
+<!-- band backgrounds -->
+<rect class="bandbg" x="170" y="46"  width="790" height="72"/>
+<rect class="bandbg" x="170" y="230" width="790" height="72"/>
+<rect class="bandbg" x="170" y="414" width="790" height="72"/>
+<rect class="bandbg" x="170" y="598" width="790" height="72"/>
+<rect class="bandbg" x="170" y="782" width="790" height="72"/>
+
+<!-- ① CHANNELS -->
+<text x="10" y="74" class="gut-n">01</text><text x="34" y="74" class="gut">CHANNELS</text>
+<rect class="bx" x="180" y="58" width="249" height="48" rx="2"/><text x="304" y="87" class="lbl" text-anchor="middle">iOS · Android</text>
+<rect class="bx" x="441" y="58" width="249" height="48" rx="2"/><text x="565" y="87" class="lbl" text-anchor="middle">Web</text>
+<rect class="bx" x="701" y="58" width="249" height="48" rx="2"/><text x="825" y="87" class="lbl" text-anchor="middle">Ops console + AI agent</text>
+
+<!-- ② EDGE -->
+<text x="10" y="166" class="gut-n">02</text><text x="34" y="166" class="gut">EDGE</text>
+<rect class="bx" x="180" y="150" width="379" height="48" rx="2"/><text x="369" y="179" class="lbl" text-anchor="middle">API gateway / BFF</text>
+<rect class="bx" x="571" y="150" width="379" height="48" rx="2"/><text x="760" y="179" class="lbl" text-anchor="middle">AuthN · AuthZ · device binding</text>
+
+<!-- ③ PRODUCT -->
+<text x="10" y="258" class="gut-n">03</text><text x="34" y="258" class="gut">PRODUCT</text>
+<rect class="bx" x="180" y="242" width="184" height="48" rx="2"/><text x="272" y="271" class="lbl" text-anchor="middle">Accounts &amp; pots</text>
+<rect class="bx" x="375" y="242" width="184" height="48" rx="2"/><text x="467" y="264" class="lbl" text-anchor="middle">Payment</text><text x="467" y="278" class="lbl" text-anchor="middle">orchestration</text>
+<rect class="bx" x="571" y="242" width="184" height="48" rx="2"/><text x="663" y="271" class="lbl" text-anchor="middle">Card management</text>
+<rect class="bx" x="766" y="242" width="184" height="48" rx="2"/><text x="858" y="271" class="lbl" text-anchor="middle">Lending &amp; limits</text>
+
+<!-- ④ DECISIONING -->
+<text x="10" y="350" class="gut-n">04</text><text x="34" y="350" class="gut">DECISIONING</text>
+<text x="34" y="364" class="lbl-2">hot path · sub-second</text>
+<rect class="bx" x="180" y="334" width="184" height="48" rx="2"/><text x="272" y="356" class="lbl" text-anchor="middle">Feature service</text><text x="272" y="370" class="lbl-2" text-anchor="middle">JIT · near-RT · batch</text>
+<rect class="bx" x="375" y="334" width="184" height="48" rx="2"/><text x="467" y="356" class="lbl" text-anchor="middle">Control engine</text><text x="467" y="370" class="lbl-2" text-anchor="middle">sandboxed pure fns</text>
+<rect class="bx" x="571" y="334" width="184" height="48" rx="2"/><text x="663" y="356" class="lbl" text-anchor="middle">Model serving</text><text x="663" y="370" class="lbl-2" text-anchor="middle">versioned · logged</text>
+<rect class="bx" x="766" y="334" width="184" height="48" rx="2"/><text x="858" y="356" class="lbl" text-anchor="middle">Policy layer</text><text x="858" y="370" class="lbl-2" text-anchor="middle">hard cuts · affordability</text>
+
+<!-- ⑤ CORE -->
+<text x="10" y="442" class="gut-n">05</text><text x="34" y="442" class="gut">CORE</text>
+<text x="34" y="456" class="lbl-2">system of record</text>
+<line class="boundary" x1="170" y1="410" x2="960" y2="410"/>
+<text x="960" y="405" class="t-flag" text-anchor="end">money-holding boundary — its height is the licence decision</text>
+<rect class="bx-sor" x="180" y="426" width="379" height="48" rx="2"/>
+<rect class="bx-in" x="184" y="430" width="371" height="40" rx="1"/>
+<text x="369" y="448" class="lbl" text-anchor="middle">LEDGER</text>
+<text x="369" y="462" class="lbl-2" text-anchor="middle">double-entry · append-only · idempotent · bi-temporal</text>
+<rect class="bx" x="571" y="426" width="379" height="48" rx="2"/><text x="760" y="448" class="lbl" text-anchor="middle">Product engine</text><text x="760" y="462" class="lbl-2" text-anchor="middle">interest · fees · limits, encoded as ledger transactions</text>
+
+<!-- ⑥ MONEY MOVEMENT -->
+<text x="10" y="534" class="gut-n">06</text><text x="34" y="534" class="gut">MONEY</text><text x="34" y="548" class="gut">MOVEMENT</text>
+<rect class="bx" x="180" y="518" width="184" height="48" rx="2"/><text x="272" y="540" class="lbl" text-anchor="middle">UK rails</text><text x="272" y="554" class="lbl-2" text-anchor="middle">FPS · Bacs · CHAPS</text>
+<rect class="bx" x="375" y="518" width="184" height="48" rx="2"/><text x="467" y="540" class="lbl" text-anchor="middle">US rails</text><text x="467" y="554" class="lbl-2" text-anchor="middle">ACH · RTP · FedNow</text>
+<rect class="bx" x="571" y="518" width="184" height="48" rx="2"/><text x="663" y="540" class="lbl" text-anchor="middle">Card scheme</text><text x="663" y="554" class="lbl-2" text-anchor="middle">interface</text>
+<rect class="bx" x="766" y="518" width="184" height="48" rx="2"/><text x="858" y="540" class="lbl" text-anchor="middle">FX · cross-border</text><text x="858" y="554" class="lbl-2" text-anchor="middle">corridor adapters</text>
+
+<!-- ⑦ EXTERNAL -->
+<text x="10" y="626" class="gut-n">07</text><text x="34" y="626" class="gut">EXTERNAL</text>
+<text x="34" y="640" class="lbl-2">third parties</text>
+<rect class="bx-v" x="180" y="610" width="144" height="48" rx="2"/><text x="252" y="632" class="lbl" text-anchor="middle">KYC / KYB</text><text x="252" y="646" class="lbl-2" text-anchor="middle">docs · data</text>
+<rect class="bx-v" x="336" y="610" width="144" height="48" rx="2"/><text x="408" y="632" class="lbl" text-anchor="middle">Sanctions</text><text x="408" y="646" class="lbl-2" text-anchor="middle">PEP · adverse media</text>
+<rect class="bx-v" x="493" y="610" width="144" height="48" rx="2"/><text x="565" y="632" class="lbl" text-anchor="middle">TM / fraud</text><text x="565" y="646" class="lbl-2" text-anchor="middle">or in-house</text>
+<rect class="bx-v" x="649" y="610" width="144" height="48" rx="2"/><text x="721" y="632" class="lbl" text-anchor="middle">Bureaus</text><text x="721" y="646" class="lbl-2" text-anchor="middle">open banking</text>
+<rect class="bx-v" x="806" y="610" width="144" height="48" rx="2"/><text x="878" y="632" class="lbl" text-anchor="middle">Issuer-processor</text><text x="878" y="646" class="lbl-2" text-anchor="middle">+ sponsor bank</text>
+
+<!-- ⑧ DATA -->
+<text x="10" y="718" class="gut-n">08</text><text x="34" y="718" class="gut">DATA &amp; ML</text>
+<rect class="bx" x="180" y="702" width="144" height="48" rx="2"/><text x="252" y="731" class="lbl" text-anchor="middle">Event bus</text>
+<rect class="bx" x="336" y="702" width="144" height="48" rx="2"/><text x="408" y="724" class="lbl" text-anchor="middle">Stream</text><text x="408" y="738" class="lbl" text-anchor="middle">processing</text>
+<rect class="bx" x="493" y="702" width="144" height="48" rx="2"/><text x="565" y="724" class="lbl" text-anchor="middle">Online feature</text><text x="565" y="738" class="lbl" text-anchor="middle">store</text>
+<rect class="bx" x="649" y="702" width="144" height="48" rx="2"/><text x="721" y="731" class="lbl" text-anchor="middle">Warehouse</text>
+<rect class="bx" x="806" y="702" width="144" height="48" rx="2"/><text x="878" y="724" class="lbl" text-anchor="middle">ML platform</text><text x="878" y="738" class="lbl-2" text-anchor="middle">registry · monitoring</text>
+
+<!-- ⑨ RUNTIME -->
+<text x="10" y="810" class="gut-n">09</text><text x="34" y="810" class="gut">RUNTIME</text>
+<text x="34" y="824" class="lbl-2">underlies 01–08</text>
+<rect class="bx" x="180" y="794" width="249" height="48" rx="2"/><text x="304" y="823" class="lbl" text-anchor="middle">Kubernetes on cloud</text>
+<rect class="bx" x="441" y="794" width="249" height="48" rx="2"/><text x="565" y="823" class="lbl" text-anchor="middle">Ledger datastore</text>
+<rect class="bx" x="701" y="794" width="249" height="48" rx="2"/><text x="825" y="823" class="lbl" text-anchor="middle">Observability &amp; SLOs</text>
+
+<!-- ⑩ RECON -->
+<text x="10" y="902" class="gut-n">10</text><text x="34" y="902" class="gut">RECONCILIATION</text><text x="34" y="916" class="gut">&amp; EVIDENCE</text>
+<rect class="bx-sor" x="180" y="886" width="184" height="48" rx="2"/><text x="272" y="908" class="lbl" text-anchor="middle">Reconciliation</text><text x="272" y="922" class="lbl-2" text-anchor="middle">stateless · replayable</text>
+<rect class="bx" x="375" y="886" width="184" height="48" rx="2"/><text x="467" y="908" class="lbl" text-anchor="middle">Break register</text><text x="467" y="922" class="lbl-2" text-anchor="middle">owner · age · amount</text>
+<rect class="bx-sor" x="571" y="886" width="184" height="48" rx="2"/><text x="663" y="908" class="lbl" text-anchor="middle">Evidence store</text><text x="663" y="922" class="lbl-2" text-anchor="middle">immutable decisions</text>
+<rect class="bx" x="766" y="886" width="184" height="48" rx="2"/><text x="858" y="908" class="lbl" text-anchor="middle">Regulatory</text><text x="858" y="922" class="lbl-2" text-anchor="middle">reporting</text>
+
+<!-- request path -->
+<line class="f" x1="275" y1="106" x2="275" y2="146" marker-end="url(#ah)"/>
+<line class="f" x1="275" y1="198" x2="275" y2="238" marker-end="url(#ah)"/>
+<line class="f" x1="275" y1="290" x2="275" y2="330" marker-end="url(#ah)"/>
+<text x="285" y="315" class="lbl-2">request</text>
+<line class="f" x1="275" y1="382" x2="275" y2="422" marker-end="url(#ah)"/>
+<text x="285" y="407" class="lbl-2">decision</text>
+
+<!-- money -->
+<line class="f-money" x1="275" y1="474" x2="275" y2="514" marker-end="url(#ahm)"/>
+<text x="285" y="499" class="t-money">MONEY</text>
+<line class="f-money" x1="663" y1="566" x2="872" y2="606" marker-end="url(#ahm)"/>
+<text x="700" y="596" class="t-money">SETTLES VIA</text>
+
+<!-- async spine -->
+<path class="f-async" d="M166 246 L166 746" marker-start="url(#aha)" marker-end="url(#aha)"/>
+<line class="f-async" x1="166" y1="266" x2="176" y2="266"/>
+<line class="f-async" x1="166" y1="358" x2="176" y2="358"/>
+<line class="f-async" x1="166" y1="450" x2="176" y2="450"/>
+<text x="152" y="500" class="t-async" text-anchor="end" transform="rotate(-90 152 500)">EVENTS OUT · FEATURES BACK</text>
+
+<!-- recon spine -->
+<path class="f-recon" d="M980 430 L980 906 L964 906" marker-end="url(#ahr)"/>
+<line class="f-recon" x1="954" y1="450" x2="980" y2="450"/>
+<line class="f-recon" x1="954" y1="542" x2="980" y2="542"/>
+<line class="f-recon" x1="954" y1="634" x2="980" y2="634"/>
+<text x="1010" y="620" class="t-recon" text-anchor="middle" transform="rotate(-90 1010 620)">EVERY BALANCE, CROSS-CHECKED</text>
+</svg>
+</div>
+<figcaption><b>The reference architecture.</b> Ten bands, read top-to-bottom as request flow and bottom-to-top as dependency. Three things most published neobank diagrams leave out are drawn here deliberately: the <b>money-holding boundary</b> (whose balance sheet the funds sit on — the licence decision determines how high it sits), the <b>reconciliation spine</b> pulling every balance-holding component into the control layer, and the <b>evidence flows</b> that make a decision defensible three years later. Band 09 sits under everything above it rather than in the request path.</figcaption>
+</figure>
+
+<div class="legend prose">
+  <div><svg viewBox="0 0 34 14" width="34" height="14" aria-hidden="true"><rect x="1" y="2" width="32" height="10" fill="none" stroke="currentColor" stroke-opacity=".5"/></svg> in-house</div>
+  <div><svg viewBox="0 0 34 14" width="34" height="14" aria-hidden="true"><rect x="1" y="2" width="32" height="10" fill="none" stroke="currentColor" stroke-opacity=".5" stroke-dasharray="4 3"/></svg> third-party vendor</div>
+  <div><svg viewBox="0 0 34 14" width="34" height="14" aria-hidden="true"><rect x="1" y="2" width="32" height="10" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3.5" y="4" width="27" height="6" fill="none" stroke="currentColor" stroke-opacity=".4"/></svg> system of record</div>
+  <div><svg viewBox="0 0 34 14" width="34" height="14" aria-hidden="true"><line x1="1" y1="7" x2="33" y2="7" stroke="var(--money)" stroke-width="2.6"/></svg> money movement</div>
+  <div><svg viewBox="0 0 34 14" width="34" height="14" aria-hidden="true"><line x1="1" y1="7" x2="33" y2="7" stroke="var(--async)" stroke-width="1.4" stroke-dasharray="5 4"/></svg> async event</div>
+  <div><svg viewBox="0 0 34 14" width="34" height="14" aria-hidden="true"><line x1="1" y1="7" x2="33" y2="7" stroke="var(--recon)" stroke-width="1.6" stroke-dasharray="2 3"/></svg> reconciliation · evidence</div>
+</div>
+
+<div class="prose">
+<h2>The shape of the decision</h2>
+<p class="lede">A founding team makes four choices. Everything else in the diagram above follows from them.</p>
+<p>They are, in order of consequence: <strong>what are you licensed as</strong>, <strong>do you own the ledger</strong>, <strong>who authorises your card transactions</strong>, and <strong>is financial crime a vendor or a platform</strong>. Each one is usually presented as a procurement question. Each one is really an architecture question wearing a procurement question's clothes.</p>
+<p>The licence decision is the load-bearing one, because it decides what a balance <em>means</em>. A deposit at a licensed bank is a liability on your own balance sheet. An e-money balance is a claim against safeguarded funds held elsewhere. A sponsor-bank fintech balance is a position in a sub-ledger inside somebody else's omnibus account. Identical UI; three completely different correctness requirements.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 1000 400" role="img" aria-label="Three neobank archetypes compared. Archetype A, the full-stack bank, owns apps, risk, ledger and licence. Archetype B, the platform tenant, owns apps, risk and licence but rents the ledger from a core banking vendor. Archetype C, the fintech on a sponsor bank, owns apps, risk and a sub-ledger, but the deposit licence and rails belong to a partner bank, which places the money-holding boundary above the licence row and creates a continuous reconciliation obligation.">
+<defs>
+  <marker id="ahr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-recon"/></marker>
+</defs>
+
+<!-- headers -->
+<text x="20"  y="26" class="lbl">ARCHETYPE A — full-stack bank</text>
+<text x="20"  y="44" class="lbl-2">Monzo · Starling · Revolut</text>
+<text x="350" y="26" class="lbl">ARCHETYPE B — platform tenant</text>
+<text x="350" y="44" class="lbl-2">Zopa · Chase UK · Varo · Atom</text>
+<text x="680" y="26" class="lbl">ARCHETYPE C — on a sponsor bank</text>
+<text x="680" y="44" class="lbl-2">Chime · Current · Dave · most of US fintech</text>
+
+<!-- row labels down the middle of each col are inside boxes -->
+<!-- COLUMN A -->
+<rect class="bx" x="20" y="70"  width="270" height="44" rx="2"/><text x="155" y="97"  class="lbl" text-anchor="middle">Apps &amp; product</text>
+<rect class="bx" x="20" y="122" width="270" height="44" rx="2"/><text x="155" y="149" class="lbl" text-anchor="middle">Risk decisioning</text>
+<rect class="bx-sor" x="20" y="174" width="270" height="44" rx="2"/><text x="155" y="195" class="lbl" text-anchor="middle">Ledger of record</text><text x="155" y="209" class="lbl-2" text-anchor="middle">built in-house</text>
+<rect class="bx-sor" x="20" y="226" width="270" height="44" rx="2"/><text x="155" y="247" class="lbl" text-anchor="middle">Deposit licence + rails</text><text x="155" y="261" class="lbl-2" text-anchor="middle">own scheme membership</text>
+<line class="boundary" x1="20" y1="284" x2="290" y2="284"/>
+<text x="155" y="302" class="t-flag" text-anchor="middle">boundary at the floor</text>
+<text x="155" y="330" class="lbl-2" text-anchor="middle">Highest cost, highest control.</text>
+<text x="155" y="344" class="lbl-2" text-anchor="middle">You inherit 24/7 money on-call</text>
+<text x="155" y="358" class="lbl-2" text-anchor="middle">and every correctness invariant.</text>
+
+<!-- COLUMN B -->
+<rect class="bx" x="350" y="70"  width="270" height="44" rx="2"/><text x="485" y="97"  class="lbl" text-anchor="middle">Apps &amp; product</text>
+<rect class="bx" x="350" y="122" width="270" height="44" rx="2"/><text x="485" y="149" class="lbl" text-anchor="middle">Risk decisioning</text>
+<rect class="bx-v" x="350" y="174" width="270" height="44" rx="2"/><text x="485" y="195" class="lbl" text-anchor="middle">Ledger of record</text><text x="485" y="209" class="lbl-2" text-anchor="middle">Vault · SuperCore · Transact</text>
+<rect class="bx-sor" x="350" y="226" width="270" height="44" rx="2"/><text x="485" y="247" class="lbl" text-anchor="middle">Deposit licence + rails</text><text x="485" y="261" class="lbl-2" text-anchor="middle">own licence</text>
+<line class="boundary" x1="350" y1="284" x2="620" y2="284"/>
+<text x="485" y="302" class="t-flag" text-anchor="middle">boundary at the floor</text>
+<text x="485" y="330" class="lbl-2" text-anchor="middle">Fast: Zopa shipped a current-account</text>
+<text x="485" y="344" class="lbl-2" text-anchor="middle">beta in ~10 months. The lock-in moves</text>
+<text x="485" y="358" class="lbl-2" text-anchor="middle">to the vendor's product-definition DSL.</text>
+
+<!-- COLUMN C -->
+<rect class="bx" x="680" y="70"  width="270" height="44" rx="2"/><text x="815" y="97"  class="lbl" text-anchor="middle">Apps &amp; product</text>
+<rect class="bx" x="680" y="122" width="270" height="44" rx="2"/><text x="815" y="149" class="lbl" text-anchor="middle">Risk decisioning</text>
+<rect class="bx" x="680" y="174" width="270" height="44" rx="2"/><text x="815" y="195" class="lbl" text-anchor="middle">Sub-ledger / processor</text><text x="815" y="209" class="lbl-2" text-anchor="middle">rented — or insourced (ChimeCore)</text>
+<line class="boundary" x1="680" y1="222" x2="950" y2="222"/>
+<text x="950" y="236" class="t-flag" text-anchor="end">boundary here</text>
+<rect class="bx-v" x="680" y="248" width="270" height="44" rx="2"/><text x="815" y="269" class="lbl" text-anchor="middle">Sponsor bank: licence + rails</text><text x="815" y="283" class="lbl-2" text-anchor="middle">holds the deposits in an omnibus account</text>
+<path class="f-recon" d="M962 196 L974 196 L974 270 L962 270" marker-end="url(#ahr2)" marker-start="url(#ahr2)"/>
+<text x="995" y="234" class="t-recon" text-anchor="middle" transform="rotate(-90 995 234)">MUST RECONCILE, CONTINUOUSLY</text>
+<text x="815" y="330" class="lbl-2" text-anchor="middle">Fastest to market, thinnest moat. The gap</text>
+<text x="815" y="344" class="lbl-2" text-anchor="middle">between those two boxes is exactly where</text>
+<text x="815" y="358" class="lbl-2" text-anchor="middle">Synapse failed — and what the FDIC now targets.</text>
+</svg>
+</div>
+<figcaption><b>Draw the difference, not the options.</b> The three archetypes run the same four functions; what moves is the dashed red <b>money-holding boundary</b>. In A and B it sits at the floor — everything above it is yours. In C it cuts <em>through</em> the stack, and the teal bracket marks the consequence: a continuous, provable reconciliation between your sub-ledger and the sponsor's deposit account. Chime's notable move was to insource the box immediately above that line (its own processor, ChimeCore) while leaving the regulated box below it with partner banks.</figcaption>
+</figure>
+
+<div class="prose">
+<h2>Where UK and USA stop being the same problem</h2>
+<p class="lede">The application layer ports. Nothing underneath does.</p>
+<p>Four divergences dominate, and each one changes an architecture rather than a configuration file.</p>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Dimension</th><th>United Kingdom</th><th>United States</th></tr></thead>
+<tbody>
+<tr><td>Route to market</td><td>Bank licences are genuinely attainable; EMI is the fast alternative, with a two-stage "mobilisation" route</td><td>Charters are rare (Varo the consumer-fintech exception). Sponsor bank is the default</td></tr>
+<tr><td>Instant rail</td><td>Faster Payments — universal, mature, &gt;5.1bn payments a year</td><td>RTP and FedNow — two competing networks, ~550 and ~650 FIs, still a small share of volume</td></tr>
+<tr><td>Interchange</td><td>Capped. Not a business model</td><td>Durbin-exempt debit interchange <em>is</em> the business model</td></tr>
+<tr><td>Scam liability</td><td><strong>Mandatory APP reimbursement</strong> to £85k since Oct 2024, split 50/50 between sending and receiving PSP</td><td>No equivalent. Authorised-payment losses largely sit with the consumer</td></tr>
+<tr><td>Credit data</td><td>Mature open banking since PSD2; rich transaction data for affordability</td><td>CFPB §1033 standardised APIs from April 2026 — catching up</td></tr>
+<tr><td>Decline explainability</td><td>Consumer Duty, evidenced affordability</td><td>ECOA/Reg B adverse-action reason codes — legally specific</td></tr>
+<tr><td>Reconciliation mandate</td><td>FCA PS25/12 from 7 May 2026: <strong>daily</strong> safeguarding reconciliation, monthly returns, 48-hour resolution packs</td><td>FDIC's proposed post-Synapse rule: <strong>near real-time</strong> reconciliation of every fintech partner account</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<div class="callout">
+<p class="eyebrow">The strongest signal in the research</p>
+<p>Two regulators, two legal systems, no coordination — and they arrived at the same requirement from opposite directions. Britain got there through safeguarding rules for e-money firms; America got there through a bankruptcy that left roughly $60–90m of customer money unaccounted for. Both now demand that reconciliation be <strong>continuous and provable</strong>.</p>
+<p>That makes it the one subsystem to build first, in either market, whatever else you buy. No vendor can build it for you, because it encodes your specific relationships between your ledger, your rails and your partners.</p>
+</div>
+
+<p>The APP reimbursement divergence is the one that catches teams porting a US stack into the UK. It means a British neobank is liable for money its own customer <em>chose</em> to send to a fraudster — which turns outbound scam detection from a customer-service nicety into a P&amp;L line, and makes inbound mule detection directly monetised via the receiving-side half of the split. It is why Monzo built in-flight intervention on the payment path rather than post-hoc alerting.</p>
+</div>
+
+<div class="prose">
+<h2>The hot path</h2>
+<p class="lede">Everything you want to know about a transaction must be knowable before the scheme times out.</p>
+<p>Card authorisation is the only part of the stack with a hard external deadline, and it is the constraint that shapes the feature store, the control engine and the ledger's write path. Whatever risk scoring you want in-line has to fit inside the scheme's window minus the network — which is why the feature service is tiered by latency rather than by domain, and why "just add another model" is never free.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 1000 400" role="img" aria-label="Card authorisation sequence. The merchant sends an authorisation request to the scheme, which forwards it to the issuer-processor. The processor calls decisioning, which fetches features from the feature store and returns approve, decline or step-up. The processor places an idempotent hold on the ledger and responds through the scheme back to the merchant. A stand-in policy applies if the ledger is unavailable. Clearing and settlement happen separately at T plus n.">
+<!-- lifeline heads -->
+<rect class="bx" x="15"  y="8" width="130" height="32" rx="2"/><text x="80"  y="28" class="lbl" text-anchor="middle">Merchant</text>
+<rect class="bx" x="180" y="8" width="130" height="32" rx="2"/><text x="245" y="28" class="lbl" text-anchor="middle">Scheme</text>
+<rect class="bx" x="345" y="8" width="130" height="32" rx="2"/><text x="410" y="22" class="lbl" text-anchor="middle">Issuer-</text><text x="410" y="34" class="lbl" text-anchor="middle">processor</text>
+<rect class="bx" x="500" y="8" width="130" height="32" rx="2"/><text x="565" y="28" class="lbl" text-anchor="middle">Decisioning</text>
+<rect class="bx" x="660" y="8" width="130" height="32" rx="2"/><text x="725" y="22" class="lbl" text-anchor="middle">Feature</text><text x="725" y="34" class="lbl" text-anchor="middle">store</text>
+<rect class="bx-sor" x="840" y="8" width="130" height="32" rx="2"/><text x="905" y="28" class="lbl" text-anchor="middle">Ledger</text>
+
+<!-- lifelines -->
+<line class="f" x1="80"  y1="42" x2="80"  y2="345" stroke-dasharray="2 4" stroke-opacity=".3"/>
+<line class="f" x1="245" y1="42" x2="245" y2="345" stroke-dasharray="2 4" stroke-opacity=".3"/>
+<line class="f" x1="410" y1="42" x2="410" y2="345" stroke-dasharray="2 4" stroke-opacity=".3"/>
+<line class="f" x1="565" y1="42" x2="565" y2="345" stroke-dasharray="2 4" stroke-opacity=".3"/>
+<line class="f" x1="725" y1="42" x2="725" y2="345" stroke-dasharray="2 4" stroke-opacity=".3"/>
+<line class="f" x1="905" y1="42" x2="905" y2="345" stroke-dasharray="2 4" stroke-opacity=".3"/>
+
+<!-- latency bracket -->
+<path class="f-money" d="M480 118 L470 118 L470 226 L480 226" stroke-width="1.4"/>
+<text x="462" y="172" class="t-money" text-anchor="middle" transform="rotate(-90 462 172)">YOUR ENTIRE BUDGET</text>
+
+<line class="f" x1="80"  y1="72"  x2="240" y2="72"  marker-end="url(#ah)"/><text x="160" y="66"  class="lbl-2" text-anchor="middle">authorisation request</text>
+<line class="f" x1="245" y1="100" x2="405" y2="100" marker-end="url(#ah)"/><text x="325" y="94"  class="lbl-2" text-anchor="middle">ISO 8583 / API</text>
+<line class="f" x1="410" y1="128" x2="560" y2="128" marker-end="url(#ah)"/><text x="485" y="122" class="lbl-2" text-anchor="middle">risk check</text>
+<line class="f" x1="565" y1="156" x2="720" y2="156" marker-end="url(#ah)"/><text x="643" y="150" class="lbl-2" text-anchor="middle">fetch features</text>
+<line class="f" x1="725" y1="184" x2="570" y2="184" marker-end="url(#ah)" stroke-dasharray="5 4"/><text x="648" y="178" class="lbl-2" text-anchor="middle">JIT + cached</text>
+<line class="f" x1="565" y1="212" x2="415" y2="212" marker-end="url(#ah)" stroke-dasharray="5 4"/><text x="490" y="206" class="lbl-2" text-anchor="middle">approve / decline / step-up</text>
+<line class="f-money" x1="410" y1="240" x2="900" y2="240" marker-end="url(#ahm)"/><text x="655" y="234" class="t-money" text-anchor="middle">IDEMPOTENT HOLD</text>
+<line class="f" x1="905" y1="268" x2="415" y2="268" marker-end="url(#ah)" stroke-dasharray="5 4"/><text x="660" y="262" class="lbl-2" text-anchor="middle">ok / insufficient funds</text>
+<line class="f" x1="410" y1="296" x2="250" y2="296" marker-end="url(#ah)" stroke-dasharray="5 4"/><text x="330" y="290" class="lbl-2" text-anchor="middle">response</text>
+<line class="f" x1="245" y1="324" x2="85"  y2="324" marker-end="url(#ah)" stroke-dasharray="5 4"/><text x="165" y="318" class="lbl-2" text-anchor="middle">approved</text>
+
+<rect class="bx-v" x="345" y="358" width="625" height="34" rx="2"/>
+<text x="360" y="372" class="lbl">Stand-in policy applies when the ledger is unavailable — the limits, and who carries the exposure,</text>
+<text x="360" y="385" class="lbl">must be an explicit decision. Clearing and settlement are a separate flow at T+n.</text>
+</svg>
+</div>
+<figcaption><b>Card authorisation.</b> The amber bracket is the whole argument: every risk control, every feature fetch and every model call has to fit between the processor receiving the message and the scheme's timeout. Note the two things teams routinely leave undesigned until an incident forces the question — the <b>idempotent hold</b> on the ledger, and the <b>stand-in policy</b> for when the ledger cannot answer.</figcaption>
+</figure>
+
+<div class="prose">
+<h2>The subsystem nobody diagrams</h2>
+<p class="lede">Every layer holds an opinion about how much money exists. Reconciliation is what forces them to agree.</p>
+<p>Build it as stateless, replayable workers — one per rail, one per partner — that read postings and external statements and emit <em>breaks</em>. A break is a ticket with an owner, an age and an amount. Unaged breaks are how shortfalls hide.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 900 290" role="img" aria-label="Reconciliation flow. Four inputs — the ledger's postings, rail statements and scheme clearing files, sponsor or partner bank balances, and processor clearing files — feed stateless replayable reconciliation workers, which produce a break register with owner, age and amount, regulatory returns, and a resolution pack retrievable within 48 hours.">
+<rect class="bx-sor" x="20" y="20"  width="210" height="46" rx="2"/><text x="125" y="41" class="lbl" text-anchor="middle">Our ledger</text><text x="125" y="55" class="lbl-2" text-anchor="middle">postings</text>
+<rect class="bx" x="20" y="80"  width="210" height="46" rx="2"/><text x="125" y="101" class="lbl" text-anchor="middle">Rail statements</text><text x="125" y="115" class="lbl-2" text-anchor="middle">scheme clearing files</text>
+<rect class="bx-v" x="20" y="140" width="210" height="46" rx="2"/><text x="125" y="161" class="lbl" text-anchor="middle">Sponsor / partner bank</text><text x="125" y="175" class="lbl-2" text-anchor="middle">omnibus balances</text>
+<rect class="bx-v" x="20" y="200" width="210" height="46" rx="2"/><text x="125" y="221" class="lbl" text-anchor="middle">Processor files</text><text x="125" y="235" class="lbl-2" text-anchor="middle">clearing &amp; settlement</text>
+
+<line class="f-recon" x1="232" y1="43"  x2="326" y2="120" marker-end="url(#ahr)"/>
+<line class="f-recon" x1="232" y1="103" x2="326" y2="130" marker-end="url(#ahr)"/>
+<line class="f-recon" x1="232" y1="163" x2="326" y2="140" marker-end="url(#ahr)"/>
+<line class="f-recon" x1="232" y1="223" x2="326" y2="150" marker-end="url(#ahr)"/>
+
+<rect class="bx-sor" x="330" y="95" width="200" height="80" rx="2"/>
+<text x="430" y="122" class="lbl" text-anchor="middle">Reconciliation workers</text>
+<text x="430" y="139" class="lbl-2" text-anchor="middle">stateless · replayable</text>
+<text x="430" y="153" class="lbl-2" text-anchor="middle">per rail · per partner</text>
+<text x="430" y="167" class="lbl-2" text-anchor="middle">rerunning yesterday gives yesterday</text>
+
+<line class="f-recon" x1="532" y1="120" x2="626" y2="55"  marker-end="url(#ahr)"/>
+<line class="f-recon" x1="532" y1="135" x2="626" y2="135" marker-end="url(#ahr)"/>
+<line class="f-recon" x1="532" y1="150" x2="626" y2="215" marker-end="url(#ahr)"/>
+
+<rect class="bx" x="630" y="30"  width="250" height="52" rx="2"/><text x="755" y="51"  class="lbl" text-anchor="middle">Break register</text><text x="755" y="65" class="lbl-2" text-anchor="middle">owner · age · amount · aging report</text>
+<rect class="bx" x="630" y="110" width="250" height="52" rx="2"/><text x="755" y="131" class="lbl" text-anchor="middle">Regulatory returns</text><text x="755" y="145" class="lbl-2" text-anchor="middle">UK daily · US near-real-time</text>
+<rect class="bx" x="630" y="190" width="250" height="52" rx="2"/><text x="755" y="211" class="lbl" text-anchor="middle">Resolution pack</text><text x="755" y="225" class="lbl-2" text-anchor="middle">retrievable within 48 hours</text>
+
+<text x="450" y="275" class="t-recon" text-anchor="middle">NO VENDOR CAN BUILD THIS FOR YOU — IT ENCODES YOUR RELATIONSHIPS</text>
+</svg>
+</div>
+<figcaption><b>Reconciliation.</b> Frequency is set by regulation, not convenience: daily safeguarding reconciliation for UK e-money firms from May 2026, near real-time partner-account reconciliation in the FDIC's proposed rule. The property that matters most is <b>replayability</b> — rerunning yesterday must reproduce yesterday's answer, or the break register is not evidence of anything.</figcaption>
+</figure>
+
+<div class="prose">
+<h2>Build or buy, layer by layer</h2>
+<p class="lede">Buy anything whose correctness is defined by somebody else. Build anything whose iteration speed is your loss rate or your margin.</p>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Layer</th><th>Default</th><th>Change your mind when</th><th>Who proves it</th></tr></thead>
+<tbody>
+<tr><td>Core ledger</td><td><span class="tag r">buy</span></td><td>Ledger economics or product velocity is the moat, and you can fund a permanent team</td><td>Monzo built · Zopa bought · Varo bought</td></tr>
+<tr><td>Reconciliation</td><td><span class="tag build">build</span></td><td>Never. No vendor knows your break taxonomy</td><td>Synapse, by counter-example</td></tr>
+<tr><td>Rail adapters</td><td><span class="tag build">build</span></td><td>Buy the <em>access</em>, always build the normalisation layer</td><td>Remitly's corridor abstraction</td></tr>
+<tr><td>Card issuing</td><td><span class="tag r">buy</span></td><td>Processor fees become your top cost line, or their release train gates product</td><td>Chime insourced; SoFi acquired</td></tr>
+<tr><td>KYC documents &amp; data</td><td><span class="tag r">buy</span></td><td>Never — commodity data</td><td>—</td></tr>
+<tr><td>KYC orchestration</td><td><span class="tag build">build</span></td><td>Once you have more than one country or one product. The tell is the outage that stopped all onboarding</td><td>Alloy exists because of this</td></tr>
+<tr><td>Sanctions screening</td><td><span class="tag r">buy</span></td><td>Never. Buy the list and the matcher</td><td>OFAC: 24-hour rescreen SLA</td></tr>
+<tr><td>Case management, SAR filing</td><td><span class="tag r">buy</span></td><td>Never — it is workflow software</td><td>—</td></tr>
+<tr><td>Fraud &amp; AML detection</td><td><span class="tag build">build</span></td><td>Buy to launch. Build once fraud is material — in the UK, APP liability makes it material immediately</td><td>Monzo's Starlark control engine</td></tr>
+<tr><td>Credit scoring</td><td><span class="tag r">buy</span> + overlay</td><td>You already hold the cash-flow data the bureau is selling back to you</td><td>FICO×Plaid, Experian, Nova Credit</td></tr>
+<tr><td>Feature store</td><td><span class="tag r">buy</span></td><td>Auth-path latency forces custom</td><td>Monzo's three-tier DAG</td></tr>
+<tr><td>Warehouse</td><td><span class="tag r">buy</span></td><td>Never</td><td>BigQuery at Monzo, Snowflake at Chime and Remitly</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<h3>The three triggers to reopen a "buy"</h3>
+<ol>
+<li><strong>The fee becomes your largest cost-to-serve line.</strong> Below a few million cards, buying wins. Above it, the arithmetic flips — and Chime's public claim of a cost-to-serve around a third of a large bank's is what the flipped side looks like.</li>
+<li><strong>Their release train becomes your roadmap.</strong> If a product change takes two quarters because it needs a vendor change, the velocity argument is already lost.</li>
+<li><strong>The vendor becomes a competitor or a regulatory risk.</strong> Galileo is owned by SoFi. Synapse went bankrupt with customer funds unreconciled. Concentration risk is now a documented requirement under DORA Articles 28–30, not a philosophical concern.</li>
+</ol>
+</div>
+
+<div class="prose">
+<h2>The questions that expose real problems</h2>
+<p class="lede">Twenty of the hundred. If you have an hour in a design review, ask these.</p>
+</div>
+
+<div class="prose qgrid">
+<section>
+<h3>Licence &amp; ledger</h3>
+<ol>
+<li>Who holds the money, legally — whose balance sheet?</li>
+<li>If a sponsor bank is ordered to exit the programme, what is our migration path and how long is it?</li>
+<li>Is there a mutable balance field anywhere, or are balances derived from postings?</li>
+<li>Are the invariants enforced at the storage layer, or in application code that someone can bypass?</li>
+<li>Is every write idempotent, and what exactly is the deduplication key?</li>
+<li>Does product logic live as ledger transactions, or as application code that later posts?</li>
+<li>If bought: what is the migration cost away from their product-definition language?</li>
+</ol>
+<h3>Rails &amp; cards</h3>
+<ol>
+<li>Is there one normalised money-movement model, or per-rail special cases?</li>
+<li>Draw the payment state machine. Where can it hang, and for how long?</li>
+<li>What is the measured p99.9 authorisation latency, and how much budget is left for risk?</li>
+<li>What is the stand-in policy, what are the limits, and who carries the exposure?</li>
+</ol>
+</section>
+<section>
+<h3>Risk &amp; decisioning</h3>
+<ol>
+<li>Can a risk analyst ship a control without an engineer and without production access?</li>
+<li>Can a proposed control be back-tested against history before it goes live?</li>
+<li>Is every control execution logged with its input features, version and decision?</li>
+<li>Are credit and fincrime sharing one feature store, or computing "average monthly inflow" twice?</li>
+<li>Are training sets built point-in-time-correct from decision logs, or from current-state tables?</li>
+<li>How are adverse-action reason codes generated — and are they actually the reasons?</li>
+</ol>
+<h3>Proof</h3>
+<ol>
+<li>Is reconciliation a first-class subsystem with a named owner, or a batch job?</li>
+<li>What is the oldest open break, and who owns it?</li>
+<li>Can the sponsor bank or regulator independently verify our sub-ledger, continuously?</li>
+<li>For each critical vendor: what is the documented exit strategy, and has it been rehearsed?</li>
+</ol>
+</section>
+</div>
+
+<div class="prose">
+<h2>How this stays current</h2>
+<p class="lede">A wiki, four skills, and two jobs that run without being asked.</p>
+<p>This page is the rendered output of a knowledge base that maintains itself. The research sits in an interlinked markdown wiki — ten layer pages, ten bank profiles, a vendor landscape, comparisons — with every non-obvious claim carrying a confidence tag: <span class="tag c">confirmed</span> when a company or regulator said it, <span class="tag r">reported</span> for credible third parties, <span class="tag r">inferred</span> when it was deduced from job ads or vendor customer lists. Claims older than about eighteen months get dated, because stacks move and a 2020 fact driving a 2026 recommendation is the most dangerous thing in a document like this.</p>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Runs</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td class="n">daily 07:12</td><td><b>Scout.</b> Sweeps a watchlist of banks, vendors and regulators for anything published since the last pass, answers the highest-priority open questions, files material finds into the wiki, and adds at least three new questions</td></tr>
+<tr><td class="n">weekly Mon</td><td><b>Lint.</b> Contradictions between pages, stale claims, orphans, untagged assertions, and gaps worth a search — especially missing numbers, this domain's biggest weakness</td></tr>
+<tr><td class="n">on demand</td><td><b>Ingest.</b> Files one source properly — a good ingest touches five to fifteen pages</td></tr>
+<tr><td class="n">when it moves</td><td><b>Architect.</b> Regenerates these diagrams from the wiki and republishes this page</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p>The compounding comes from the question backlog rather than the news feed. Each pass answers some questions and raises more, so the research gets deeper instead of merely longer. The current backlog leads with the ones where no public answer exists at all: what a card authorisation actually costs at scale, whether Chime's proprietary core holds the deposit sub-ledger or only the card rail, and what "near real-time" resolves to in the FDIC's final text.</p>
+
+<footer>
+<p>Compiled 18 August 2026 from ~24 public sources — engineering blogs, S-1 filings, regulator publications and conference material. Vendor comparison content in this sector is heavily seeded with marketing; claims sourced that way are tagged accordingly in the wiki and should be verified with a bake-off, never taken as decisions.</p>
+</footer>
+</div>
+
+</div>

@@ -1,0 +1,40 @@
+%% UK licensed neobank — Monzo-shaped (Archetype A)
+flowchart TB
+  subgraph CH["Channels"]
+    A["iOS · Android · Web"]
+  end
+  subgraph PLAT["Platform — in-house, Go microservices on Kubernetes/AWS"]
+    direction LR
+    P["Product services"]
+    FC["Fincrime control engine<br/>Starlark pure functions<br/>detectors · action · action-selection"]
+    FS["Feature service — DAG<br/>JIT · near-RT · batch"]
+    L[["service.ledger<br/>double-entry over Cassandra"]]
+  end
+  subgraph RAILS["Rails — direct scheme participation"]
+    direction LR
+    FPS["Faster Payments"]; BACS["Bacs / Direct Debit"]; CHAPS["CHAPS"]; VISA["Card scheme"]
+  end
+  subgraph EXT["Bought edges"]
+    direction LR
+    IDV[/"IDV / documents"/]; SANC[/"Sanctions & PEP lists"/]; CRA[/"Credit bureaus"/]
+  end
+  subgraph DATA["Data — GCP BigQuery for analytics, AWS for serving"]
+    direction LR
+    BQ["BigQuery<br/>control-execution metadata"]; MLS["ML: multi-task DL,<br/>self-supervised embeddings"]
+  end
+  subgraph REG["Regulatory"]
+    direction LR
+    RC["Daily reconciliation"]; APP["APP reimbursement exposure<br/>£85k cap · 50/50 split"]
+  end
+  A --> P --> FC
+  FC --> FS
+  FC --> L
+  P --> L
+  L ==> RAILS
+  P --> IDV
+  FC --> SANC
+  P --> CRA
+  FC -.-> BQ --> MLS --> FC
+  L ~~~ RC
+  RAILS ~~~ RC
+  FC ~~~ APP

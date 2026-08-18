@@ -1,0 +1,47 @@
+%% US neobank on a sponsor bank — Chime-shaped (Archetype C moving to vertical integration)
+flowchart TB
+  subgraph CH["Channels"]
+    A["iOS · Android · Web"]
+  end
+  subgraph FIN["Fintech — the part we own"]
+    direction LR
+    P["Product services"]
+    RISK["Risk & fraud decisioning"]
+    SUB[["Sub-ledger / proprietary processor<br/>(e.g. ChimeCore)"]]
+  end
+  subgraph BANK["Sponsor bank(s) — the regulated entity"]
+    direction LR
+    FBO[["FBO / omnibus deposit accounts"]]
+    BAML["Bank AML programme<br/>+ oversight of us"]
+  end
+  subgraph RAILS["Rails"]
+    direction LR
+    ACH["ACH / Same Day ACH"]; RTPF["RTP · FedNow"]; WIRE["Wire"]; SCH["Card scheme"]
+  end
+  subgraph EXT["Vendors"]
+    direction LR
+    KYCU[/"KYC — Socure/Persona/Alloy"/]; TMU[/"TM — Unit21/Sardine/…"/]; PRO[/"Issuer-processor<br/>(if not insourced)"/]; PLD[/"Plaid / cash-flow data"/]
+  end
+  subgraph DATA["Data"]
+    direction LR
+    MY["Operational DB"]; SNOW["Snowflake"]
+  end
+  subgraph CTRL["The post-Synapse requirement"]
+    RECON["Near-real-time reconciliation<br/>sub-ledger ⇄ FBO, per end user"]
+    EVID["Evidence & decision logs"]
+  end
+  A --> P --> RISK
+  P --> SUB
+  RISK --> TMU
+  P --> KYCU
+  P --> PLD
+  SUB ==> FBO
+  FBO ==> RAILS
+  SUB ==> PRO ==> SCH
+  SUB -.-> MY -.-> SNOW
+  RISK -.-> SNOW
+  SUB ~~~ RECON
+  FBO ~~~ RECON
+  BAML ~~~ RECON
+  RISK ~~~ EVID
+  SUB ~~~ EVID
