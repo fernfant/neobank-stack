@@ -127,13 +127,26 @@
   .keynum p:last-child{margin-bottom:0}
   .keynum .eyebrow{color:var(--money);margin-bottom:10px}
 </style>
+<style>
+  .sitenav{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 6px;margin:0 0 22px;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;letter-spacing:.04em}
+  .sitenav .home{color:var(--money);text-decoration:none;font-weight:600;
+    border-bottom:1px solid var(--money);padding-bottom:1px;margin-right:6px}
+  .sitenav .home:hover{background:var(--money-soft)}
+  .sitenav a{color:var(--ink-3);text-decoration:none;padding:2px 5px;border-radius:2px}
+  .sitenav a:hover{color:var(--ink);background:var(--surface-2)}
+  .sitenav .here{color:var(--ink);background:var(--surface-2);padding:2px 5px;border-radius:2px;
+    border:1px solid var(--rule)}
+  .sitenav .sep{color:var(--rule)}
+</style>
 <div class="wrap">
 
 <header class="top">
+  <p class="sitenav"><a class="home" href="https://fernfant.github.io/neobank-stack/">&#8617; Neobank Stack</a><a href="https://claude.ai/code/artifact/2b1b1ea1-7f4f-4f40-9e8e-2af6049b3d6a">Architecture</a><span class="sep">·</span><span class="here">Payment rails</span><span class="sep">·</span><a href="https://claude.ai/code/artifact/fc08f1f1-eef4-4e57-8617-7ca7f431a6b9">Vendor map</a><span class="sep">·</span><a href="https://claude.ai/code/artifact/1efb55a6-2b1c-487f-abe0-d6cc6f6ba246">Deep dive</a><span class="sep">·</span><a href="https://claude.ai/code/artifact/10168ec5-9832-4b67-b785-9de2c91ff0a2">Brief</a></p>
   <p class="eyebrow">Neobank stack · deep dive</p>
   <h1>Payment rails</h1>
   <p class="standfirst">Where a clean internal model meets other people's guarantees — UK and USA, from the settlement mechanics down to the return codes that decide whether you keep network access.</p>
-  <p class="meta"><span>18 Aug 2026</span><span><b>2</b> markets</span><span><b>7</b> rails</span><span><b>19</b> sources</span></p>
+  <p class="meta"><span>18 Aug 2026</span><span><b>2</b> markets</span><span><b>7</b> rails</span><span><b>4</b> archetypes</span><span><b>19</b> sources</span></p>
 </header>
 
 <div class="prose">
@@ -373,6 +386,100 @@
 
 <h3>5 · Reconciliation inputs, per rail</h3>
 <p>Every adapter must emit the statement side of the reconciliation as well as the payment side. Building both together is far cheaper than retrofitting — and reconciliation is the one subsystem both the FCA and the FDIC independently decided you must be able to prove.</p>
+
+</div>
+
+<div class="prose">
+<h2><span class="n">05</span>Four payment archetypes, with the vendors</h2>
+<p class="lede">The same rails, reached four different ways. What changes is where settlement happens — and therefore what you own.</p>
+<p>Follow the double-bordered box down each column. That is the account the money actually settles into, and it decides everything above it: who you contract with, what you must build, and whose incident becomes your outage.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 1000 470" role="img" aria-label="Four payment architecture archetypes compared, with vendor options at the access layer. A UK direct participant builds its own scheme gateway and settles into its own Bank of England account. A UK sponsored or aggregator model buys access from ClearBank, Form3, Modulr, LHV or Banking Circle and settles into the sponsor's Bank of England account. A US fintech on a sponsor bank buys card processing from Galileo, Marqeta, Lithic or Highnote and ACH access from Column, Increase, Moov or Dwolla, settling into the sponsor bank's omnibus account. A cross-border model uses correspondent banks and payout partners, or stablecoin rails from Bridge, BVNK or Circle, settling into nostro accounts.">
+<text x="20"  y="20" class="lbl">UK DIRECT PARTICIPANT</text><text x="20"  y="35" class="lbl-2">Monzo · Starling</text>
+<text x="265" y="20" class="lbl">UK SPONSORED</text><text x="265" y="35" class="lbl-2">Tide · most EMIs</text>
+<text x="510" y="20" class="lbl">US ON A SPONSOR BANK</text><text x="510" y="35" class="lbl-2">Chime · Current · Dave</text>
+<text x="755" y="20" class="lbl">CROSS-BORDER</text><text x="755" y="35" class="lbl-2">Remitly · Wise</text>
+
+<text x="8" y="70" class="gut">LEDGER</text>
+<rect class="bx" x="20"  y="52" width="225" height="42" rx="2"/><text x="132" y="72" class="lbl" text-anchor="middle">In-house</text><text x="132" y="86" class="lbl-2" text-anchor="middle">double-entry, own build</text>
+<rect class="bx" x="265" y="52" width="225" height="42" rx="2"/><text x="377" y="72" class="lbl" text-anchor="middle">In-house or bought</text><text x="377" y="86" class="lbl-2" text-anchor="middle">Vault · SuperCore · Mambu</text>
+<rect class="bx" x="510" y="52" width="225" height="42" rx="2"/><text x="622" y="72" class="lbl" text-anchor="middle">Sub-ledger</text><text x="622" y="86" class="lbl-2" text-anchor="middle">rented — or insourced</text>
+<rect class="bx" x="755" y="52" width="225" height="42" rx="2"/><text x="867" y="72" class="lbl" text-anchor="middle">Multi-currency ledger</text><text x="867" y="86" class="lbl-2" text-anchor="middle">account = (user, currency)</text>
+
+<text x="8" y="128" class="gut">ADAPT</text>
+<rect class="bx" x="20"  y="110" width="225" height="42" rx="2"/><text x="132" y="130" class="lbl" text-anchor="middle">Own rail adapters</text><text x="132" y="144" class="lbl-2" text-anchor="middle">+ state machine</text>
+<rect class="bx" x="265" y="110" width="225" height="42" rx="2"/><text x="377" y="130" class="lbl" text-anchor="middle">Own rail adapters</text><text x="377" y="144" class="lbl-2" text-anchor="middle">over the provider API</text>
+<rect class="bx" x="510" y="110" width="225" height="42" rx="2"/><text x="622" y="130" class="lbl" text-anchor="middle">Risk + rail routing</text><text x="622" y="144" class="lbl-2" text-anchor="middle">ACH vs RTP vs FedNow</text>
+<rect class="bx" x="755" y="110" width="225" height="42" rx="2"/><text x="867" y="130" class="lbl" text-anchor="middle">Corridor adapters + FX</text><text x="867" y="144" class="lbl-2" text-anchor="middle">quote → hedge → payout</text>
+
+<text x="8" y="186" class="gut">ACCESS</text><text x="8" y="199" class="gut">LAYER</text>
+<rect class="bx-sor" x="20" y="168" width="225" height="70" rx="2"/>
+<text x="132" y="189" class="lbl" text-anchor="middle">BUILD IT</text>
+<text x="132" y="204" class="lbl-2" text-anchor="middle">own scheme gateway</text>
+<text x="132" y="217" class="lbl-2" text-anchor="middle">HSMs · active-active</text>
+<text x="132" y="230" class="lbl-2" text-anchor="middle">store-and-forward stand-in</text>
+<rect class="bx-v" x="265" y="168" width="225" height="70" rx="2"/>
+<text x="377" y="187" class="lbl" text-anchor="middle">BUY ACCESS</text>
+<text x="377" y="202" class="lbl-2" text-anchor="middle">ClearBank · Form3</text>
+<text x="377" y="215" class="lbl-2" text-anchor="middle">Modulr · LHV</text>
+<text x="377" y="228" class="lbl-2" text-anchor="middle">Banking Circle</text>
+<rect class="bx-v" x="510" y="168" width="225" height="70" rx="2"/>
+<text x="622" y="187" class="lbl" text-anchor="middle">BUY BOTH SIDES</text>
+<text x="622" y="202" class="lbl-2" text-anchor="middle">cards: Galileo · Marqeta</text>
+<text x="622" y="215" class="lbl-2" text-anchor="middle">Lithic · Highnote</text>
+<text x="622" y="228" class="lbl-2" text-anchor="middle">ACH: Column · Increase</text>
+<rect class="bx-v" x="755" y="168" width="225" height="70" rx="2"/>
+<text x="867" y="187" class="lbl" text-anchor="middle">PARTNER NETWORK</text>
+<text x="867" y="202" class="lbl-2" text-anchor="middle">correspondent banks</text>
+<text x="867" y="215" class="lbl-2" text-anchor="middle">payout partners, per corridor</text>
+<text x="867" y="228" class="lbl-2" text-anchor="middle">Bridge · BVNK · Circle</text>
+
+<text x="8" y="272" class="gut">RAILS</text>
+<rect class="bx" x="20"  y="254" width="225" height="38" rx="2"/><text x="132" y="278" class="lbl" text-anchor="middle">FPS · Bacs · CHAPS</text>
+<rect class="bx" x="265" y="254" width="225" height="38" rx="2"/><text x="377" y="278" class="lbl" text-anchor="middle">FPS · Bacs · CHAPS · SEPA</text>
+<rect class="bx" x="510" y="254" width="225" height="38" rx="2"/><text x="622" y="278" class="lbl" text-anchor="middle">ACH · RTP · FedNow · cards</text>
+<rect class="bx" x="755" y="254" width="225" height="38" rx="2"/><text x="867" y="278" class="lbl" text-anchor="middle">SWIFT · local rails · wallets</text>
+
+<line class="boundary" x1="14" y1="306" x2="990" y2="306"/>
+<text x="990" y="301" class="t-flag" text-anchor="end">below this line, the money is settling somewhere</text>
+
+<text x="8" y="338" class="gut">SETTLES</text><text x="8" y="351" class="gut">INTO</text>
+<rect class="bx-sor" x="20" y="320" width="225" height="46" rx="2"/><text x="132" y="341" class="lbl" text-anchor="middle">YOUR BoE ACCOUNT</text><text x="132" y="356" class="lbl-2" text-anchor="middle">prefunded, you manage it</text>
+<rect class="bx-v" x="265" y="320" width="225" height="46" rx="2"/><text x="377" y="341" class="lbl" text-anchor="middle">Sponsor&#39;s BoE account</text><text x="377" y="356" class="lbl-2" text-anchor="middle">they prefund for you</text>
+<rect class="bx-v" x="510" y="320" width="225" height="46" rx="2"/><text x="622" y="337" class="lbl" text-anchor="middle">Sponsor bank FBO</text><text x="622" y="352" class="lbl-2" text-anchor="middle">Bancorp · Stride · Cross River</text>
+<rect class="bx-v" x="755" y="320" width="225" height="46" rx="2"/><text x="867" y="341" class="lbl" text-anchor="middle">Nostro / partner accounts</text><text x="867" y="356" class="lbl-2" text-anchor="middle">per corridor</text>
+
+<text x="8" y="398" class="gut">THE</text><text x="8" y="411" class="gut">CATCH</text>
+<rect class="bx" x="20"  y="384" width="225" height="52" rx="2"/><text x="132" y="403" class="lbl-2" text-anchor="middle">Liquidity is a system you run,</text><text x="132" y="416" class="lbl-2" text-anchor="middle">not a deposit. And 24/7</text><text x="132" y="429" class="lbl-2" text-anchor="middle">payments on-call.</text>
+<rect class="bx" x="265" y="384" width="225" height="52" rx="2"/><text x="377" y="403" class="lbl-2" text-anchor="middle">Their incident is your outage.</text><text x="377" y="416" class="lbl-2" text-anchor="middle">Concentration risk under</text><text x="377" y="429" class="lbl-2" text-anchor="middle">DORA Article 29.</text>
+<rect class="bx" x="510" y="384" width="225" height="52" rx="2"/><text x="622" y="403" class="lbl-2" text-anchor="middle">You must prove your</text><text x="622" y="416" class="lbl-2" text-anchor="middle">sub-ledger sums to the FBO,</text><text x="622" y="429" class="lbl-2" text-anchor="middle">continuously. Post-Synapse.</text>
+<rect class="bx" x="755" y="384" width="225" height="52" rx="2"/><text x="867" y="403" class="lbl-2" text-anchor="middle">FX exposure between quote</text><text x="867" y="416" class="lbl-2" text-anchor="middle">and settlement. Corridors are</text><text x="867" y="429" class="lbl-2" text-anchor="middle">config, never branches.</text>
+</svg>
+</div>
+<figcaption><b>Four ways to reach the same rails.</b> Solid boxes are yours; dashed boxes are somebody else&#39;s. The row that decides everything is <b>settles into</b> — a UK direct participant runs its own prefunded Bank of England position, while a US fintech&#39;s money sits in a sponsor&#39;s omnibus account, which is precisely why the FDIC&#39;s post-Synapse rule lands on <em>continuous</em> reconciliation for that archetype and not the others. Read the bottom row before the top one: the catch is usually what kills the business case.</figcaption>
+</figure>
+
+<div class="prose">
+<h3>Choosing between them</h3>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>If this is true…</th><th>…this archetype</th><th>Watch out for</th></tr></thead>
+<tbody>
+<tr><td>You hold a banking licence and payments volume is core to unit economics</td><td><strong>UK direct</strong></td><td>Prefunding as a managed position — though July 2026&#39;s Net Sender Cap change makes this cheaper than it was</td></tr>
+<tr><td>You hold a licence or EMI permission but want to ship this year</td><td><strong>UK sponsored</strong></td><td>A single access provider is a single point of failure for <em>all</em> outbound money</td></tr>
+<tr><td>You are a US fintech without a charter</td><td><strong>US sponsor bank</strong></td><td>Continuous, provable reconciliation to the FBO — and sponsor concentration; Chime runs two</td></tr>
+<tr><td>Money crosses a border and a currency</td><td><strong>Cross-border</strong></td><td>A transfer is a multi-day state machine, not a slow domestic payment</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p>These are not exclusive. Most real neobanks run two at once — a UK bank with a US programme sits in columns one and three simultaneously, with entirely separate reconciliation obligations on each. Monzo is exactly that: a direct participant at home, with Galileo behind its US business.</p>
 
 <h2>The questions to ask</h2>
 </div>

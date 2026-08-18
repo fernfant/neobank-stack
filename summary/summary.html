@@ -110,9 +110,22 @@
     font-family:ui-monospace,Menlo,monospace; color:var(--ink-2)}
   @media (max-width:640px){ body{font-size:16px} .wrap{padding:0 18px 60px} h2 + .lede{font-size:22px} }
 </style>
+<style>
+  .sitenav{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 6px;margin:0 0 22px;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;letter-spacing:.04em}
+  .sitenav .home{color:var(--money);text-decoration:none;font-weight:600;
+    border-bottom:1px solid var(--money);padding-bottom:1px;margin-right:6px}
+  .sitenav .home:hover{background:var(--money-soft)}
+  .sitenav a{color:var(--ink-3);text-decoration:none;padding:2px 5px;border-radius:2px}
+  .sitenav a:hover{color:var(--ink);background:var(--surface-2)}
+  .sitenav .here{color:var(--ink);background:var(--surface-2);padding:2px 5px;border-radius:2px;
+    border:1px solid var(--rule)}
+  .sitenav .sep{color:var(--rule)}
+</style>
 <div class="wrap">
 
 <header class="top">
+  <p class="sitenav"><a class="home" href="https://fernfant.github.io/neobank-stack/">&#8617; Neobank Stack</a><a href="https://claude.ai/code/artifact/2b1b1ea1-7f4f-4f40-9e8e-2af6049b3d6a">Architecture</a><span class="sep">·</span><a href="https://claude.ai/code/artifact/6a4be261-f66f-4f2d-bc89-e075b9a96379">Payment rails</a><span class="sep">·</span><a href="https://claude.ai/code/artifact/fc08f1f1-eef4-4e57-8617-7ca7f431a6b9">Vendor map</a><span class="sep">·</span><a href="https://claude.ai/code/artifact/1efb55a6-2b1c-487f-abe0-d6cc6f6ba246">Deep dive</a><span class="sep">·</span><a href="https://claude.ai/code/artifact/10168ec5-9832-4b67-b785-9de2c91ff0a2">Brief</a></p>
   <p class="eyebrow">UK &amp; USA neobank technology research · executive summary</p>
   <h1>How a neobank is actually built</h1>
   <p class="standfirst">Ten layers, four decisions, three archetypes — condensed from a 25-page research wiki covering Monzo, Chime, Revolut, SoFi, Starling, Zopa, Varo, Remitly and others.</p>
