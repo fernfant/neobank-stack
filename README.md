@@ -7,6 +7,16 @@ payment rails, the card stack, the financial-crime stack, credit decisioning, da
 the infrastructure underneath — plus a reusable **architecture diagram template** and a
 **key-questions bank** for designing or due-diligencing one.
 
+## Read it online
+
+All public — no login:
+
+- [Reference architecture](https://fernfant.github.io/neobank-stack/diagrams/reference-architecture.html)
+- [Payment rails](https://fernfant.github.io/neobank-stack/summary/payment-rails.html)
+- [Vendor map](https://fernfant.github.io/neobank-stack/summary/vendor-map.html)
+- [Deep dive (four you build)](https://fernfant.github.io/neobank-stack/summary/deep-dive.html)
+- [Executive brief](https://fernfant.github.io/neobank-stack/summary/summary-with-diagram.html)
+
 ## Start here
 
 | If you want… | Read |

@@ -265,6 +265,8 @@
 
 <h3>Faster Payments — the settlement lag nobody sees</h3>
 <p>The customer sees money instantly. The banks settle <em>hours later</em>, on a net basis. The bridge between those two facts is <strong>prefunding</strong>: every participating institution holds a cash deposit covering its net position in a <strong>segregated, interest-bearing account at the Bank of England</strong>. That eliminates settlement risk — a failing participant cannot take others down — at the cost of tying up liquidity.</p>
+<h3>&ldquo;Direct&rdquo; and &ldquo;participant&rdquo; are two different questions</h3>
+<p>The terminology trips almost everyone, because <strong>&ldquo;direct&rdquo; describes the <em>connection</em>, while settlement is a separate axis entirely.</strong> You can be directly connected to the scheme without settling in your own name — and that middle model is the one most people actually want.</p>
 </div>
 
 <div class="prose">
@@ -277,16 +279,18 @@
 
 <div class="tbl prose">
 <table>
-<thead><tr><th>Access model</th><th>Settlement account</th><th>Who clears</th><th>What you build</th></tr></thead>
+<thead><tr><th>Access model</th><th>Connected directly to FPS?</th><th>Settles at the BoE in its own name?</th><th>What you build</th></tr></thead>
 <tbody>
-<tr><td>Direct participant</td><td><strong>Yours</strong>, at the Bank of England</td><td>You</td><td>Scheme gateway, HSMs, liquidity management, 24/7 payments on-call</td></tr>
-<tr><td>Sponsored participant</td><td>Sponsor's</td><td>You — full real-time technical access</td><td>Scheme gateway; the sponsor carries settlement</td></tr>
-<tr><td>Indirect participant</td><td>Sponsor's, prefunded for your net activity</td><td>Sponsor</td><td>An API integration — and a dependency</td></tr>
+<tr><td><strong>DCSP</strong> — Directly Connected <em>Settling</em> Participant</td><td><span class="tag yes">yes</span></td><td><span class="tag yes">yes</span></td><td>Scheme gateway, HSMs, liquidity management, 24/7 payments on-call</td></tr>
+<tr><td><strong>DCNSP</strong> — Directly Connected <em>Non-Settling</em> Participant</td><td><span class="tag yes">yes</span></td><td><span class="tag no">no</span> — a sponsor settles</td><td>Scheme gateway, HSMs, 24/7 on-call — but not the liquidity or settlement</td></tr>
+<tr><td><strong>Indirect</strong> — sponsorship / agency</td><td><span class="tag no">no</span></td><td><span class="tag no">no</span></td><td>An API integration — and a dependency</td></tr>
 </tbody>
 </table>
 </div>
 
 <div class="prose">
+<p><strong>DCNSP is the model most people mean when they say &ldquo;direct access&rdquo; without a banking licence.</strong> It was introduced specifically to widen participation: you get your own real-time connection and set your own limits, but you need neither a full banking licence nor a Bank of England settlement account, and the liquidity and risk-management burden stays with the sponsor. The gain over indirect access is that you are no longer behind an aggregator's API — which removes them as a single point of failure in the payment path.</p>
+
 <h3>Bacs — a three-day cycle and a message taxonomy</h3>
 <p>Bacs is not an integration; it is a product. Three days (input, processing, entry) and four return services you must handle:</p>
 </div>

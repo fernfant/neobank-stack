@@ -54,13 +54,33 @@ lower the cost of direct access for non-bank PSPs `[reported]`. Prefunding has b
 biggest economic barrier to direct participation; if you evaluated direct access before mid-2026
 and rejected it on liquidity cost, that calculation has changed.
 
-**Three access models**, and they are genuinely different architectures `[reported]`:
+### "Direct" vs "participant" — two axes, not one
 
-| Model | Settlement account | Who clears | What you build |
-| --- | --- | --- | --- |
-| **Direct participant** | Your own, at the Bank of England | You | Scheme gateway, HSMs, liquidity management, 24/7 payments on-call |
-| **Directly connected sponsored participant** | Sponsor's | You (real-time direct technical access) | Scheme gateway; sponsor carries settlement |
-| **Indirect participant** | Sponsor's, prefunded for your net activity | Sponsor | An API integration — and a dependency |
+The terminology trips people because **"direct" describes the *connection*, while settlement is a
+separate question.** Pay.UK's own models separate them explicitly `[confirmed]`:
+
+| | Connected directly to the FPS central infrastructure? | Settles at the Bank of England in its own name? |
+| --- | --- | --- |
+| **DCSP** — Directly Connected **Settling** Participant | **Yes** | **Yes** |
+| **DCNSP** — Directly Connected **Non-Settling** Participant | **Yes** | **No** — a sponsor settles |
+| **Indirect** (sponsorship / agency / correspondent) | **No** | **No** |
+
+So you can be *directly connected* without being a settling participant. That middle model,
+**DCNSP**, was introduced specifically to widen access: you get your own real-time connection and
+set your own limits, but you do not need a full banking licence or a Bank of England settlement
+account, and — the part that matters commercially — **the liquidity and risk-management burden
+sits with the sponsor** rather than with you `[reported]`.
+
+| Model | What you build | What you carry |
+| --- | --- | --- |
+| **DCSP** | Scheme gateway, HSMs, liquidity management, 24/7 payments on-call | Your own prefunded position and settlement risk |
+| **DCNSP** | Scheme gateway, HSMs, 24/7 payments on-call | The connection — but not the liquidity or settlement |
+| **Indirect** | An API integration | A dependency: the sponsor does processing, clearing and settlement, prefunding a net position on your behalf |
+
+The practical read: **DCNSP is the model most people mean when they say they want "direct
+access" without a banking licence.** It gets you off an aggregator's API and onto your own
+connection — which removes them as a single point of failure in the payment path — without the
+capital and treasury obligations of settling in your own name.
 
 Monzo's route through these is the best-documented worked example: a third-party gateway from
 2017, then an in-house gateway live November 2019, migrated 2 November 2020 — see
