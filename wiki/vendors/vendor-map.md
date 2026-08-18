@@ -64,6 +64,7 @@ exactly what that conflict predicts.
 | --- | --- | --- |
 | **The Bancorp Bank, N.A.** | **Chime** | `[confirmed]` — Chime states it |
 | **Stride Bank, N.A.** | **Chime** | `[confirmed]` |
+| **Sutton Bank** | **Monzo (US)** — holds deposits and provides FDIC insurance for Monzo's US accounts; publishes the Monzo cardholder agreement on its own site | `[confirmed]` |
 | **Cross River Bank** | X Money, Best Egg (since 2013); strategic processing partnership with **Thredd** to route international fintechs into the US | `[reported]` |
 | **Evolve Bank & Trust** | Federal Reserve cease-and-desist, May 2025, for failure to oversee fintech partners | `[reported]` |
 | **Column**, **Lead Bank** | No neobank publicly named in this sweep | — |

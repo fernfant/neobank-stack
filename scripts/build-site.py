@@ -19,6 +19,7 @@ EXCLUDE_DIRS = {"raw", ".claude", ".git", "__pycache__"}
 ART = {
  "ref":  ("https://fernfant.github.io/neobank-stack/diagrams/reference-architecture.html", "Reference architecture", "Ten bands, three archetypes, the card-auth hot path, and Monzo Stand-in — a complete backup bank on a second cloud."),
  "rails":("https://fernfant.github.io/neobank-stack/summary/payment-rails.html", "Payment rails", "Auth vs clearing vs settlement, reversal windows to scale, and four payment archetypes with named vendor options."),
+ "monzo":("https://fernfant.github.io/neobank-stack/summary/monzo-payments.html", "Monzo payments", "The six-year insourcing arc, the deliberately monolithic scheme gateway, and why an internal transfer touches no rail at all."),
  "vend": ("https://fernfant.github.io/neobank-stack/summary/vendor-map.html", "Vendor map — who runs what", "43 vendors across 8 layers, with the banks publicly named as using each — and the gaps marked honestly."),
  "deep": ("https://fernfant.github.io/neobank-stack/summary/deep-dive.html", "The four you build", "Reconciliation, rail adapters, KYC orchestration, fraud — with real architectures and 30+ named packages."),
  "brief":("https://fernfant.github.io/neobank-stack/summary/summary-with-diagram.html", "Executive brief", "Nine minutes: six findings, three archetypes, where the two markets diverge, build-vs-buy defaults."),
@@ -126,7 +127,7 @@ html = f"""<!doctype html>
 <div class="prose"><h2>Start here</h2>
 <p class="lede">Four rendered reads. Everything below is the source material behind them.</p></div>
 <div class="cards prose">
-{''.join(f'<a class="card" href="{u}"><span class="k">{k}</span><span class="h">{t}</span><span class="p">{d}</span></a>' for k,(u,t,d) in [("Architecture",ART["ref"]),("Payment rails",ART["rails"]),("Attribution",ART["vend"]),("Deep dive",ART["deep"]),("Summary",ART["brief"])])}
+{''.join(f'<a class="card" href="{u}"><span class="k">{k}</span><span class="h">{t}</span><span class="p">{d}</span></a>' for k,(u,t,d) in [("Architecture",ART["ref"]),("Payment rails",ART["rails"]),("Monzo",ART["monzo"]),("Attribution",ART["vend"]),("Deep dive",ART["deep"]),("Summary",ART["brief"])])}
 </div>
 
 <div class="prose"><div class="new">

@@ -110,8 +110,25 @@ operational limit rather than by cost: a vendor outage, a failover time, a balan
 sponsor. That is a more useful build-vs-buy rule than any threshold — see
 [Build vs buy, layer by layer](../comparisons/build-vs-buy.md).
 
-**Do not confuse markets.** Galileo's customer list includes "the US-based business of Monzo"
-`[reported]`. That is Monzo's US operation, not the UK bank, which runs on the stack above.
+### Sponsors — none in the UK, Sutton Bank in the US
+
+**UK: no sponsor.** Monzo is a **direct participant** in Faster Payments and Bacs, settling
+against its own Bank of England account `[confirmed]`. It *had* a Bacs sponsor from 2017 until
+12 September 2022 and a third-party Faster Payments gateway until 2019–20, but **never publicly
+named either** `[confirmed]`. CHAPS participation is not confirmed either way — see open
+questions.
+
+**US: Sutton Bank.** Monzo's US operation runs on the sponsor-bank model, with the Ohio-based,
+FDIC-member **Sutton Bank** holding deposits and providing FDIC insurance; Sutton publishes the
+Monzo cardholder agreement on its own site `[confirmed]`. Galileo processes the cards
+`[reported]`. Monzo has also applied to the OCC for a de-novo US banking charter, which would
+eventually remove the sponsor `[reported]`. Some coverage additionally names **Lead Bank**;
+that is single-sourced and **not** treated as established here.
+
+So Monzo is simultaneously **Archetype A at home and Archetype C in the US** — own licence,
+own rails, own settlement in Britain; somebody else's balance sheet in America, with the
+continuous reconciliation obligation that implies. Same company, two entirely different sets of
+architectural constraints. See [UK vs USA — where the stacks diverge](../comparisons/uk-vs-usa.md).
 
 ## Monzo Stand-in — a second bank, on a second cloud, for 1% of the cost
 

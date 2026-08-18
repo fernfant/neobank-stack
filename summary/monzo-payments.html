@@ -1,0 +1,311 @@
+<title>Monzo Payments</title>
+
+<style>
+  :root{
+    --ground:#FCFCFD; --surface:#FFFFFF; --surface-2:#F1F4F7; --band:#F7F9FB;
+    --ink:#11151B; --ink-2:#49535F; --ink-3:#7C8693;
+    --rule:#D6DCE3; --rule-2:#E7EBF0;
+    --money:#8F5300; --async:#54499F; --recon:#0A5F58; --flag:#9C3524;
+    --flag-soft:#F7E7E3; --recon-soft:#E0EFEC; --money-soft:#F5EADA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0C0F14; --surface:#131820; --surface-2:#1A202A; --band:#101419;
+      --ink:#E8ECF1; --ink-2:#A6B0BC; --ink-3:#78828E;
+      --rule:#2A323C; --rule-2:#1E252E;
+      --money:#E0A24F; --async:#9C92EE; --recon:#4FC5B9; --flag:#E8836F;
+      --flag-soft:#2A1D1A; --recon-soft:#122624; --money-soft:#2A2318;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0C0F14; --surface:#131820; --surface-2:#1A202A; --band:#101419;
+    --ink:#E8ECF1; --ink-2:#A6B0BC; --ink-3:#78828E;
+    --rule:#2A323C; --rule-2:#1E252E;
+    --money:#E0A24F; --async:#9C92EE; --recon:#4FC5B9; --flag:#E8836F;
+    --flag-soft:#2A1D1A; --recon-soft:#122624; --money-soft:#2A2318;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--ground); color:var(--ink); margin:0;
+    font-family:ui-serif,Georgia,"Iowan Old Style","Times New Roman",serif;
+    font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px 88px}
+  .prose{max-width:68ch; margin-left:auto; margin-right:auto}
+  h1,h2,h3,th,.eyebrow,figcaption,.meta,.tag{
+    font-family:ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif}
+  .eyebrow,.meta,.tag,td.n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  header.top{border-bottom:1px solid var(--rule); padding:56px 0 26px; margin-bottom:8px}
+  .eyebrow{font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-3); margin:0 0 18px}
+  h1{font-size:clamp(32px,5vw,50px); line-height:1.05; letter-spacing:-.028em;
+    font-weight:660; margin:0 0 18px; text-wrap:balance; max-width:19ch}
+  .standfirst{font-size:20px; line-height:1.55; color:var(--ink-2); max-width:58ch; margin:0 0 28px}
+  .meta{display:flex; flex-wrap:wrap; gap:0 26px; font-size:11.5px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3)}
+  .meta b{color:var(--ink); font-weight:600}
+  h2{font-size:13px; letter-spacing:.15em; text-transform:uppercase; font-weight:640;
+    color:var(--ink-3); margin:70px 0 8px; padding-bottom:10px; border-bottom:1px solid var(--rule)}
+  h2 + .lede{font-size:25px; line-height:1.32; letter-spacing:-.015em; font-weight:600;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif; margin:22px 0 18px; text-wrap:balance}
+  h3{font-size:17px; font-weight:640; letter-spacing:-.01em; margin:32px 0 6px}
+  p{margin:0 0 18px} strong{font-weight:600}
+  ul,ol{margin:0 0 18px; padding-left:1.15em} li{margin-bottom:10px} li::marker{color:var(--ink-3)}
+  .findings{counter-reset:f; list-style:none; padding:0; margin:26px 0}
+  .findings li{counter-increment:f; position:relative; padding-left:44px; margin-bottom:24px}
+  .findings li::before{content:counter(f,decimal-leading-zero); position:absolute; left:0; top:3px;
+    font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--money);
+    border:1px solid var(--money); border-radius:2px; padding:2px 5px; background:var(--money-soft)}
+  .findings b{display:block; font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;
+    font-size:17px; font-weight:640; letter-spacing:-.01em; margin-bottom:3px; color:var(--ink)}
+  .findings span{color:var(--ink-2); font-size:16px}
+  .tbl{overflow-x:auto; margin:26px 0}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:14px;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif; line-height:1.45}
+  th{text-align:left; font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+    font-weight:640; color:var(--ink-3); padding:0 14px 9px 0; border-bottom:1px solid var(--rule); white-space:nowrap}
+  td{padding:11px 14px 11px 0; border-bottom:1px solid var(--rule-2); vertical-align:top; color:var(--ink-2)}
+  td:first-child{color:var(--ink); font-weight:560}
+  td.n{font-variant-numeric:tabular-nums; white-space:nowrap; font-size:12.5px}
+  tr:last-child td{border-bottom:none}
+  .tag{display:inline-block; font-size:10px; letter-spacing:.05em; padding:2px 6px;
+    border-radius:2px; border:1px solid var(--rule); color:var(--ink-3); white-space:nowrap}
+  .tag.build{color:var(--money); border-color:var(--money); background:var(--money-soft)}
+  .callout{border-left:2px solid var(--flag); background:var(--flag-soft);
+    padding:18px 22px; margin:30px 0; border-radius:0 3px 3px 0}
+  .callout p:last-child{margin-bottom:0}
+  .callout .eyebrow{color:var(--flag); margin-bottom:10px}
+  a{color:inherit; text-decoration-color:var(--rule); text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--async); outline-offset:3px; border-radius:2px}
+  footer{margin-top:76px; padding-top:24px; border-top:1px solid var(--rule);
+    font-size:12.5px; color:var(--ink-3);
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif}
+  figure{margin:36px 0 12px}
+  .bleed{max-width:1120px; margin-left:auto; margin-right:auto}
+  .scroller{overflow-x:auto; padding-bottom:6px}
+  .scroller svg{display:block; min-width:700px; max-width:100%; height:auto; color:var(--ink)}
+  figcaption{font-size:12.5px; line-height:1.5; color:var(--ink-3); margin-top:14px;
+    padding-top:12px; border-top:1px solid var(--rule-2); max-width:76ch}
+  figcaption b{color:var(--ink-2); font-weight:600}
+  .bx{fill:var(--surface); stroke:currentColor; stroke-opacity:.34; stroke-width:1}
+  .bx-v{fill:var(--surface-2); stroke:currentColor; stroke-opacity:.34; stroke-width:1; stroke-dasharray:4 3}
+  .bx-sor{fill:var(--surface); stroke:currentColor; stroke-opacity:.85; stroke-width:2}
+  .bx-in{fill:none; stroke:currentColor; stroke-opacity:.4; stroke-width:1}
+  .bandbg{fill:var(--band)}
+  .lbl{font-size:11px; fill:var(--ink); font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  .lbl-2{font-size:9.5px; fill:var(--ink-3); font-family:ui-monospace,Menlo,monospace}
+  .gut{font-size:10px; fill:var(--ink-3); letter-spacing:.1em; font-weight:600;
+    font-family:ui-sans-serif,-apple-system,system-ui,sans-serif}
+  .gut-n{font-size:10px; fill:var(--ink-3); font-family:ui-monospace,Menlo,monospace}
+  .f{stroke:currentColor; stroke-opacity:.5; stroke-width:1.4; fill:none}
+  .f-money{stroke:var(--money); stroke-width:2.6; fill:none}
+  .f-recon{stroke:var(--recon); stroke-width:1.6; stroke-dasharray:2 3; fill:none}
+  .h-plain{fill:currentColor; fill-opacity:.5} .h-money{fill:var(--money)} .h-recon{fill:var(--recon)}
+  .t-money{fill:var(--money); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
+  .t-recon{fill:var(--recon); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
+  .t-flag{fill:var(--flag); font-size:9.5px; font-family:ui-monospace,Menlo,monospace}
+  .boundary{stroke:var(--flag); stroke-width:1.6; stroke-dasharray:7 4; fill:none}
+  .legend{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px 24px;
+    margin:24px 0 0; padding:18px 20px; background:var(--surface-2);
+    border:1px solid var(--rule-2); border-radius:3px}
+  .legend div{display:flex; align-items:center; gap:10px; font-size:12px;
+    font-family:ui-monospace,Menlo,monospace; color:var(--ink-2)}
+  @media (max-width:640px){ body{font-size:16px} .wrap{padding:0 18px 60px} h2 + .lede{font-size:22px} }
+</style>
+<style>
+  pre{background:var(--surface-2);border:1px solid var(--rule-2);border-radius:3px;
+    padding:16px 18px;overflow-x:auto;font-size:12.5px;line-height:1.6;
+    font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--ink-2);margin:22px 0}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;
+    background:var(--surface-2);padding:1px 5px;border-radius:2px;border:1px solid var(--rule-2)}
+  h2 .n{color:var(--money);font-family:ui-monospace,Menlo,monospace;margin-right:10px}
+  .keynum{border-left:2px solid var(--money);background:var(--money-soft);
+    padding:18px 22px;margin:26px 0;border-radius:0 3px 3px 0}
+  .keynum p:last-child{margin-bottom:0}
+  .keynum .eyebrow{color:var(--money);margin-bottom:10px}
+  .sitenav{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 6px;margin:0 0 22px;
+    font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;letter-spacing:.04em}
+  .sitenav .home{color:var(--money);text-decoration:none;font-weight:600;
+    border-bottom:1px solid var(--money);padding-bottom:1px;margin-right:6px}
+  .sitenav a{color:var(--ink-3);text-decoration:none;padding:2px 5px;border-radius:2px}
+  .sitenav a:hover{color:var(--ink);background:var(--surface-2)}
+  .sitenav .here{color:var(--ink);background:var(--surface-2);padding:2px 5px;border-radius:2px;
+    border:1px solid var(--rule)}
+  .sitenav .sep{color:var(--rule)}
+</style>
+<div class="wrap">
+
+<header class="top">
+  <p class="sitenav"><a class="home" href="https://fernfant.github.io/neobank-stack/">&#8617; Neobank Stack</a><a href="https://fernfant.github.io/neobank-stack/diagrams/reference-architecture.html">Architecture</a><span class="sep">·</span><a href="https://fernfant.github.io/neobank-stack/summary/payment-rails.html">Payment rails</a><span class="sep">·</span><span class="here">Monzo payments</span><span class="sep">·</span><a href="https://fernfant.github.io/neobank-stack/summary/vendor-map.html">Vendor map</a><span class="sep">·</span><a href="https://fernfant.github.io/neobank-stack/summary/deep-dive.html">Deep dive</a><span class="sep">·</span><a href="https://fernfant.github.io/neobank-stack/summary/summary-with-diagram.html">Brief</a></p>
+  <p class="eyebrow">Neobank stack · deep dive</p>
+  <h1>Monzo payments, end to end</h1>
+  <p class="standfirst">The most completely documented payments stack in retail banking — and a six-year insourcing arc where every move was triggered by a constraint, never by cost.</p>
+  <p class="meta"><span>18 Aug 2026</span><span><b>3</b> rails insourced</span><span><b>14</b> sources</span></p>
+</header>
+
+<div class="prose">
+<p>Monzo has published more about how its payments actually work than any other bank. Read it in sequence and a single pattern emerges: <strong>it took every rail in-house, one at a time, over six years</strong> — cards in 2017–18, Faster Payments in 2019–20, Bacs in 2022. Today it settles against its own Bank of England account and has no UK sponsor at all.</p>
+<p>What makes the sequence instructive is <em>why</em> each move happened.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 960 336" role="img" aria-label="Monzo's payment rail insourcing timeline from 2016 to 2023. Cards ran on GPS as a prepaid programme from 2016 until the current account launch in 2017 to 2018, when Monzo built its own processor. Faster Payments ran on a third-party gateway from 2017 until the in-house gateway migration completed in November 2020. Bacs ran through a sponsor bank from 2017 until Monzo became a direct participant in September 2022. Each switch was triggered by an operational constraint rather than cost.">
+<line class="f" x1="100" y1="292" x2="920" y2="292" stroke-opacity=".3"/>
+<g class="lbl-2">
+<text x="120" y="310" text-anchor="middle">2016</text><text x="230" y="310" text-anchor="middle">2017</text>
+<text x="340" y="310" text-anchor="middle">2018</text><text x="450" y="310" text-anchor="middle">2019</text>
+<text x="560" y="310" text-anchor="middle">2020</text><text x="670" y="310" text-anchor="middle">2021</text>
+<text x="780" y="310" text-anchor="middle">2022</text><text x="890" y="310" text-anchor="middle">2023</text>
+</g>
+<g class="f" stroke-opacity=".12">
+<line x1="120" y1="46" x2="120" y2="288"/><line x1="230" y1="46" x2="230" y2="288"/>
+<line x1="340" y1="46" x2="340" y2="288"/><line x1="450" y1="46" x2="450" y2="288"/>
+<line x1="560" y1="46" x2="560" y2="288"/><line x1="670" y1="46" x2="670" y2="288"/>
+<line x1="780" y1="46" x2="780" y2="288"/><line x1="890" y1="46" x2="890" y2="288"/>
+</g>
+
+<text x="8" y="70" class="lbl">CARDS</text>
+<rect class="bx-v" x="120" y="54" width="220" height="30" rx="2"/>
+<text x="230" y="73" class="lbl-2" text-anchor="middle">GPS — prepaid only</text>
+<rect class="bx-sor" x="340" y="54" width="580" height="30" rx="2"/>
+<text x="630" y="73" class="lbl" text-anchor="middle">Own processor · no third-party issuing bank</text>
+<text x="345" y="100" class="t-money">▲ vendor outages; wanting the whole experience</text>
+
+<text x="8" y="150" class="lbl">FASTER</text><text x="8" y="163" class="lbl">PAYMENTS</text>
+<rect class="bx-v" x="230" y="134" width="330" height="30" rx="2"/>
+<text x="395" y="153" class="lbl-2" text-anchor="middle">third-party gateway (never named)</text>
+<rect class="bx-sor" x="560" y="134" width="360" height="30" rx="2"/>
+<text x="740" y="153" class="lbl" text-anchor="middle">Own gateway · direct participant</text>
+<text x="565" y="180" class="t-money">▲ 30 May 2019 incident; failover took ~15 min</text>
+
+<text x="8" y="230" class="lbl">BACS</text>
+<rect class="bx-v" x="230" y="214" width="550" height="30" rx="2"/>
+<text x="505" y="233" class="lbl-2" text-anchor="middle">sponsor bank (never named)</text>
+<rect class="bx-sor" x="780" y="214" width="140" height="30" rx="2"/>
+<text x="850" y="233" class="lbl" text-anchor="middle">Direct</text>
+<text x="640" y="260" class="t-money">▲ 12 Sept 2022 — regulatory cap on funds held at the sponsor, at payroll peaks</text>
+
+<text x="920" y="30" class="lbl-2" text-anchor="end">solid = in-house · dashed = vendor</text>
+</svg>
+</div>
+<figcaption><b>Six years, three rails.</b> Every switch was triggered by an <b>operational constraint, not a cost model</b>: a vendor's reliability, a fifteen-minute failover, and — the sharpest one — a regulatory cap on how much money Monzo could hold at its Bacs sponsor during mid-month and end-of-month payroll peaks. That last is the tell. The sponsor model didn't just cost money; it <em>bounded the business</em> at exactly the moment volume was highest.</figcaption>
+</figure>
+
+<div class="prose">
+<h2><span class="n">01</span>The payment that isn't a payment</h2>
+<p class="lede">Between two Monzo customers, no rail is involved at all. That single fact explains most of the product.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 960 420" role="img" aria-label="Monzo to Monzo transfers compared with Monzo to an external bank. An internal transfer goes from the app to the p2p-payments service, which checks account types and then debits one ledger account and credits another — no rail, no scheme, no settlement. An external transfer places a hold, sends an ISO 8583 message through Vocalink to the recipient's bank, which confirms the account and credits it, acknowledges back, and only then is the sender debited and the hold released; the banks themselves settle net at the Bank of England three times a day.">
+<text x="20"  y="22" class="lbl">MONZO → MONZO</text><text x="20"  y="37" class="lbl-2">closed loop</text>
+<text x="500" y="22" class="lbl">MONZO → ANY UK BANK</text><text x="500" y="37" class="lbl-2">Faster Payments</text>
+<line class="f" x1="470" y1="14" x2="470" y2="400" stroke-opacity=".2"/>
+
+<rect class="bx" x="20" y="56" width="420" height="34" rx="2"/><text x="230" y="78" class="lbl" text-anchor="middle">App — tap to pay</text>
+<line class="f" x1="230" y1="92" x2="230" y2="112" marker-end="url(#m-ah)"/>
+<rect class="bx" x="20" y="116" width="420" height="46" rx="2"/><text x="230" y="136" class="lbl" text-anchor="middle">p2p-payments service</text><text x="230" y="151" class="lbl-2" text-anchor="middle">checks account types via the account service</text>
+<line class="f" x1="230" y1="164" x2="230" y2="184" marker-end="url(#m-ah)"/>
+<rect class="bx-sor" x="20" y="188" width="420" height="60" rx="2"/>
+<text x="230" y="210" class="lbl" text-anchor="middle">LEDGER</text>
+<text x="230" y="226" class="lbl-2" text-anchor="middle">debit one account · credit the other</text>
+<text x="230" y="240" class="lbl-2" text-anchor="middle">one transaction, two entries</text>
+<line class="f" x1="230" y1="250" x2="230" y2="270" marker-end="url(#m-ah)"/>
+<rect class="bx" x="20" y="274" width="420" height="34" rx="2"/><text x="230" y="296" class="lbl" text-anchor="middle">Recipient sees it — instantly</text>
+<rect class="bx-v" x="20" y="330" width="420" height="56" rx="2"/>
+<text x="230" y="352" class="t-recon" text-anchor="middle">NO RAIL · NO SCHEME · NO SETTLEMENT</text>
+<text x="230" y="370" class="lbl-2" text-anchor="middle">Nothing leaves the bank. The ledger is the whole transaction.</text>
+
+<rect class="bx" x="500" y="56" width="440" height="30" rx="2"/><text x="720" y="76" class="lbl" text-anchor="middle">1 · Validate sort code + account (Luhn)</text>
+<rect class="bx-sor" x="500" y="92" width="440" height="30" rx="2"/><text x="720" y="112" class="lbl" text-anchor="middle">2 · HOLD placed on the sender&#39;s account</text>
+<rect class="bx" x="500" y="128" width="440" height="30" rx="2"/><text x="720" y="148" class="lbl" text-anchor="middle">3 · ISO 8583 message → Vocalink</text>
+<rect class="bx-v" x="500" y="164" width="440" height="30" rx="2"/><text x="720" y="184" class="lbl" text-anchor="middle">4 · Routed to the recipient&#39;s bank by sort code</text>
+<rect class="bx-v" x="500" y="200" width="440" height="30" rx="2"/><text x="720" y="220" class="lbl" text-anchor="middle">5 · They confirm the account, then credit it</text>
+<rect class="bx-v" x="500" y="236" width="440" height="30" rx="2"/><text x="720" y="256" class="lbl" text-anchor="middle">6 · Acknowledgement back through Vocalink</text>
+<rect class="bx-sor" x="500" y="272" width="440" height="30" rx="2"/><text x="720" y="292" class="lbl" text-anchor="middle">7 · Only now: debit the sender, release the hold</text>
+<line class="boundary" x1="500" y1="316" x2="940" y2="316"/>
+<rect class="bx-v" x="500" y="330" width="440" height="56" rx="2"/>
+<text x="720" y="350" class="t-money" text-anchor="middle">STILL NO MONEY BETWEEN THE BANKS</text>
+<text x="720" y="368" class="lbl-2" text-anchor="middle">Deferred net settlement at the Bank of England — 3× a day on weekdays</text>
+<defs>
+  <marker id="m-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-plain"/></marker>
+</defs>
+</svg>
+</div>
+<figcaption><b>Two transfers that look identical to the customer.</b> On the left, nothing leaves the bank — the ledger <em>is</em> the transaction, which is why in-network transfers are instant and free, and why the ledger rather than the rail becomes the binding constraint. On the right, the customer's payment completes at step 7 while the banks have still moved nothing: millions of Faster Payments compress into a handful of Bank of England entries, three times a day. The scheme limit is £250,000; Monzo's own default customer daily limit is £10,000.</figcaption>
+</figure>
+
+<div class="prose">
+<h2><span class="n">02</span>The gateway is a monolith, on purpose</h2>
+<p class="lede">At a company running more than three thousand microservices, the Faster Payments gateway is deliberately none of them.</p>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Property</th><th>Choice</th></tr></thead>
+<tbody>
+<tr><td>Shape</td><td><strong>A monolithic replicated application in Go</strong> — explicitly not microservices</td></tr>
+<tr><td>Topology</td><td><strong>Active-active</strong> across two data centres (was active-standby, ~15 min failover)</td></tr>
+<tr><td>Connectivity</td><td>Per-payment-type TCP to the FPS hub; <strong>two physical links per data centre</strong>, tolerating 3 of 4 failing</td></tr>
+<tr><td>Deployment</td><td>Docker and Docker Compose <strong>on virtual machines</strong> — not Kubernetes</td></tr>
+<tr><td>Storage</td><td><strong>DRBD</strong> — three servers per DC, dual SSDs, six replicas per write</td></tr>
+<tr><td>Security</td><td><strong>Four HSMs</strong>, two per DC; the gateway still runs on one</td></tr>
+<tr><td>Resilience</td><td><strong>Store-and-forward stand-in</strong> — answers the hub on a per-message timeout, forwards when the processor recovers</td></tr>
+<tr><td>Observability</td><td>10-second metrics, 60-second alerting, logs to BigQuery, dedicated payments on-call</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p>The migration completed in <strong>one hour against a three-hour window</strong>.</p>
+<p><strong>Why a monolith.</strong> A scheme gateway is a different problem from a product estate: a small fixed protocol surface, an extreme availability requirement, and hard dependencies on physical connectivity and HSMs. Distributing it adds failure modes without adding capability. Monzo runs &gt;3,000 microservices <em>and</em> this — the lesson being that architectural style should follow the problem, not the house style.</p>
+</div>
+
+<div class="prose">
+<div class="keynum">
+<p class="eyebrow">The detail worth stealing</p>
+<p><strong>Store-and-forward at the gateway.</strong> If the internal payment processor is slow, the gateway answers the scheme hub itself on a timeout, then forwards the message once things recover.</p>
+<p>Without it, an internal wobble becomes a rejected customer payment <em>and</em> a scheme-level performance problem. With it, internal slowness stays internal.</p>
+</div>
+
+<h2><span class="n">03</span>Bacs, and the cap that forced it</h2>
+<p>Monzo used a sponsor bank from 2017. Two problems ended that: manual money transfers to the sponsor carried operational risk, and <strong>regulatory limits capped how much Monzo could hold at the sponsor during mid-month and end-of-month payroll peaks</strong>.</p>
+<p>Eighteen months of work across engineering, operations, support, risk, legal and infrastructure produced a <strong>SWIFT Banking Network</strong> connection to Bacs, <strong>HSMs</strong> holding the certificates that sign and verify files, Bacs microservices that generate files and hash them with the HSM signing the hash before transmission, and <strong>direct settlement against Monzo's own Bank of England account</strong> — removing the sponsor from the money path entirely. Migration day was 12 September 2022, chosen for low volume; the first Direct Debit file landed at <strong>00:19 the next morning</strong>.</p>
+
+<h2><span class="n">04</span>International — adapters, deciders, effects</h2>
+<pre>adapter  →  deciders  →  effects  →  effect application
+   │           │            │              │
+ partner    Accept /     ledger entries,  executed
+ formats    Reject /     notifications,   and logged
+ normalised <b>Hold</b>        movements       for audit</pre>
+<p>Deciders run in parallel and return Accept, Reject or Hold with <strong>encoded precedence — Hold blocks, Reject overrides Accept</strong> — rather than depending on evaluation order. Effects are <em>generated</em> from the decision and <em>applied</em> separately, which is what makes the pipeline testable as a closed box.</p>
+<p><strong>40+ currencies without holding an account in each</strong>: a correspondent partner bank receives the payment, performs the exchange, and forwards over SWIFT with the rate attached. IBAN checksums, BIC codes — Monzo's is <code>MONZGB2L</code> — and idempotency for exactly-once. Each partner gets an adapter plus a separate microservice for its quirks, so onboarding one never touches the core processor.</p>
+
+<h2><span class="n">05</span>Two very different spikes</h2>
+<p><strong>Crowdfunding, 2019.</strong> Built for 100,000 investments in five minutes and 1,000 per second at peak — 15–30× normal load. The architecture put an in-memory <code>balance-cache</code> LRU in front of approximate balance checks specifically to keep <strong>Cassandra out of the pre-investment path entirely</strong>, with NSQ absorbing the burst and a rate-limited consumer writing into the same ledger service the bank uses. Actual result: <strong>£4m in under two minutes</strong>.</p>
+<p><strong>Payday.</strong> "Get Paid Early" lets customers pull Bacs credits at 4pm the day before they are due, producing <strong>up to a 500% traffic increase in seconds</strong> across up to 250,000 eligible payments — then a cascade as those customers immediately pay bills and move money into pots. Reactive autoscaling cannot respond fast enough, so Monzo <strong>forecasts the day's demand from the incoming Bacs records themselves</strong> and uses Jaeger traces to find every downstream service that needs headroom.</p>
+<p>The pairing is the lesson. One spike is unpredictable, and is absorbed by taking the database out of the hot path. The other is <em>scheduled by an external rail</em> — so it is absorbed by reading the future off the rail and pre-scaling into it.</p>
+
+<h2><span class="n">06</span>The constraint underneath everything</h2>
+<p>Monzo's ledger addresses are a five-tuple, and a balance means summing every entry in the group. By 2022 that was <strong>P99 400–500ms</strong> — and during card authorisation, a slow balance read does not fail safe. <strong>The scheme invokes its own stand-in and approves on the issuer's behalf</strong>, potentially beyond available balance, with the issuer's fraud checks never running.</p>
+<p>Fixed with pre-computed balance blocks and time-series reindexing. P99 fell to <strong>~200ms</strong>. In a closed-loop bank where most transfers never touch a rail, the ledger read path <em>is</em> the payment performance story.</p>
+
+<h2>What to steal</h2>
+<ol>
+<li><strong>Insource on constraints, not on cost.</strong> Every Monzo move was triggered by a specific operational limit — a vendor's reliability, a failover time, a balance cap.</li>
+<li><strong>Let the rail gateway be a monolith.</strong> Different problem, different architecture.</li>
+<li><strong>Store-and-forward at the gateway</strong>, so internal slowness never becomes a scheme-level failure.</li>
+<li><strong>Precedence as data</strong> in decisioning — Hold blocks, Reject overrides Accept.</li>
+<li><strong>Generate effects separately from applying them.</strong></li>
+<li><strong>Keep the database out of the spike path</strong> — and when an external rail tells you what is coming, pre-scale from it.</li>
+<li><strong>Server-side eligibility</strong>, so payment changes ship without an app release.</li>
+</ol>
+
+<h2>Still unknown</h2>
+<p>Whether Monzo is a <strong>CHAPS</strong> direct participant — FPS and Bacs are confirmed, CHAPS is not established either way. Whether it holds Mastercard <strong>principal membership</strong> in the UK, and what its in-house processor actually covers: authorisation only, or clearing and settlement too. Who the Bacs sponsor was between 2017 and 2022, and who provided the pre-2019 Faster Payments gateway — Monzo has never named either. And whether Stand-in handles international payments or domestic rails only.</p>
+<footer>
+<p>Part of an open research base on UK and USA neobank technology — <a href="https://fernfant.github.io/neobank-stack/">fernfant.github.io/neobank-stack</a>. Built entirely from Monzo's own engineering blog, plus Sutton Bank's published cardholder agreement for the US arrangement. Corrections welcome via <a href="https://github.com/fernfant/neobank-stack/issues">issues</a>.</p>
+</footer>
+</div>
+
+</div>
