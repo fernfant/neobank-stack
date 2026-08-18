@@ -131,7 +131,7 @@
   <p class="eyebrow">Neobank stack · deep dive</p>
   <h1>The four layers you build</h1>
   <p class="standfirst">Reconciliation, rail adapters, KYC orchestration and fraud detection — with the real architectures behind them, the open-source packages that already exist, and the vendors worth paying.</p>
-  <p class="meta"><span>18 Aug 2026</span><span><b>4</b> layers</span><span><b>30+</b> packages</span><span><b>139</b> sources</span></p>
+  <p class="meta"><span>18 Aug 2026</span><span><b>4</b> layers</span><span><b>30+</b> packages</span><span><b>194</b> sources</span></p>
 </header>
 
 <div class="prose">
@@ -258,6 +258,14 @@ missing/
 </div>
 
 <div class="prose">
+<h3>The corollary nobody warns you about</h3>
+<p>Invariant: <em>postings are the truth, balances are derived.</em> Correct — and it means <strong>balance read cost grows with account age.</strong> Monzo hit this wall publicly: their ledger addresses are a 5-tuple (legal entity, namespace, name, currency, account ID), and a balance meant summing <em>every</em> entry in the group. By 2022 that was <strong>P99 400&ndash;500ms</strong>.</p>
+<p>The consequence is the part to internalise. During card authorisation, if the balance read is too slow, <strong>the card scheme invokes its own stand-in and approves on the issuer's behalf</strong> — potentially beyond available balance, with the issuer's fraud checks never running. A slow ledger read does not degrade into a decline; it silently hands your authorisation decision to Mastercard.</p>
+<p>The fix was <strong>pre-computed balance blocks</strong> — running sums keyed by balance name, maintained only for hot names like <code>customer-facing-balance</code> — plus time-series reindexing partitioned by committed timestamp. Throwing read throughput at it was rejected as "fundamentally unscalable". <strong>P99 fell to ~200ms.</strong></p>
+<p>So: derive balances from postings, but <strong>checkpoint them</strong>. Append-only with derived balances is correct and unbounded; append-only with periodic immutable snapshots is correct <em>and</em> bounded. Decide the checkpoint strategy before you have five years of entries, because retrofitting it is an online migration of your most sensitive table.</p>
+</div>
+
+<div class="prose">
 <h2><span class="n">02</span>Rail adapters</h2>
 <p class="lede">Buy the access. Build the normalisation layer. And stop writing bitmap parsers — that work is solved.</p>
 <p>The layer between scheme access and your ledger is always yours, because it encodes what a payment <em>means</em> in your product. Uber's version normalises 50+ PSP formats into one internal type. But the wire-format work underneath — ISO 8583, ISO 20022, Nacha ACH, Fedwire — has mature open-source implementations that most teams rediscover only after building worse ones.</p>
@@ -292,6 +300,10 @@ missing/
 <p>ACH returns arrive with R-codes days after the fact. Direct Debit indemnity claims can arrive <em>months</em> later and are effectively unbounded. Both must reverse cleanly against the ledger, and both are the branch that gets written last and tested least.</p>
 <p>The other four: one canonical money-movement event with rail specifics pushed into adapters; a corridor as configuration rather than a code branch; idempotency keys <em>you</em> choose, because the rail's identifier is exactly what gets rewritten; and every adapter also emitting the statement side of the reconciliation input — far cheaper built together than retrofitted.</p>
 <p>For the long-running orchestration, <strong>Temporal</strong> is the current default. The instructive datapoint is not that Stripe uses it but that <strong>Coinbase migrated onto it specifically to delete a homegrown SAGA implementation</strong> — homegrown saga orchestration is the thing teams build, regret, and replace.</p>
+
+<h3>Independent confirmation</h3>
+<p>Monzo built exactly this layer and published it: <strong>adapter &rarr; deciders &rarr; effects &rarr; application</strong>. Partner-specific logic sits in a separate microservice behind each adapter, so onboarding a partner never touches the core processor. Deciders return Accept / Reject / <strong>Hold</strong> with <em>encoded precedence</em> rather than ordering rules, and effects are <strong>generated separately from being applied</strong> — which is what makes the pipeline testable as a closed box. They run 40+ currencies over SWIFT via correspondent banking without holding accounts in each.</p>
+<p>One more thing they had to build, and you will too: <strong>a log is not a queue.</strong> Monzo moved NSQ &rarr; Kafka for durability and then wrote a client library to restore queue semantics — deadlettering with CLI replay, and unordered concurrent consumption per partition behind an offset manager that only advances past fully-processed messages. Without it, one poison-pill message blocks its partition indefinitely. 400+ services, 2,500+ topics.</p>
 
 <h3>Access you buy</h3>
 </div>

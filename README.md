@@ -1,5 +1,7 @@
 # Neobank Tech Stack Research
 
+**Live:** https://fernfant.github.io/neobank-stack/ · **Repo:** https://github.com/fernfant/neobank-stack
+
 A living knowledge base on how UK and USA neobanks are actually built — the ledger, the
 payment rails, the card stack, the financial-crime stack, credit decisioning, data/ML, and
 the infrastructure underneath — plus a reusable **architecture diagram template** and a

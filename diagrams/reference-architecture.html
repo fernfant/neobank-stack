@@ -460,7 +460,7 @@
 <text x="360" y="385" class="lbl">must be an explicit decision. Clearing and settlement are a separate flow at T+n.</text>
 </svg>
 </div>
-<figcaption><b>Card authorisation.</b> The amber bracket is the whole argument: every risk control, every feature fetch and every model call has to fit between the processor receiving the message and the scheme's timeout. Note the two things teams routinely leave undesigned until an incident forces the question — the <b>idempotent hold</b> on the ledger, and the <b>stand-in policy</b> for when the ledger cannot answer.</figcaption>
+<figcaption><b>Card authorisation.</b> A slow ledger read here does <em>not</em> fail safe — if the issuer cannot answer in time, <b>the scheme invokes its own stand-in and approves on your behalf</b>, potentially beyond available balance and with none of your fraud checks having run. Monzo hit exactly this at P99 400–500ms on balance reads and engineered down to ~200ms with pre-computed balance blocks. The amber bracket is the whole argument: every risk control, every feature fetch and every model call has to fit between the processor receiving the message and the scheme's timeout. Note the two things teams routinely leave undesigned until an incident forces the question — the <b>idempotent hold</b> on the ledger, and the <b>stand-in policy</b> for when the ledger cannot answer.</figcaption>
 </figure>
 
 <div class="prose">
@@ -501,6 +501,56 @@
 </div>
 <figcaption><b>Reconciliation.</b> Frequency is set by regulation, not convenience: daily safeguarding reconciliation for UK e-money firms from May 2026, near real-time partner-account reconciliation in the FDIC's proposed rule. The property that matters most is <b>replayability</b> — rerunning yesterday must reproduce yesterday's answer, or the break register is not evidence of anything.</figcaption>
 </figure>
+
+
+<div class="prose">
+<h2>Surviving the cloud you run on</h2>
+<p class="lede">Every regulator asks the concentration question. Most firms answer with a document. One bank answered by building a second bank.</p>
+<p>DORA Articles 28–30 and the FCA/PRA critical-third-parties regime require a documented, tested exit and continuity capability for critical providers. The honest problem is that a credible answer looks impossibly expensive — until you are ruthless about scope.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 940 450" role="img" aria-label="Monzo Stand-in architecture. The primary platform runs about three thousand microservices on AWS including the ledger as system of record. A separate Stand-in platform runs eighteen minimal services on Google Cloud at roughly one percent of the cost, with independently reimplemented validators rather than shared code. A Data Syncer pushes events from primary to Stand-in, eventually consistent and non-blocking. Stand-in returns Monzo Advices over PubSub, applied verbatim by the primary, deduplicated and tolerant of any order. Both platforms reach the Mastercard, Faster Payments and Bacs rails.">
+<text x="40"  y="26" class="lbl">PRIMARY PLATFORM</text><text x="40"  y="42" class="lbl-2">Amazon Web Services · system of record, always</text>
+<text x="570" y="26" class="lbl">STAND-IN PLATFORM</text><text x="570" y="42" class="lbl-2">Google Cloud · never authoritative</text>
+
+<rect class="bx" x="40" y="58" width="330" height="196" rx="3"/>
+<rect class="bx" x="58" y="76" width="294" height="42" rx="2"/><text x="205" y="94"  class="lbl" text-anchor="middle">~3,000 microservices</text><text x="205" y="109" class="lbl-2" text-anchor="middle">full product estate</text>
+<rect class="bx-sor" x="58" y="128" width="294" height="46" rx="2"/><text x="205" y="147" class="lbl" text-anchor="middle">LEDGER — system of record</text><text x="205" y="163" class="lbl-2" text-anchor="middle">double-entry · append-only</text>
+<rect class="bx" x="58" y="184" width="294" height="52" rx="2"/><text x="205" y="203" class="lbl" text-anchor="middle">Fraud controls · features · product</text><text x="205" y="219" class="lbl-2" text-anchor="middle">Starlark controls, DAG feature service</text>
+
+<rect class="bx" x="570" y="58" width="330" height="196" rx="3"/>
+<rect class="bx" x="588" y="76" width="294" height="42" rx="2"/><text x="735" y="94"  class="lbl" text-anchor="middle">18 minimal services</text><text x="735" y="109" class="lbl-2" text-anchor="middle">card · transfers · balance · freeze</text>
+<rect class="bx-sor" x="588" y="128" width="294" height="46" rx="2"/><text x="735" y="147" class="lbl" text-anchor="middle">Validators</text><text x="735" y="163" class="lbl-2" text-anchor="middle">reimplemented — never shared code</text>
+<rect class="bx" x="588" y="184" width="294" height="52" rx="2"/><text x="735" y="203" class="lbl" text-anchor="middle">Minimal immutable local state</text><text x="735" y="219" class="lbl-2" text-anchor="middle">enough to decide, not to be the truth</text>
+
+<line class="f-async" x1="374" y1="97" x2="582" y2="97" marker-end="url(#aha)"/>
+<text x="478" y="82" class="t-async" text-anchor="middle">DATA SYNCER — EVENTS</text>
+<text x="478" y="112" class="lbl-2" text-anchor="middle">eventually consistent · non-blocking by design</text>
+
+<line class="f-recon" x1="582" y1="212" x2="376" y2="212" marker-end="url(#ahr)"/>
+<text x="478" y="197" class="t-recon" text-anchor="middle">MONZO ADVICES · PUBSUB</text>
+<text x="478" y="228" class="lbl-2" text-anchor="middle">applied verbatim · deduped · any order</text>
+
+<rect class="bx-v" x="588" y="264" width="294" height="30" rx="2"/><text x="735" y="284" class="lbl" text-anchor="middle">≈ 1% of the primary platform&#39;s cost</text>
+
+<rect class="bx" x="240" y="330" width="460" height="46" rx="2"/>
+<text x="470" y="349" class="lbl" text-anchor="middle">Mastercard · Faster Payments · Bacs</text>
+<text x="470" y="365" class="lbl-2" text-anchor="middle">Stand-in routes via the primary&#39;s edge services, or direct from the data centres</text>
+<line class="f-money" x1="205" y1="256" x2="300" y2="326" marker-end="url(#ahm)"/>
+<line class="f-money" x1="735" y1="256" x2="640" y2="326" marker-end="url(#ahm)"/>
+
+<text x="470" y="404" class="lbl-2" text-anchor="middle">Real customers run on Stand-in continuously, in testing mode. Divergence is caught by shadow-testing</text>
+<text x="470" y="419" class="lbl-2" text-anchor="middle">production traffic against the primary&#39;s decisions. The primary remains the system of record throughout.</text>
+</svg>
+</div>
+<figcaption><b>Monzo Stand-in.</b> A complete backup bank on a different cloud — <b>18 services against ~3,000</b>, at roughly <b>1% of the cost</b>. Two design choices carry it. Logic is <b>reimplemented, not shared</b>, so one bug cannot take both platforms down. And the return path — advices applied verbatim, deduplicated by correlation ID, tolerant of arriving in any order — is the reconciliation contract that stops a failover creating the exact break class that ends companies. The hard part was never the failover; it was getting back.</figcaption>
+</figure>
+
+<div class="prose">
+<p>Two things to take from it even if you never build one. <strong>Continuity does not mean full function</strong> — pick the handful of things customers cannot live without and build only those, and the cost collapses to something arguable. And <strong>a failover you have never used is a hypothesis, not a control</strong>: real customers run on Stand-in permanently in testing mode, which is what turns it from a diagram into evidence.</p>
+</div>
 
 <div class="prose">
 <h2>Build or buy, layer by layer</h2>

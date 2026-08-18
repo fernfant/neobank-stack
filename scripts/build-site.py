@@ -49,8 +49,12 @@ for f in sorted((SRC / "wiki").rglob("*.md")):
 titles = {p["stem"]: p["title"] for p in pages}
 
 # ---- copy tree, converting wiki-links ----
-if OUT.exists(): shutil.rmtree(OUT)
-OUT.mkdir(parents=True)
+# Clear the output dir but PRESERVE .git — this dir is usually a checkout of the
+# published repo, and blowing away .git turns every rebuild into a fresh history.
+OUT.mkdir(parents=True, exist_ok=True)
+for child in OUT.iterdir():
+    if child.name == ".git": continue
+    shutil.rmtree(child) if child.is_dir() else child.unlink()
 copied = converted = 0
 for f in SRC.rglob("*"):
     rel = f.relative_to(SRC)
@@ -175,4 +179,5 @@ html = f"""<!doctype html>
 </div></body></html>"""
 (OUT / "index.html").write_text(html)
 (OUT / ".nojekyll").write_text("")
+(OUT / ".gitignore").write_text(".DS_Store\n*.log\n")
 print(f"built  → {OUT}\nfiles  : {copied}\nlinks  : {converted} wiki-links converted\npages  : {len(pages)}")
