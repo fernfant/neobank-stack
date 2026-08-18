@@ -146,7 +146,7 @@
   <p class="eyebrow">Neobank stack · deep dive</p>
   <h1>Payment rails</h1>
   <p class="standfirst">Where a clean internal model meets other people's guarantees — UK and USA, from the settlement mechanics down to the return codes that decide whether you keep network access.</p>
-  <p class="meta"><span>18 Aug 2026</span><span><b>2</b> markets</span><span><b>7</b> rails</span><span><b>4</b> archetypes</span><span><b>19</b> sources</span></p>
+  <p class="meta"><span>18 Aug 2026</span><span><b>2</b> markets</span><span><b>7</b> rails</span><span><b>4</b> archetypes</span><span><b>6</b> card options</span><span><b>19</b> sources</span></p>
 </header>
 
 <div class="prose">
@@ -484,6 +484,105 @@
 
 <div class="prose">
 <p>These are not exclusive. Most real neobanks run two at once — a UK bank with a US programme sits in columns one and three simultaneously, with entirely separate reconciliation obligations on each. Monzo is exactly that: a direct participant at home, with Galileo behind its US business.</p>
+
+</div>
+
+<div class="prose">
+<h2><span class="n">06</span>If you were starting one tomorrow</h2>
+<p class="lede">The card question is not "which processor". It is <em>how many partners do I have to assemble, and who is the regulated entity?</em></p>
+<p>A card programme needs four distinct roles filled. Vendors bundle them differently, and the bundling — not the API — is what determines how long you spend in contracting and compliance before you can ship.</p>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Role</th><th>What it actually is</th></tr></thead>
+<tbody>
+<tr><td><strong>BIN sponsor</strong> / principal member</td><td>The licensed Visa or Mastercard member whose BIN your cards sit under. Without this you cannot issue at all</td></tr>
+<tr><td><strong>Issuer processor</strong></td><td>Receives scheme authorisation messages, applies rules, answers approve/decline, produces clearing and settlement files</td></tr>
+<tr><td><strong>Program manager</strong></td><td>Onboarding, disputes and chargebacks, scheme compliance, reporting — the operational wrapper</td></tr>
+<tr><td><strong>Card manufacture</strong></td><td>Plastic, personalisation, fulfilment. Genuinely commodity — buy it and stop thinking about it</td></tr>
+</tbody>
+</table>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 1000 414" role="img" aria-label="Coverage matrix for card programme options. Building everything in-house like Monzo means you supply BIN sponsorship, issuer processing, programme management and scheme access yourself. Marqeta after acquiring TransactPay covers BIN sponsorship, processing and programme management in the UK and EU under one contract, but not scheme access. Thredd covers processing and programme management and arranges BIN sponsorship through a partner bank such as Sutton Bank. Adyen covers all three under its own banking licence. Galileo, Lithic and Highnote cover processing with BIN sponsorship via partner banks. A US sponsor bank arrangement covers everything including rail access but places the money on somebody else's balance sheet.">
+<text x="290" y="36" class="lbl" text-anchor="middle">BIN SPONSOR</text><text x="290" y="50" class="lbl-2" text-anchor="middle">principal member</text>
+<text x="485" y="36" class="lbl" text-anchor="middle">ISSUER</text><text x="485" y="50" class="lbl-2" text-anchor="middle">processing</text>
+<text x="680" y="36" class="lbl" text-anchor="middle">PROGRAM</text><text x="680" y="50" class="lbl-2" text-anchor="middle">management</text>
+<text x="875" y="36" class="lbl" text-anchor="middle">SCHEME / RAIL</text><text x="875" y="50" class="lbl-2" text-anchor="middle">access</text>
+
+<text x="195" y="90" class="lbl" text-anchor="end">Build it all</text><text x="195" y="103" class="lbl-2" text-anchor="end">Monzo</text>
+<rect class="bx-sor" x="200" y="70" width="190" height="42" rx="2"/><text x="295" y="96" class="lbl" text-anchor="middle">YOU</text>
+<rect class="bx-sor" x="395" y="70" width="190" height="42" rx="2"/><text x="490" y="96" class="lbl" text-anchor="middle">YOU</text>
+<rect class="bx-sor" x="590" y="70" width="190" height="42" rx="2"/><text x="685" y="96" class="lbl" text-anchor="middle">YOU</text>
+<rect class="bx-sor" x="785" y="70" width="190" height="42" rx="2"/><text x="880" y="96" class="lbl" text-anchor="middle">YOU</text>
+
+<text x="195" y="138" class="lbl" text-anchor="end">Marqeta</text><text x="195" y="151" class="lbl-2" text-anchor="end">+ TransactPay</text>
+<rect class="bx" x="200" y="118" width="190" height="42" rx="2"/><text x="295" y="139" class="lbl" text-anchor="middle">COVERED</text><text x="295" y="153" class="lbl-2" text-anchor="middle">EMI, MC + Visa member</text>
+<rect class="bx" x="395" y="118" width="190" height="42" rx="2"/><text x="490" y="144" class="lbl" text-anchor="middle">COVERED</text>
+<rect class="bx" x="590" y="118" width="190" height="42" rx="2"/><text x="685" y="139" class="lbl" text-anchor="middle">COVERED</text><text x="685" y="153" class="lbl-2" text-anchor="middle">UK + EU, one contract</text>
+<rect class="bx-v" x="785" y="118" width="190" height="42" rx="2"/><text x="880" y="144" class="lbl-2" text-anchor="middle">arrange separately</text>
+
+<text x="195" y="186" class="lbl" text-anchor="end">Thredd</text><text x="195" y="199" class="lbl-2" text-anchor="end">+ partner bank</text>
+<rect class="bx-v" x="200" y="166" width="190" height="42" rx="2"/><text x="295" y="187" class="lbl-2" text-anchor="middle">VIA PARTNER</text><text x="295" y="201" class="lbl-2" text-anchor="middle">e.g. Sutton Bank (US)</text>
+<rect class="bx" x="395" y="166" width="190" height="42" rx="2"/><text x="490" y="187" class="lbl" text-anchor="middle">COVERED</text><text x="490" y="201" class="lbl-2" text-anchor="middle">2bn+ txns/yr, 50+ countries</text>
+<rect class="bx" x="590" y="166" width="190" height="42" rx="2"/><text x="685" y="187" class="lbl" text-anchor="middle">COVERED</text><text x="685" y="201" class="lbl-2" text-anchor="middle">local market experts</text>
+<rect class="bx-v" x="785" y="166" width="190" height="42" rx="2"/><text x="880" y="192" class="lbl-2" text-anchor="middle">arrange separately</text>
+
+<text x="195" y="234" class="lbl" text-anchor="end">Adyen</text><text x="195" y="247" class="lbl-2" text-anchor="end">own banking licence</text>
+<rect class="bx" x="200" y="214" width="190" height="42" rx="2"/><text x="295" y="235" class="lbl" text-anchor="middle">COVERED</text><text x="295" y="249" class="lbl-2" text-anchor="middle">its own licence, EU/UK/US</text>
+<rect class="bx" x="395" y="214" width="190" height="42" rx="2"/><text x="490" y="240" class="lbl" text-anchor="middle">COVERED</text>
+<rect class="bx" x="590" y="214" width="190" height="42" rx="2"/><text x="685" y="240" class="lbl" text-anchor="middle">COVERED</text>
+<rect class="bx" x="785" y="214" width="190" height="42" rx="2"/><text x="880" y="235" class="lbl" text-anchor="middle">PARTLY</text><text x="880" y="249" class="lbl-2" text-anchor="middle">accounts, not UK schemes</text>
+
+<text x="195" y="282" class="lbl" text-anchor="end">Galileo · Lithic</text><text x="195" y="295" class="lbl-2" text-anchor="end">Highnote</text>
+<rect class="bx-v" x="200" y="262" width="190" height="42" rx="2"/><text x="295" y="288" class="lbl-2" text-anchor="middle">via partner banks</text>
+<rect class="bx" x="395" y="262" width="190" height="42" rx="2"/><text x="490" y="288" class="lbl" text-anchor="middle">COVERED</text>
+<rect class="bx-v" x="590" y="262" width="190" height="42" rx="2"/><text x="685" y="288" class="lbl-2" text-anchor="middle">varies by vendor</text>
+<rect class="bx-v" x="785" y="262" width="190" height="42" rx="2"/><text x="880" y="288" class="lbl-2" text-anchor="middle">arrange separately</text>
+
+<text x="195" y="330" class="lbl" text-anchor="end">US sponsor bank</text><text x="195" y="343" class="lbl-2" text-anchor="end">Bancorp · Stride · Cross River</text>
+<rect class="bx" x="200" y="310" width="190" height="42" rx="2"/><text x="295" y="336" class="lbl" text-anchor="middle">COVERED</text>
+<rect class="bx" x="395" y="310" width="190" height="42" rx="2"/><text x="490" y="331" class="lbl" text-anchor="middle">COVERED</text><text x="490" y="345" class="lbl-2" text-anchor="middle">bundled processor</text>
+<rect class="bx" x="590" y="310" width="190" height="42" rx="2"/><text x="685" y="336" class="lbl" text-anchor="middle">COVERED</text>
+<rect class="bx" x="785" y="310" width="190" height="42" rx="2"/><text x="880" y="331" class="lbl" text-anchor="middle">COVERED</text><text x="880" y="345" class="lbl-2" text-anchor="middle">their balance sheet</text>
+
+<text x="500" y="386" class="t-money" text-anchor="middle">SOLID = COVERED BY ONE CONTRACT   ·   DASHED = A SEPARATE PARTNER YOU MUST FIND, VET AND CONTRACT</text>
+<text x="500" y="402" class="lbl-2" text-anchor="middle">The dashed cells are where launch timelines actually go — each one is its own diligence, negotiation and compliance review.</text>
+</svg>
+</div>
+<figcaption><b>Count the dashed cells, not the features.</b> Every dashed cell is a separate partner to find, diligence, negotiate and integrate — and that, far more than API quality, is what sets your launch date. <b>Marqeta's 2025 acquisition of TransactPay</b> — an EMI licensed in the UK and EEA and a principal member of both Mastercard and Visa, live in 25 countries — is precisely a move to eliminate one of those cells for European customers. <b>Adyen</b> eliminates them a different way, by holding its own banking licence across EU, UK and US. <b>Thredd</b> keeps processing and programme management and arranges sponsorship through partner banks such as Sutton Bank.</figcaption>
+</figure>
+
+<div class="prose">
+<h3>So which one, if you are actually starting?</h3>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Your situation</th><th>The pragmatic answer</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>UK/EU, no licence, want to ship this year</td><td><strong>Marqeta + TransactPay</strong></td><td>One contract covers BIN sponsorship, processing and programme management across UK and EU. Fewest dashed cells in Europe</td></tr>
+<tr><td>Multi-country, cards are the product</td><td><strong>Thredd</strong></td><td>2bn+ transactions a year across 50+ countries, with people who know local scheme rules; you arrange sponsorship, they help</td></tr>
+<tr><td>You also take payments <em>in</em> from merchants</td><td><strong>Adyen</strong></td><td>Acquiring and issuing on one platform under its own licence — unified reconciliation is a real advantage if you are on both sides</td></tr>
+<tr><td>US, developer-led, virtual cards</td><td><strong>Lithic · Highnote</strong></td><td>Fast to integrate; Highnote uniquely puts issuing and acquiring behind one API and one ledger</td></tr>
+<tr><td>US, no charter, want everything bundled</td><td><strong>Sponsor bank</strong> + its processor</td><td>Fastest path to live — and the money sits on their balance sheet, with continuous reconciliation as your obligation</td></tr>
+<tr><td>You already have millions of cards</td><td><strong>Consider building</strong></td><td>Only when processor fees are your top cost line, or their release train gates your roadmap. That is what happened to Monzo and Chime</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<div class="keynum">
+<p class="eyebrow">The mistake founders make</p>
+<p>Choosing an issuer processor on API quality, then discovering that <strong>BIN sponsorship is a separate six-month conversation with a bank that has its own risk appetite</strong> — and that programme management, disputes and scheme compliance are yours unless someone contracted to take them.</p>
+<p>Ask every vendor the same question: <em>"Which of the four roles are you, contractually, and who fills the others?"</em> The answers vary far more than the pitch decks suggest.</p>
+</div>
+
+<h3>And scheme access is a separate decision entirely</h3>
+<p>Nothing in the matrix above gets you onto Faster Payments or Bacs. Cards and domestic rails are <strong>two independent procurement tracks</strong> — you can be on Marqeta for cards and ClearBank for rails, or build both like Monzo, or take a US sponsor bank that bundles the lot. The four archetypes above are about the rails; this matrix is about the cards. Most new entrants need an answer to both, and they are rarely the same vendor.</p>
 
 <h2>The questions to ask</h2>
 </div>

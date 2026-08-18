@@ -237,6 +237,31 @@ This is precisely the normalisation-layer pattern argued for in
 [Deep dive — Rail adapters (buy access, build normalisation)](../deep-dives/02-rail-adapters.md) — independently arrived at, which is the best kind of
 confirmation.
 
+## Monzo vs a bank that buys the same thing
+
+The cleanest comparison is **Monzo against Starling and Revolut** — all three UK licensed banks,
+all three sophisticated, and they made opposite calls on card processing `[reported]`:
+
+| | Card processing | Scheme access |
+| --- | --- | --- |
+| **Monzo** | **Built its own** processor for the current account, no third-party issuing bank | Own FPS gateway, Bacs direct participant |
+| **Starling** | **Thredd** (formerly GPS) | Own licence, direct participation |
+| **Revolut** | **Thredd** | Own licence |
+| **Tide** | — | **ClearBank** for scheme access — does not own the connection at all |
+
+So "owning the gateway" is not a proxy for sophistication. Starling and Revolut are not less
+capable for using Thredd; they concluded that card processing is a solved problem to rent while
+their differentiation sits elsewhere. Monzo concluded the opposite *after being burned by vendor
+outages*, which is the honest reason rather than a strategic one.
+
+Tide is the further end: it does not own scheme connectivity either, reaching Faster Payments,
+Bacs and CHAPS through ClearBank. Faster to market, and a dependency whose incident is Tide's
+outage.
+
+**The distinction that matters** is not build-versus-buy in the abstract but **which dependency
+you can least afford**. Monzo could not afford a card processor whose outages it could not fix.
+Tide can afford ClearBank because scheme connectivity is not where it competes.
+
 ## Platform engineering — the tooling that makes 3,000 services survivable
 
 Monzo's platform teams treat internal engineers as their users and the platform as their product

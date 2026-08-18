@@ -35,8 +35,62 @@ Know which of the four each vendor is actually providing before you sign.
 | **Galileo** (SoFi) | Visa-certified processor behind many neobanks; expanding into sponsor banking | Powers Chime among others `[reported]`; also sells Cyberbank Core |
 | **Lithic** | Developer-first US issuing, from the Privacy.com team | >$1bn/month processed `[reported]` |
 | **Highnote** | Issuing *and* acquiring behind one API and one ledger | $90m Series B in 2025 `[reported]`. The single-ledger claim is architecturally interesting if you do both sides |
-| **Thredd** | International issuer-processor | >2bn transactions/yr, 130+ clients, 50+ countries `[reported]`. Common for UK/EU programmes |
+| **Thredd** (formerly GPS) | International issuer-processor, "AI-first", debit + credit + value-added in one composable architecture | **>2bn transactions/yr, 130+ clients, 50+ countries** `[reported]`. Named users: **Curve** (since 2016, 4m+ customers), **Zilch**, **Revolut**, **Starling**. **Arranges BIN sponsorship through partner banks** — e.g. Sutton Bank for US programmes — rather than holding it itself. Sells local scheme-rule and regulatory expertise per market |
 | **i2c**, **Wallester**, **Monavate**, **Stripe Issuing** | Alternatives by segment | Stripe Issuing is the fastest route to virtual cards if you are already on Stripe |
+
+## Two completely different things are called a "gateway"
+
+This is the single most common source of confusion in payments, and it costs people whole
+conversations `[reported]`:
+
+| | **Scheme gateway** (issuer / bank side) | **Payment gateway** (merchant / acquirer side) |
+| --- | --- | --- |
+| Connects | Your bank to FPS, Bacs or the card scheme's network | A merchant's checkout to an acquirer |
+| Speaks | ISO 8583 / ISO 20022 to a scheme hub | HTTPS APIs, hosted fields, SDKs |
+| Built by | Monzo (its Faster Payments gateway) | Adyen, Checkout.com, Stripe, Braintree |
+| Concerned with | HSMs, physical links, settlement, availability | Conversion, auth rates, tokenisation, 3DS |
+
+When Monzo says it "moved its Faster Payments gateway in-house", that is the first column. When a
+merchant says it "uses Adyen as its gateway", that is the second. **Same word, opposite ends of
+the transaction.**
+
+## Issuing vs acquiring — the two sides that meet at the scheme
+
+A card transaction has two halves, and almost every company in payments sits firmly on one side:
+
+```
+        ISSUING SIDE                                    ACQUIRING SIDE
+   (the cardholder's money)                          (the merchant's money)
+
+  Monzo · Chime · Revolut                    Adyen · Checkout.com · Stripe · Worldpay
+         │                                                    │
+  issuer-processor                              gateway + acquirer + processor
+  (in-house · Thredd · Galileo · Marqeta)
+         │                                                    │
+         └──────────────  VISA / MASTERCARD  ─────────────────┘
+                           (the scheme)
+```
+
+**Monzo and Adyen never compete.** They are on opposite ends of the same transaction. When a Monzo
+customer buys something from an Adyen merchant: the merchant's checkout hits Adyen's gateway,
+Adyen acquires and routes into Mastercard, Mastercard routes to Monzo's issuer processor, Monzo
+checks the balance and its fraud controls, and the approval travels all the way back. Two
+sophisticated payment companies, one transaction, zero overlap.
+
+### What Adyen and Checkout.com actually are
+
+| | **Adyen** | **Checkout.com** |
+| --- | --- | --- |
+| Model | **Full-stack**: gateway, acquiring, processing and risk in one system, built in-house on a single platform across markets | Direct acquiring in **55+ countries**, digital-first |
+| Licences | Its own **banking and acquiring licences** — EU, UK and US | Acquiring licences; not a bank in the same sense |
+| Channels | **Omnichannel** — online plus physical point of sale ("Unified Commerce", its fastest-scaling pillar) | **Digital only — no physical POS** |
+| Pitch | Seeing the *whole* payment journey rather than a fragment lets its models approve more good transactions — i.e. **authorisation rate** | Auth-rate performance too: approval analytics, decline recovery, real-time transaction intelligence |
+
+The strategic point: **Adyen's banking licence is what let it expand beyond acquiring** into
+issuing, business accounts and embedded lending `[reported]`. That matters here because it means
+Adyen is now creeping toward the issuing side — **Adyen Issuing competes with Marqeta**, and in
+principle a neobank could use Adyen as its card issuing platform. The two halves of the diagram
+above are converging at the edges, and Adyen is the clearest example.
 
 ## Build vs buy
 
@@ -71,6 +125,52 @@ release train becomes the binding constraint on product.
   representment. Usually underestimated by an order of magnitude.
 - **Tokenisation and wallets.** Apple Pay/Google Pay provisioning, network tokens, 3DS.
   Buying gets these; building means scheme certification for each.
+
+## Building from scratch — who covers which of the four roles
+
+The founder's question is not "which processor has the nicest API". It is **how many separate
+partners must I find, diligence, negotiate and integrate** — because that, not the API, sets the
+launch date.
+
+| Option | BIN sponsor | Processing | Program mgmt | Scheme/rail access |
+| --- | --- | --- | --- | --- |
+| **Build it all** (Monzo) | You | You | You | You |
+| **Marqeta + TransactPay** | **Covered** — EMI licensed UK/EEA, principal member of Mastercard *and* Visa, live in 25 countries, 16 currencies | **Covered** | **Covered** — UK + EU under one contract | Separate |
+| **Thredd + partner bank** | Via partner (e.g. Sutton Bank) | **Covered** | **Covered** — local market experts | Separate |
+| **Adyen** | **Covered** — its own banking licence, EU/UK/US | **Covered** | **Covered** | Partly — accounts, not UK schemes |
+| **Galileo · Lithic · Highnote** | Via partner banks | **Covered** | Varies | Separate |
+| **US sponsor bank** + its processor | **Covered** | **Covered** | **Covered** | **Covered** — on their balance sheet |
+
+**Marqeta's TransactPay acquisition** (announced Feb 2025, completed Aug 2025) is exactly a move
+to collapse cells: TransactPay is an EMI licensed in the UK and EEA and a principal member of both
+schemes, so Marqeta customers can now run UK and EU card programmes **through a single partner**
+rather than assembling several `[reported]`. **Adyen** collapses them a different way — by holding
+its own banking licence — and its embedded-finance suite lets a platform white-label payments,
+accounts, issuing and capital on Adyen's own licensed infrastructure `[reported]`.
+
+**Marqeta is not itself a bank**; outside the TransactPay footprint it provides technology on top
+of bank partners, and its standout capability is **Just-in-Time funding** — authorising and
+funding a transaction in real time from your own logic `[reported]`.
+
+### Choosing, honestly
+
+| Situation | Pragmatic answer |
+| --- | --- |
+| UK/EU, no licence, ship this year | **Marqeta + TransactPay** — fewest separate partners in Europe |
+| Multi-country, cards *are* the product | **Thredd** — breadth and local scheme expertise |
+| You also acquire from merchants | **Adyen** — issuing and acquiring on one licensed platform |
+| US, developer-led, virtual cards | **Lithic** or **Highnote** (one API and one ledger for both sides) |
+| US, no charter, bundle everything | **Sponsor bank + its processor** — fastest, and their balance sheet |
+| Millions of cards already | **Consider building** — only when fees are the top cost line or their release train gates product |
+
+**The mistake to avoid:** choosing a processor on API quality, then discovering **BIN sponsorship
+is a separate six-month conversation with a bank that has its own risk appetite**, and that
+disputes, chargebacks and scheme compliance are yours unless someone contracted to take them. Ask
+every vendor: *"Which of the four roles are you, contractually, and who fills the others?"*
+
+**And scheme access is a separate track.** Nothing in that table gets you onto Faster Payments or
+Bacs — see [Deep dive — Payment rails](../deep-dives/05-payment-rails.md). Cards and domestic rails are independent procurements,
+and rarely the same vendor.
 
 ## Open questions
 
