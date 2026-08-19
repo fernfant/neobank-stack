@@ -99,7 +99,11 @@
   .f-money{stroke:var(--money); stroke-width:2.6; fill:none}
   .f-recon{stroke:var(--recon); stroke-width:1.6; stroke-dasharray:2 3; fill:none}
   .h-plain{fill:currentColor; fill-opacity:.5} .h-money{fill:var(--money)} .h-recon{fill:var(--recon)}
-  .t-money{fill:var(--money); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
+  .em{fill:var(--money); font-weight:700}
+.bnk{font-size:8.6px; fill:var(--ink-3); letter-spacing:.07em; font-family:ui-monospace,Menlo,monospace}
+.bval{font-size:9.2px; fill:var(--ink); font-family:ui-monospace,Menlo,monospace}
+.bval.na{fill:var(--ink-3); font-style:italic}
+.t-money{fill:var(--money); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
   .t-recon{fill:var(--recon); font-size:9.5px; letter-spacing:.08em; font-family:ui-monospace,Menlo,monospace}
   .t-flag{fill:var(--flag); font-size:9.5px; font-family:ui-monospace,Menlo,monospace}
   .boundary{stroke:var(--flag); stroke-width:1.6; stroke-dasharray:7 4; fill:none}
@@ -218,9 +222,8 @@
 
 <figure class="bleed">
 <div class="scroller">
-<svg viewBox="0 0 1000 430" role="img" aria-label="The same four words describe two different stacks. On the bank issuing side: the scheme or rail is not yours, the gateway speaks its protocol, the processor runs the card authorisation loop, and orchestration is your own service. On the merchant acquiring side: the gateway captures and tokenises card details, the processor and acquirer authorise and settle, and orchestration routes between multiple providers. Bank-side vendors are Form3, Icon, Volante for rails and Thredd, Marqeta, Galileo for cards. Merchant-side are Checkout, Adyen, Stripe for bundled gateway and acquiring, and Primer, Gr4vy, Spreedly for orchestration.">
+<svg viewBox="0 0 1000 486" role="img" aria-label="The same four words describe two different stacks. On the bank issuing side there are four separately procured things: the scheme or rail which is not yours, the gateway that speaks its protocol, the processor that runs the card authorisation loop, and orchestration which you always build. Under each, what Monzo, Revolut and Chime actually did. Monzo is direct on the rails with its own Bank of England account, built its own gateway and processor, and built its orchestration. Revolut does not publish its rail access or gateway, uses Thredd and Galileo for cards in the US, and built its orchestration. Chime reaches the rails through sponsor banks, has no gateway of its own, moved card processing from Galileo to its own ChimeCore, and does not publish its orchestration. On the merchant acquiring side the gateway, processor and acquirer arrive bundled in one contract from Checkout, Adyen or Stripe, with separate orchestration vendors Primer, Gr4vy and Spreedly.">
 <text x="20" y="22" class="lbl">ONE SET OF WORDS &middot; TWO COMPLETELY DIFFERENT STACKS</text>
-
 <text x="20" y="58" class="gut">YOU ARE THE BANK &mdash; ISSUING SIDE</text>
 <line class="f2" x1="20" y1="66" x2="980" y2="66"/>
 <rect class="bx-v" x="20" y="78" width="228" height="76" rx="2"/>
@@ -228,53 +231,75 @@
 <text x="32" y="114" class="lbl-2">Visa &middot; Mastercard &middot; FPS &middot; Bacs</text>
 <text x="32" y="128" class="lbl-2">CHAPS &middot; ACH &middot; SEPA</text>
 <text x="32" y="146" class="t-flag">NOT YOURS. YOU JOIN IT</text>
-
+<line class="f" x1="20" y1="172" x2="248" y2="172" stroke-opacity=".35"/>
+<text x="32" y="190" class="bnk">MONZO</text>
+<text x="90" y="190" class="bval">Direct. Own BoE a/c</text>
+<text x="32" y="207" class="bnk">REVOLUT</text>
+<text x="90" y="207" class="bval na">not public</text>
+<text x="32" y="224" class="bnk">CHIME</text>
+<text x="90" y="224" class="bval">Via sponsor banks</text>
 <rect class="bx" x="264" y="78" width="228" height="76" rx="2"/>
 <text x="276" y="98" class="lbl">GATEWAY</text>
 <text x="276" y="114" class="lbl-2">The pipe that speaks the</text>
 <text x="276" y="128" class="lbl-2">scheme&rsquo;s protocol &amp; holds the keys</text>
 <text x="276" y="146" class="t-money">FORM3 &middot; ICON &middot; VOLANTE &middot; OR BUILD</text>
-
+<line class="f" x1="264" y1="172" x2="492" y2="172" stroke-opacity=".35"/>
+<text x="276" y="190" class="bnk">MONZO</text>
+<text x="334" y="190" class="bval">Built. Go, 4 HSMs</text>
+<text x="276" y="207" class="bnk">REVOLUT</text>
+<text x="334" y="207" class="bval na">not public</text>
+<text x="276" y="224" class="bnk">CHIME</text>
+<text x="334" y="224" class="bval">Sponsor&rsquo;s. None own</text>
 <rect class="bx" x="508" y="78" width="228" height="76" rx="2"/>
 <text x="520" y="98" class="lbl">PROCESSOR</text>
 <text x="520" y="114" class="lbl-2">Cards only. Runs the</text>
 <text x="520" y="128" class="lbl-2">authorisation loop for you</text>
 <text x="520" y="146" class="t-money">THREDD &middot; MARQETA &middot; GALILEO</text>
-
+<line class="f" x1="508" y1="172" x2="736" y2="172" stroke-opacity=".35"/>
+<text x="520" y="190" class="bnk">MONZO</text>
+<text x="578" y="190" class="bval">Built its own</text>
+<text x="520" y="207" class="bnk">REVOLUT</text>
+<text x="578" y="207" class="bval">Thredd + Galileo (US)</text>
+<text x="520" y="224" class="bnk">CHIME</text>
+<text x="578" y="224" class="bval">Galileo &rarr; ChimeCore</text>
 <rect class="bx-sor" x="752" y="78" width="228" height="76" rx="2"/>
 <text x="764" y="98" class="lbl">ORCHESTRATION</text>
 <text x="764" y="114" class="lbl-2">Which rail, what checks,</text>
 <text x="764" y="128" class="lbl-2">what happens when it fails</text>
 <text x="764" y="146" class="t-flag">NO VENDOR. YOU BUILD IT</text>
-
-<text x="20" y="212" class="gut">YOU ARE THE MERCHANT &mdash; ACQUIRING SIDE</text>
-<line class="f2" x1="20" y1="220" x2="980" y2="220"/>
-<rect class="bx-v" x="20" y="232" width="228" height="76" rx="2"/>
-<text x="32" y="252" class="lbl">SCHEME</text>
-<text x="32" y="268" class="lbl-2">The same networks, entered</text>
-<text x="32" y="282" class="lbl-2">from the other end</text>
-<text x="32" y="300" class="t-flag">NOT YOURS EITHER</text>
-
-<rect class="bx" x="264" y="232" width="472" height="76" rx="2"/>
-<text x="276" y="252" class="lbl">GATEWAY + PROCESSOR + ACQUIRER &mdash; USUALLY ONE CONTRACT</text>
-<text x="276" y="268" class="lbl-2">Capture and tokenise the card, authorise it, settle the funds, and hold the merchant</text>
-<text x="276" y="282" class="lbl-2">relationship. Sold bundled, which is why the three words blur together here</text>
-<text x="276" y="300" class="t-money">CHECKOUT &middot; ADYEN &middot; STRIPE &middot; WORLDPAY &middot; NUVEI</text>
-
-<rect class="bx-sor" x="752" y="232" width="228" height="76" rx="2"/>
-<text x="764" y="252" class="lbl">ORCHESTRATION</text>
-<text x="764" y="268" class="lbl-2">Routes between several</text>
-<text x="764" y="282" class="lbl-2">acquirers. Retry, cascade, vault</text>
-<text x="764" y="300" class="t-money">PRIMER &middot; GR4VY &middot; SPREEDLY</text>
-
-<line class="boundary" x1="20" y1="352" x2="980" y2="352"/>
-<text x="20" y="374" class="lbl">THE TRAP</text>
-<text x="20" y="392" class="lbl-2">A gateway <tspan class="em">moves messages</tspan>. Orchestration <tspan class="em">makes decisions</tspan>. The gateway knows nothing about your business rules;</text>
-<text x="20" y="408" class="lbl-2">your orchestration knows nothing about ISO 8583. Buy the first, build the second &mdash; and never let a vendor sell you one as the other.</text>
-<text x="500" y="428" class="t-money" text-anchor="middle">&ldquo;PAYMENT GATEWAY&rdquo; TO A MERCHANT IS A CHECKOUT PAGE. TO A BANK IT IS AN ISO 8583 CONNECTION TO VISA.</text>
+<line class="f" x1="752" y1="172" x2="980" y2="172" stroke-opacity=".35"/>
+<text x="764" y="190" class="bnk">MONZO</text>
+<text x="822" y="190" class="bval">Built. adapter &rarr; deciders</text>
+<text x="764" y="207" class="bnk">REVOLUT</text>
+<text x="822" y="207" class="bval">Built. Event-driven</text>
+<text x="764" y="224" class="bnk">CHIME</text>
+<text x="822" y="224" class="bval na">not public</text>
+<text x="20" y="166" class="gut-n">WHAT THEY ACTUALLY DID</text>
+<text x="20" y="272" class="gut">YOU ARE THE MERCHANT &mdash; ACQUIRING SIDE</text>
+<line class="f2" x1="20" y1="280" x2="980" y2="280"/>
+<rect class="bx-v" x="20" y="292" width="228" height="76" rx="2"/>
+<text x="32" y="312" class="lbl">SCHEME</text>
+<text x="32" y="328" class="lbl-2">The same networks, entered</text>
+<text x="32" y="342" class="lbl-2">from the other end</text>
+<text x="32" y="360" class="t-flag">NOT YOURS EITHER</text>
+<rect class="bx" x="264" y="292" width="472" height="76" rx="2"/>
+<text x="276" y="312" class="lbl">GATEWAY + PROCESSOR + ACQUIRER &mdash; USUALLY ONE CONTRACT</text>
+<text x="276" y="328" class="lbl-2">Capture and tokenise the card, authorise it, settle the funds, and hold the merchant</text>
+<text x="276" y="342" class="lbl-2">relationship. Sold bundled, which is why the three words blur together here</text>
+<text x="276" y="360" class="t-money">CHECKOUT &middot; ADYEN &middot; STRIPE &middot; WORLDPAY &middot; NUVEI</text>
+<rect class="bx-sor" x="752" y="292" width="228" height="76" rx="2"/>
+<text x="764" y="312" class="lbl">ORCHESTRATION</text>
+<text x="764" y="328" class="lbl-2">Routes between several</text>
+<text x="764" y="342" class="lbl-2">acquirers. Retry, cascade, vault</text>
+<text x="764" y="360" class="t-money">PRIMER &middot; GR4VY &middot; SPREEDLY</text>
+<line class="boundary" x1="20" y1="404" x2="980" y2="404"/>
+<text x="20" y="426" class="lbl">THE TRAP</text>
+<text x="20" y="444" class="lbl-2">A gateway <tspan class="em">moves messages</tspan>. Orchestration <tspan class="em">makes decisions</tspan>. The gateway knows nothing about your business rules;</text>
+<text x="20" y="460" class="lbl-2">your orchestration knows nothing about ISO 8583. Buy the first, build the second &mdash; and never let a vendor sell you one as the other.</text>
+<text x="500" y="480" class="t-money" text-anchor="middle">&ldquo;PAYMENT GATEWAY&rdquo; TO A MERCHANT IS A CHECKOUT PAGE. TO A BANK IT IS AN ISO 8583 CONNECTION TO VISA.</text>
 </svg>
 </div>
-<figcaption><b>The same four words, two stacks.</b> On the bank side they are four separate things you procure separately &mdash; and only the gateway and the processor have vendors. On the merchant side, the middle three arrive bundled in one contract, which is exactly why the vocabulary collapsed. When someone says &ldquo;we use Stripe as our payment processor&rdquo; and someone else says &ldquo;we use Form3 as our payment gateway&rdquo;, they are describing non-overlapping problems.</figcaption>
+<figcaption><b>The same four words, two stacks.</b> On the bank side they are four separate things procured separately &mdash; and only the gateway and the processor have vendors, which is why every bank below built its own orchestration. On the merchant side, the middle three arrive bundled in one contract, which is exactly why the vocabulary collapsed. When someone says &ldquo;we use Stripe as our payment processor&rdquo; and someone else says &ldquo;we use Form3 as our payment gateway&rdquo;, they are describing non-overlapping problems.</figcaption>
 </figure>
 
 <div class="prose">
