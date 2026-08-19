@@ -69,6 +69,7 @@
   .tag{display:inline-block; font-size:10px; letter-spacing:.05em; padding:2px 6px;
     border-radius:2px; border:1px solid var(--rule); color:var(--ink-3); white-space:nowrap}
   .tag.build{color:var(--money); border-color:var(--money); background:var(--money-soft)}
+.plane-tag{display:inline-block;margin-top:6px;font-size:.62rem;line-height:1.35;letter-spacing:.04em;text-transform:uppercase;opacity:.62;font-family:inherit}
   .callout{border-left:2px solid var(--flag); background:var(--flag-soft);
     padding:18px 22px; margin:30px 0; border-radius:0 3px 3px 0}
   .callout p:last-child{margin-bottom:0}
@@ -747,7 +748,7 @@
 <tr><td class="n">04<br>Card issuing</td><td>Own BIN, or a sponsor's?</td><td><b>Processor:</b> Thredd · Marqeta · Galileo · Enfuce · i2c · Wallester<br><b>HSM:</b> Thales payShield · Futurex · Utimaco<br><b>Cards:</b> IDEMIA · Thales · G+D · CompoSecure</td><td><b>Built own processor</b><br>GPS/Thredd only for the<br>retired prepaid card</td><td><b>Thredd</b><br>+ Galileo for the US business</td><td>Galileo → <b>ChimeCore</b><br>100% of credit-card volume<br>since late 2024</td></tr>
 <tr><td class="n">05<br>Payment orchestration</td><td>None — you always build it</td><td><b>Libraries:</b> jPOS · moov-io · Prowide<br><b>Workflow:</b> Temporal · Cadence · Camunda</td><td><b>Built.</b> adapter → deciders →<br>effects; 40+ currencies via<br>correspondent banking on SWIFT</td><td><b>Built.</b> Event-driven services<br>over the Postgres event store</td><td><span class='tag none'>not publicly documented</span></td></tr>
 <tr><td class="n">06<br>Identity &amp; KYC</td><td>Own the orchestration?</td><td><b>IDV:</b> Onfido · Jumio · Persona · Veriff · Sumsub<br><b>Screening:</b> ComplyAdvantage · yente (self-host) · Napier<br><b>KYB:</b> Senzing · Quantexa · Splink</td><td><b>Onfido</b><br>+ in-house capture UX:<br>73% fewer selfie errors</td><td><b>Onfido</b><br>+293% check volume,<br>38s faster than previous</td><td><span class='tag none'>not publicly documented</span></td></tr>
-<tr><td class="n">07<br>Fincrime &amp; disputes</td><td>Buy to launch, build detection?</td><td><b>TM:</b> ComplyAdvantage · Unit21 · Feedzai · Hawk AI · Featurespace<br><b>Disputes:</b> Quavo · Pega · Rivero<br><b>Pre-dispute:</b> Ethoca · Verifi</td><td><b>Built.</b> Starlark control platform,<br>multi-task NN, LLM feature<br>extraction. <span class='tag none'>dispute vendor not public</span></td><td><b>Built.</b> In-house real-time<br>pipelines. <span class='tag none'>dispute vendor not public</span></td><td><b>Unit21</b><br>founding member of its<br>Fintech Fraud DAO</td></tr>
+<tr><td class="n">07<br>Fincrime &amp; disputes<br><span class="plane-tag">fraud &amp; chargebacks<br>are planes &#8595;</span></td><td>Buy to launch, build detection?</td><td><b>TM:</b> ComplyAdvantage · Unit21 · Feedzai · Hawk AI · Featurespace<br><b>Disputes:</b> Quavo · Pega · Rivero<br><b>Pre-dispute:</b> Ethoca · Verifi</td><td><b>Built.</b> Starlark control platform,<br>multi-task NN, LLM feature<br>extraction. <span class='tag none'>dispute vendor not public</span></td><td><b>Built.</b> In-house real-time<br>pipelines. <span class='tag none'>dispute vendor not public</span></td><td><b>Unit21</b><br>founding member of its<br>Fintech Fraud DAO</td></tr>
 <tr><td class="n">08<br>Credit &amp; decisioning</td><td>Bureau score, plus what?</td><td><b>Bureaus:</b> Experian · Equifax · TransUnion<br><b>Open banking:</b> TrueLayer · Tink · Yapily · Plaid<br><b>Engines:</b> Taktile · Provenir · Oscilar · GoRules · OPA</td><td><b>Built.</b> Credit risk, utilisation<br>forecasting, shared feature store</td><td><b>Built.</b> <b>PRAGMA</b> foundation<br>model on banking event streams</td><td><span class='tag none'>not publicly documented</span></td></tr>
 <tr><td class="n">09<br>Data &amp; ML</td><td>Decision path ≠ analytics path</td><td><b>Stream:</b> Kafka · Redpanda · Flink<br><b>Warehouse:</b> BigQuery · Snowflake · Databricks<br><b>Features:</b> Chronon · Feast · Tecton · Hopsworks</td><td><b>BigQuery</b> · dbt (12,000+ models,<br>100+ teams) · Kafka · in-house<br>3-tier feature service</td><td><b>GCP</b> · PostgreSQL</td><td><b>MySQL + Snowflake</b><br>Galileo RDF files moved<br>off MySQL</td></tr>
 <tr><td class="n">10<br>Resilience &amp; reporting</td><td>Reconcile, survive, report</td><td><b>Recon:</b> Duco · AutoRek · SmartStream · Gresham<br><b>RegRep:</b> Regnology · Suade · OneSumX<br><b>Continuity:</b> second-cloud stand-in</td><td><b>Stand-in on GCP</b><br>18 services vs ~3,000,<br>~1% of primary cost</td><td><span class='tag none'>not publicly documented</span></td><td><b>EKS</b> · ~1,000 deploys/day<br>Argo CD · open-sourced<br><code>ha-nat</code> and <code>Mani-Diffy</code></td></tr>
@@ -932,6 +933,36 @@
 </ul>
 <p>The vendors at layer 07 — Unit21, Feedzai, Hawk AI, Featurespace, Sardine — cover different subsets of this. <strong>Ask which of the six a vendor actually addresses</strong> before comparing feature lists; most are strong at two or three and silent on the rest.</p>
 </div>
+
+<div class="prose">
+<h3>The layer-by-layer answer</h3>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Layer</th><th>What fraud demands of it</th></tr></thead>
+<tbody>
+<tr><td><strong>02 — Scheme access</strong></td><td><strong>Sets the reporting obligation.</strong> As a principal member you report fraud to the scheme yourself and sit inside its monitoring programmes directly. Under a sponsor, the sponsor's thresholds become yours by contract — and their tolerance, not yours, decides when a portfolio gets restricted</td></tr>
+<tr><td><strong>03 — Core ledger</strong></td><td><strong>Read latency is a fraud control.</strong> The balance read sits inside the card authorisation deadline. Miss it and the <em>scheme</em> approves on your behalf — with your fraud checks skipped entirely. The most under-appreciated line in the stack: a performance number that is really a control</td></tr>
+<tr><td><strong>04 — Card issuing</strong></td><td><strong>Sub-second, no second chance.</strong> Unauthorised card fraud is decided once, inside the scheme timeout. The model must score, the ledger must answer, and the decision must return — or the transaction goes through. There is no asynchronous fallback</td></tr>
+<tr><td><strong>05 — Payment orchestration</strong></td><td><strong>Where scams are stopped, or not at all.</strong> APP fraud is authorised by the customer, so nothing looks anomalous at the account level. The only intervention point is <em>in flight</em>, in the outbound payment state machine, before the money leaves. After that the UK liability is already yours</td></tr>
+<tr><td><strong>06 — Identity</strong></td><td><strong>Two jobs, opposite directions.</strong> Keeping fraudsters out at onboarding, and detecting mules recruited later. Usually owned by a team measured on conversion — a structural conflict, and the reason onboarding fraud is chronically under-invested</td></tr>
+<tr><td><strong>07 — Fincrime</strong></td><td><strong>Where the platform lives — not where fraud happens.</strong> Control engine, feature service, model serving, case management, SAR filing. It supplies decisions to four other layers and owns the outcome at none of them</td></tr>
+<tr><td><strong>08 — Credit</strong></td><td><strong>First-party fraud lands here.</strong> Bust-out looks like credit deterioration until the moment it does not, and the subject is a real customer you are also trying to retain. Fraud and credit models disagree about the same person constantly</td></tr>
+<tr><td><strong>09 — Data &amp; ML</strong></td><td><strong>One feature store, six consumers.</strong> Velocity, device, behaviour and balance volatility are the same features for every fraud type. Computing them separately per use case is the standard expensive mistake — and it makes the decision path and the analytics path drift apart</td></tr>
+<tr><td><strong>10 — Evidence</strong></td><td><strong>The decision log is the defence.</strong> Under the UK reimbursement regime, declining a claim on gross negligence means proving what warning was shown, when, and what the customer did next. If that is not logged at decision time it does not exist</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<div class="keynum">
+<p class="eyebrow">The design consequence</p>
+<p>Fraud touches <strong>nine of the ten layers</strong> — more than chargebacks, more than reconciliation. It is the most cross-cutting concern in the stack, and the only one where two of its sub-problems are decided <strong>in the path, under an external deadline, with no retry</strong>.</p>
+<p>The build order follows from that: <strong>card authorisation and scam interception first</strong>, because they constrain the ledger, the rails and the feature store. The other four fraud problems can be added later without redesigning anything. Do it the other way round — start with a transaction-monitoring vendor because it is the procurable piece — and you get a good case-management tool sitting on a stack that cannot make a decision fast enough to use it.</p>
+</div>
+</div>
+
 
 <div class="prose">
 <h2>Building best-in-class dispute management</h2>
