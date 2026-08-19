@@ -524,6 +524,34 @@
 <figcaption><b>Two rows break the naive story.</b> At <b>layer 01</b>, Chime has no licence while both others do — yet at <b>layer 04</b> Chime <em>built</em> its card processor while Revolut, a licensed bank, buys from Thredd. Owning the regulated entity and owning the technology are independent decisions, made for different reasons. Monzo insourced cards after vendor outages; Chime insourced them because processor fees were its largest cost line; Revolut concluded card processing was a solved problem worth renting. Dashed cells are honest gaps — several layers of Chime's and Revolut's stacks have never been publicly documented.</figcaption>
 </figure>
 
+
+<div class="prose">
+<h3>Every layer, every option, and what the three actually chose</h3>
+<p>The diagram above is the shape; this is the detail. Scroll it sideways — the last three columns are the real choices, and <span class="tag none">dashed labels</span> mark where a stack has genuinely never been documented in public rather than where I stopped looking.</p>
+</div>
+
+<div class="tbl prose"><table style="min-width:1500px">
+<thead><tr><th>Layer</th><th>The decision</th><th>Options</th><th>Monzo <em>— UK bank</em></th><th>Revolut <em>— UK bank</em></th><th>Chime <em>— no licence</em></th></tr></thead><tbody>
+<tr><td class="n">01<br>Licence &amp; authorisation</td><td>Bank licence, or EMI first?</td><td>Mobilisation route (~£1m → £5m) · EMI now, convert later · acquire a licensed entity</td><td><b>UK bank licence</b><br>PRA + FCA</td><td><b>UK bank licence</b><br>+ EU (Lithuania)</td><td><b>None.</b> Not a bank<br>The Bancorp + Stride hold the deposits</td></tr>
+<tr><td class="n">02<br>Scheme &amp; rail access</td><td>Direct participant, or sponsored?</td><td><b>Build:</b> own gateway · <b>Buy:</b> Form3 · Icon IPF · Volante · ACI · Finastra</td><td><b>Built own FPS gateway</b><br>Go monolith, 4 HSMs, DRBD<br>Bacs direct since Sept 2022<br>Own BoE settlement a/c</td><td>Own licence.<br><span class='tag none'>scheme access not public</span></td><td><span class='tag none'>via sponsor banks</span><br>No direct participation</td></tr>
+<tr><td class="n">03<br>Core ledger</td><td>Build, buy, or sidecar?</td><td><b>Buy:</b> Vault Core · 10x SuperCore · Temenos · Mambu · Tuum · Finxact<br><b>Build on:</b> TigerBeetle · Formance · Blnk</td><td><b>Built.</b> <code>service.ledger</code><br>on Cassandra, 300k reads/sec</td><td><b>Built.</b> Postgres event store<br>using <code>LISTEN</code>/<code>NOTIFY</code></td><td><b>Built.</b> ChimeCore<br>CoreDB = MySQL on RDS<br>40TB, 30k connections</td></tr>
+<tr><td class="n">04<br>Card issuing</td><td>Own BIN, or a sponsor's?</td><td><b>Processor:</b> Thredd · Marqeta · Galileo · Enfuce · i2c · Wallester<br><b>HSM:</b> Thales payShield · Futurex · Utimaco<br><b>Cards:</b> IDEMIA · Thales · G+D · CompoSecure</td><td><b>Built own processor</b><br>GPS/Thredd only for the<br>retired prepaid card</td><td><b>Thredd</b><br>+ Galileo for the US business</td><td>Galileo → <b>ChimeCore</b><br>100% of credit-card volume<br>since late 2024</td></tr>
+<tr><td class="n">05<br>Payment orchestration</td><td>None — you always build it</td><td><b>Libraries:</b> jPOS · moov-io · Prowide<br><b>Workflow:</b> Temporal · Cadence · Camunda</td><td><b>Built.</b> adapter → deciders →<br>effects; 40+ currencies via<br>correspondent banking on SWIFT</td><td><b>Built.</b> Event-driven services<br>over the Postgres event store</td><td><span class='tag none'>not publicly documented</span></td></tr>
+<tr><td class="n">06<br>Identity &amp; KYC</td><td>Own the orchestration?</td><td><b>IDV:</b> Onfido · Jumio · Persona · Veriff · Sumsub<br><b>Screening:</b> ComplyAdvantage · yente (self-host) · Napier<br><b>KYB:</b> Senzing · Quantexa · Splink</td><td><b>Onfido</b><br>+ in-house capture UX:<br>73% fewer selfie errors</td><td><b>Onfido</b><br>+293% check volume,<br>38s faster than previous</td><td><span class='tag none'>not publicly documented</span></td></tr>
+<tr><td class="n">07<br>Fincrime &amp; disputes</td><td>Buy to launch, build detection?</td><td><b>TM:</b> ComplyAdvantage · Unit21 · Feedzai · Hawk AI · Featurespace<br><b>Disputes:</b> Quavo · Pega · Rivero<br><b>Pre-dispute:</b> Ethoca · Verifi</td><td><b>Built.</b> Starlark control platform,<br>multi-task NN, LLM feature<br>extraction. <span class='tag none'>dispute vendor not public</span></td><td><b>Built.</b> In-house real-time<br>pipelines. <span class='tag none'>dispute vendor not public</span></td><td><b>Unit21</b><br>founding member of its<br>Fintech Fraud DAO</td></tr>
+<tr><td class="n">08<br>Credit &amp; decisioning</td><td>Bureau score, plus what?</td><td><b>Bureaus:</b> Experian · Equifax · TransUnion<br><b>Open banking:</b> TrueLayer · Tink · Yapily · Plaid<br><b>Engines:</b> Taktile · Provenir · Oscilar · GoRules · OPA</td><td><b>Built.</b> Credit risk, utilisation<br>forecasting, shared feature store</td><td><b>Built.</b> <b>PRAGMA</b> foundation<br>model on banking event streams</td><td><span class='tag none'>not publicly documented</span></td></tr>
+<tr><td class="n">09<br>Data &amp; ML</td><td>Decision path ≠ analytics path</td><td><b>Stream:</b> Kafka · Redpanda · Flink<br><b>Warehouse:</b> BigQuery · Snowflake · Databricks<br><b>Features:</b> Chronon · Feast · Tecton · Hopsworks</td><td><b>BigQuery</b> · dbt (12,000+ models,<br>100+ teams) · Kafka · in-house<br>3-tier feature service</td><td><b>GCP</b> · PostgreSQL</td><td><b>MySQL + Snowflake</b><br>Galileo RDF files moved<br>off MySQL</td></tr>
+<tr><td class="n">10<br>Resilience &amp; reporting</td><td>Reconcile, survive, report</td><td><b>Recon:</b> Duco · AutoRek · SmartStream · Gresham<br><b>RegRep:</b> Regnology · Suade · OneSumX<br><b>Continuity:</b> second-cloud stand-in</td><td><b>Stand-in on GCP</b><br>18 services vs ~3,000,<br>~1% of primary cost</td><td><span class='tag none'>not publicly documented</span></td><td><b>EKS</b> · ~1,000 deploys/day<br>Argo CD · open-sourced<br><code>ha-nat</code> and <code>Mani-Diffy</code></td></tr>
+</tbody></table></div>
+
+<div class="prose">
+<div class="keynum">
+<p class="eyebrow">A gap worth naming</p>
+<p><strong>No neobank in this research publicly documents its dispute platform.</strong> Fraud stacks are written about extensively; the thing that handles chargebacks — the layer carrying hard regulatory deadlines and real balance-sheet exposure — is never named.</p>
+<p>That silence is itself informative. Disputes are treated as back-office operations rather than as engineering, which is exactly why the funnel above is where the advantage still sits.</p>
+</div>
+</div>
+
 <div class="prose">
 <h3>What the comparison actually teaches</h3>
 <ul>

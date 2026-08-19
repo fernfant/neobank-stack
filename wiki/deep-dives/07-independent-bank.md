@@ -245,6 +245,12 @@ without declining payments.
 | 09 Data & ML | BigQuery, dbt (12k models), Kafka | GCP, PostgreSQL | MySQL + Snowflake |
 | 10 Resilience | **Stand-in on GCP** — 18 services, ~1% of cost | Not public | EKS, ~1k deploys/day, `ha-nat` |
 
+**No neobank in this research publicly documents its dispute platform.** Fraud stacks are written
+about extensively; the layer carrying hard regulatory deadlines and real balance-sheet exposure is
+never named. That silence is itself informative — disputes are treated as back-office operations
+rather than engineering, which is why the deflection funnel in [Card issuing and processing](../layers/04-card-issuing.md) is where
+the advantage still sits.
+
 **What it teaches:** licence and technology are **orthogonal** — Chime has no charter yet built its
 processor, while Revolut holds a licence and rents card processing. **Everyone builds the ledger**
 (the only universal build). **Everyone buys identity** — both UK banks use Onfido. **Fincrime
