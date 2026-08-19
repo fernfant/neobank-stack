@@ -172,6 +172,81 @@ every vendor: *"Which of the four roles are you, contractually, and who fills th
 Bacs — see [Deep dive — Payment rails](../deep-dives/05-payment-rails.md). Cards and domestic rails are independent procurements,
 and rarely the same vendor.
 
+## Own licence + BIN sponsor — a coherent configuration
+
+**A regulatory licence and scheme membership are two different permissions** `[reported]`:
+
+- Your FCA/PRA licence (bank or EMI) = permission to **hold customer money**
+- Visa/Mastercard **principal membership** = permission to **issue cards under your own BIN**
+
+The licence is a *prerequisite* for membership, not a substitute. Principal membership additionally
+requires collateral, scheme certification, operational infrastructure and **ongoing dues running
+into millions of euros annually** `[reported]`. So a licensed institution can rationally keep its
+licence and rent scheme access.
+
+| | Licence + principal | **Licence + BIN sponsor** | No licence + sponsor bank |
+| --- | --- | --- | --- |
+| Regulatory licence | You | **You** | Sponsor's |
+| Scheme principal member | You | **The sponsor** | Sponsor |
+| Holds customer funds | You | **You** — your balance sheet, your ledger | Sponsor's omnibus/FBO |
+| Issuer of record | You | **The sponsor** | Sponsor |
+| Liable to the scheme | You | **Sponsor → recovers from you by contract** | Sponsor |
+
+The middle column keeps the things that matter strategically — the licence, the funds, the ledger,
+the customer relationship — while skipping the scheme joining cost. What it does **not** do is move
+the economics: the sponsor is liable to the scheme and then **recovers from you under contract,
+with losses allocated by root cause** `[reported]`.
+
+**A 2026 change to this trade-off.** Mastercard has **tightened its BIN sponsor rules** (reported
+February 2026) `[reported]`. The passive-sponsor model is explicitly obsolete: sponsors now carry
+ongoing operational oversight of the programmes they sponsor, face increased audit frequency and
+depth, and are accountable for partners' compliance and operational integrity, with every network
+mandate assigned, tracked and audit-ready. **"Rent the BIN and be left alone" is no longer the
+deal** — expect a materially more intrusive sponsor relationship than two years ago.
+
+## Chargebacks — three questions, not one
+
+**Who is liable**, **who does the work**, and **what tooling it runs on** are separate.
+
+**Liability** flows: the BIN sponsor is issuer of record and liable to the scheme; it then recovers
+from the programme manager under contract, with allocation by root cause `[reported]`. You cannot
+contract away the economics — only the operations.
+
+**The lifecycle** you are staffing for `[reported]`:
+`presentment → pre-dispute → chargeback → representment → pre-arbitration → arbitration → appeal`.
+Network rules set **hard deadlines** at each stage; a missed deadline loses the case outright and
+repeated misses attract penalties. Deadline pressure, not case volume, is what breaks manual
+handling first.
+
+**The tooling, in three layers:**
+
+| Layer | Options |
+| --- | --- |
+| **Pre-dispute collaboration** — resolve before a chargeback exists | **Ethoca** (Mastercard-owned) flags disputes pre-chargeback · **Verifi** (Visa-owned), issuer-connected, ~24h resolution · **Visa RDR** · **Mastercard Collaboration** |
+| **Network platforms of record** — non-optional | **VROL** (Visa Resolve Online) · **MasterCom** |
+| **Issuer dispute platform** — intake, routing, evidence, deadlines, reporting | **Quavo (QFD)** — built for issuers and processors, full lifecycle, compliance-automation focus · **Pega Smart Dispute** — Amex/MC/Visa rules, integrates VROL/MasterCom and Ethoca/Verifi, twice-yearly updates, consumer-protection SLAs; mid-to-large institutions · **Rivero (Amiko)** · **Q2/CentrixDQS** for community and regional banks |
+
+**Your processor already covers some of it.** Marqeta, Thredd and Galileo all expose dispute and
+chargeback workflow via API as part of card-lifecycle management `[reported]`. For a first
+programme that is often enough; the question is whether it survives your volume, regulatory SLAs
+and evidence requirements, or only the happy path.
+
+**Build regardless of vendor:** workflows and documentation, team and training, analytics and KPIs,
+upstream fraud layering, **transaction descriptors** (a large share of "I don't recognise this"
+disputes are just an unrecognisable descriptor), and case history and audit trail `[reported]`.
+
+### By configuration
+
+| Setup | Dispute operations |
+| --- | --- |
+| Licence + **Marqeta/TransactPay** | Start on Marqeta's dispute APIs; add **Quavo** or **Rivero** when volume or SLAs outgrow it. Ethoca and Verifi from day one |
+| Licence + **Adyen** | Adyen is principal member on its own licence, so disputes sit inside its platform. Least assembly, least control |
+| Licence + **Thredd** + separate sponsor | Thredd runs the workflow; **negotiate explicitly** with the sponsor over who runs cases and who absorbs losses |
+| Licence + **own principal membership** | All yours — you need a real platform and a staffed team from launch |
+
+**The clause to read before the API docs:** *who absorbs a loss when root cause is contested, and
+what is the process for deciding?*
+
 ## Open questions
 
 - What is ChimeCore actually built on, and does it hold the deposit sub-ledger or only

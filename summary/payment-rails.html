@@ -146,7 +146,7 @@
   <p class="eyebrow">Neobank stack · deep dive</p>
   <h1>Payment rails</h1>
   <p class="standfirst">Where a clean internal model meets other people's guarantees — UK and USA, from the settlement mechanics down to the return codes that decide whether you keep network access.</p>
-  <p class="meta"><span>18 Aug 2026</span><span><b>2</b> markets</span><span><b>7</b> rails</span><span><b>4</b> archetypes</span><span><b>6</b> card options</span><span><b>19</b> sources</span></p>
+  <p class="meta"><span>18 Aug 2026</span><span><b>2</b> markets</span><span><b>7</b> rails</span><span><b>4</b> archetypes</span><span><b>6</b> card options</span><span><b>3</b> configurations</span><span><b>19</b> sources</span></p>
 </header>
 
 <div class="prose">
@@ -583,6 +583,125 @@
 
 <h3>And scheme access is a separate decision entirely</h3>
 <p>Nothing in the matrix above gets you onto Faster Payments or Bacs. Cards and domestic rails are <strong>two independent procurement tracks</strong> — you can be on Marqeta for cards and ClearBank for rails, or build both like Monzo, or take a US sponsor bank that bundles the lot. The four archetypes above are about the rails; this matrix is about the cards. Most new entrants need an answer to both, and they are rarely the same vendor.</p>
+
+</div>
+
+<div class="prose">
+<h2><span class="n">07</span>Your own licence <em>and</em> a BIN sponsor</h2>
+<p class="lede">A regulatory licence and scheme membership are two different permissions. Holding the first does not give you the second.</p>
+<p>This trips up almost every founder who assumes that getting authorised means they can issue cards. It does not. Your FCA or PRA licence is permission to <strong>hold customer money</strong>. Visa or Mastercard <strong>principal membership</strong> is permission to <strong>issue cards under your own BIN</strong>. The licence is a <em>prerequisite</em> for membership, not a substitute for it.</p>
+<p>Principal membership additionally requires collateral, scheme certification, operational infrastructure and <strong>ongoing dues running into millions of euros a year</strong>. So a fully licensed bank can rationally decide to keep its licence and <em>rent</em> scheme access — and that is a real, common configuration, not a compromise.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 1000 452" role="img" aria-label="Three configurations compared. With your own licence and principal membership you hold funds, are the issuer of record and are liable to the scheme. With your own licence plus a BIN sponsor, you still hold customer funds and own the balance sheet, but the sponsor is the principal member and issuer of record and is liable to the scheme, recovering from you by contract. With no licence and a sponsor bank, the sponsor holds the funds in an omnibus account and everything sits with them.">
+<text x="305" y="26" class="lbl" text-anchor="middle">LICENCE + PRINCIPAL</text><text x="305" y="40" class="lbl-2" text-anchor="middle">Monzo-shaped</text>
+<text x="580" y="26" class="lbl" text-anchor="middle">LICENCE + BIN SPONSOR</text><text x="580" y="40" class="lbl-2" text-anchor="middle">the configuration in question</text>
+<text x="855" y="26" class="lbl" text-anchor="middle">NO LICENCE + SPONSOR BANK</text><text x="855" y="40" class="lbl-2" text-anchor="middle">Chime-shaped</text>
+
+<rect class="bx" x="455" y="14" width="250" height="352" rx="3" fill="var(--money-soft)" stroke="var(--money)" stroke-opacity=".5"/>
+
+<text x="170" y="76" class="lbl" text-anchor="end">Regulatory licence</text>
+<rect class="bx-sor" x="180" y="58" width="250" height="38" rx="2"/><text x="305" y="82" class="lbl" text-anchor="middle">YOU</text>
+<rect class="bx-sor" x="455" y="58" width="250" height="38" rx="2"/><text x="580" y="82" class="lbl" text-anchor="middle">YOU</text>
+<rect class="bx-v" x="730" y="58" width="250" height="38" rx="2"/><text x="855" y="82" class="lbl-2" text-anchor="middle">the sponsor bank&#39;s</text>
+
+<text x="170" y="126" class="lbl" text-anchor="end">Scheme principal member</text>
+<rect class="bx-sor" x="180" y="108" width="250" height="38" rx="2"/><text x="305" y="132" class="lbl" text-anchor="middle">YOU</text>
+<rect class="bx-v" x="455" y="108" width="250" height="38" rx="2"/><text x="580" y="132" class="lbl" text-anchor="middle">THE SPONSOR</text>
+<rect class="bx-v" x="730" y="108" width="250" height="38" rx="2"/><text x="855" y="132" class="lbl-2" text-anchor="middle">the sponsor</text>
+
+<text x="170" y="176" class="lbl" text-anchor="end">Holds customer funds</text>
+<rect class="bx-sor" x="180" y="158" width="250" height="38" rx="2"/><text x="305" y="182" class="lbl" text-anchor="middle">YOU</text>
+<rect class="bx-sor" x="455" y="158" width="250" height="38" rx="2"/><text x="580" y="176" class="lbl" text-anchor="middle">YOU</text><text x="580" y="190" class="lbl-2" text-anchor="middle">your balance sheet, your ledger</text>
+<rect class="bx-v" x="730" y="158" width="250" height="38" rx="2"/><text x="855" y="182" class="lbl-2" text-anchor="middle">sponsor&#39;s omnibus / FBO</text>
+
+<text x="170" y="226" class="lbl" text-anchor="end">Issuer of record</text>
+<rect class="bx-sor" x="180" y="208" width="250" height="38" rx="2"/><text x="305" y="232" class="lbl" text-anchor="middle">YOU</text>
+<rect class="bx-v" x="455" y="208" width="250" height="38" rx="2"/><text x="580" y="232" class="lbl" text-anchor="middle">THE SPONSOR</text>
+<rect class="bx-v" x="730" y="208" width="250" height="38" rx="2"/><text x="855" y="232" class="lbl-2" text-anchor="middle">the sponsor</text>
+
+<text x="170" y="276" class="lbl" text-anchor="end">Liable to the scheme</text>
+<text x="170" y="289" class="lbl-2" text-anchor="end">for fraud &amp; chargebacks</text>
+<rect class="bx-sor" x="180" y="258" width="250" height="38" rx="2"/><text x="305" y="282" class="lbl" text-anchor="middle">YOU</text>
+<rect class="bx-v" x="455" y="258" width="250" height="38" rx="2"/><text x="580" y="276" class="lbl" text-anchor="middle">SPONSOR</text><text x="580" y="290" class="t-flag" text-anchor="middle">→ RECOVERS FROM YOU BY CONTRACT</text>
+<rect class="bx-v" x="730" y="258" width="250" height="38" rx="2"/><text x="855" y="276" class="lbl-2" text-anchor="middle">sponsor</text><text x="855" y="290" class="t-flag" text-anchor="middle">→ recovers from you</text>
+
+<text x="170" y="326" class="lbl" text-anchor="end">Dispute operations</text>
+<text x="170" y="339" class="lbl-2" text-anchor="end">who does the work</text>
+<rect class="bx" x="180" y="308" width="250" height="50" rx="2"/><text x="305" y="329" class="lbl-2" text-anchor="middle">You — with a platform</text><text x="305" y="343" class="lbl-2" text-anchor="middle">you buy</text>
+<rect class="bx" x="455" y="308" width="250" height="50" rx="2"/><text x="580" y="322" class="lbl-2" text-anchor="middle">Negotiable: processor tooling,</text><text x="580" y="335" class="lbl-2" text-anchor="middle">the sponsor, or a platform</text><text x="580" y="348" class="lbl-2" text-anchor="middle">you buy yourself</text>
+<rect class="bx" x="730" y="308" width="250" height="50" rx="2"/><text x="855" y="336" class="lbl-2" text-anchor="middle">Usually bundled in</text>
+
+<line class="boundary" x1="14" y1="376" x2="986" y2="376"/>
+<text x="580" y="400" class="t-money" text-anchor="middle">YOU CANNOT CONTRACT AWAY THE ECONOMICS</text>
+<text x="580" y="416" class="lbl-2" text-anchor="middle">The sponsor is liable to the scheme, then recovers from you. Loss allocation is contractual,</text>
+<text x="580" y="430" class="lbl-2" text-anchor="middle">settled on root cause — so read that clause before you read the API docs.</text>
+</svg>
+</div>
+<figcaption><b>Licence and membership are separate permissions.</b> The middle column is the configuration being asked about, and it is entirely coherent: <b>you keep the licence, the balance sheet and the ledger; the sponsor is the principal member and issuer of record.</b> What it does <em>not</em> do is move the economics — the sponsor is liable to the scheme and then recovers from you under contract, with losses allocated by root cause. The dispute <em>operations</em> are negotiable; the dispute <em>losses</em> generally are not.</figcaption>
+</figure>
+
+<div class="prose">
+<div class="keynum">
+<p class="eyebrow">A 2026 change that alters this trade-off</p>
+<p><strong>Mastercard has tightened its BIN sponsor rules</strong> (reported February 2026). The old model — a principal member grants access and takes a passive role — is explicitly obsolete.</p>
+<p>Sponsors now carry <strong>ongoing operational oversight</strong> of the programmes they sponsor, face <strong>increased audit frequency and depth</strong>, and are accountable for their partners' compliance and "operational integrity". Every network mandate must be <strong>assigned, tracked and audit-ready</strong>.</p>
+<p>Practically: <em>"rent the BIN and be left alone"</em> is no longer the deal. Expect a sponsor to be far more intrusive in your operations than two years ago — because the network now holds them responsible for you. Budget for that relationship, not just the fee.</p>
+</div>
+
+<h2><span class="n">08</span>So who handles chargebacks?</h2>
+<p class="lede">Three separate questions that get collapsed into one: who is liable, who does the work, and what tooling does the work run on.</p>
+
+<h3>The lifecycle you are staffing for</h3>
+<pre>presentment → <b>pre-dispute</b> → chargeback → representment → pre-arbitration → arbitration → appeal
+                  ↑
+        resolve here and it never
+        becomes a chargeback at all</pre>
+<p>Card network rules set <strong>hard deadlines</strong> at each stage. Miss one and you lose the case outright, and repeated misses attract network penalties. That deadline pressure — not case volume — is what makes manual dispute handling fail first.</p>
+
+<h3>The tooling, in three layers</h3>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Layer</th><th>What it is</th><th>Named options</th></tr></thead>
+<tbody>
+<tr><td><strong>Pre-dispute collaboration</strong></td><td>Resolve before a chargeback exists — the cheapest possible outcome</td><td><strong>Ethoca</strong> (Mastercard-owned) flags disputes before they become chargebacks · <strong>Verifi</strong> (Visa-owned), issuer-connected, ~24-hour resolution · <strong>Visa RDR</strong> · <strong>Mastercard Collaboration</strong></td></tr>
+<tr><td><strong>Network platforms of record</strong></td><td>Where cases formally live. Non-optional</td><td><strong>VROL</strong> (Visa Resolve Online) · <strong>MasterCom</strong> (Mastercard)</td></tr>
+<tr><td><strong>Issuer dispute platform</strong></td><td>Your case management: intake, routing, evidence, deadlines, resolution, reporting</td><td><strong>Quavo (QFD)</strong> — built for issuers and processors, full lifecycle, compliance-automation focus · <strong>Pega Smart Dispute</strong> — Amex/MC/Visa rules, integrates VROL/MasterCom and Ethoca/Verifi, updated twice yearly, consumer-protection SLAs; mid-to-large institutions · <strong>Rivero (Amiko)</strong> · <strong>Q2 / CentrixDQS</strong> for community and regional banks</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p><strong>And your processor already has some of this.</strong> Marqeta, Thredd and Galileo all expose dispute and chargeback workflow through their APIs as part of managing the card lifecycle. For a first programme that is often enough — the question is whether it handles <em>your</em> volume, your regulatory SLAs and your evidence requirements, or only the happy path.</p>
+
+<h3>What you build regardless of vendor</h3>
+<p>Buy the platform, the collaboration networks and the network portal access. <strong>Build</strong> the workflows and documentation, the team and its training, the analytics and KPIs, the fraud-prevention layering that reduces disputes upstream, your transaction descriptors — a startlingly large share of "I don't recognise this" disputes are just an unrecognisable descriptor — and the case history and audit trail.</p>
+
+<h3>The answer, compressed</h3>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Your setup</th><th>Who does dispute operations</th></tr></thead>
+<tbody>
+<tr><td>Own licence + <strong>Marqeta</strong> (with TransactPay as sponsor)</td><td>Start on Marqeta's dispute APIs. Add <strong>Quavo</strong> or <strong>Rivero</strong> when volume, SLAs or evidence handling outgrow it. Ethoca and Verifi from day one — they reduce the case count itself</td></tr>
+<tr><td>Own licence + <strong>Adyen</strong></td><td>Adyen is the principal member on its own licence, so disputes sit inside its platform. Least assembly — and the least control</td></tr>
+<tr><td>Own licence + <strong>Thredd</strong> + a separate BIN sponsor</td><td>Thredd handles the workflow; <strong>negotiate explicitly</strong> with the sponsor over who runs cases and who absorbs losses. Most moving parts, most flexibility</td></tr>
+<tr><td>Own licence + <strong>own principal membership</strong></td><td>All yours. You need a real dispute platform (Quavo, Pega, Rivero) and a staffed team from launch</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<div class="keynum">
+<p class="eyebrow">The clause to read first</p>
+<p>In every BIN sponsorship, the sponsor is liable to the scheme and then <strong>recovers from you under contract, with losses allocated by root cause</strong>. That single clause decides more about your P&amp;L than any feature comparison.</p>
+<p>Ask for it before the API documentation: <em>who absorbs a loss when the root cause is contested, and what is the process for deciding?</em></p>
+</div>
 
 <h2>The questions to ask</h2>
 </div>
