@@ -1,0 +1,400 @@
+<title>Payment Rails Cheatsheet</title>
+<style>
+
+:root{
+  --paper:#FCFCFA; --sheet:#FFFFFF; --ink:#14181E; --ink-2:#4C5560; --ink-3:#69737F;
+  --rule:#D7DAE0; --rule-2:#EBEDF1;
+  --accent:#1E3E7B; --accent-soft:#EDF1F9;
+  --build:#1A6349; --build-soft:#E9F3EE;
+  --hard:#9E3319; --hard-soft:#FBEDE8;
+  --bank:#F6F7F9;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1116; --sheet:#161A20; --ink:#E9EBEF; --ink-2:#A3ADBA; --ink-3:#848F9C;
+    --rule:#2C323B; --rule-2:#222831;
+    --accent:#84A6E2; --accent-soft:#1A2436;
+    --build:#57BE93; --build-soft:#152A24;
+    --hard:#E28763; --hard-soft:#2E1C16;
+    --bank:#1B2028;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1116; --sheet:#161A20; --ink:#E9EBEF; --ink-2:#A3ADBA; --ink-3:#848F9C;
+  --rule:#2C323B; --rule-2:#222831;
+  --accent:#84A6E2; --accent-soft:#1A2436;
+  --build:#57BE93; --build-soft:#152A24;
+  --hard:#E28763; --hard-soft:#2E1C16;
+  --bank:#1B2028;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  font-size:15px; line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace}
+
+.wrap{display:flex; flex-direction:column; gap:20px; padding:20px 16px 56px; align-items:center}
+.sheet{
+  width:100%; max-width:1280px; background:var(--sheet); color:var(--ink);
+  border:1px solid var(--rule); border-radius:2px;
+  padding:20px 22px 18px;
+  display:flex; flex-direction:column; gap:14px;
+}
+
+/* ---- masthead ---- */
+.head{display:flex; align-items:flex-end; justify-content:space-between; gap:24px;
+  border-bottom:2px solid var(--ink); padding-bottom:8px}
+h1{margin:0; font-size:1.5rem; font-weight:800; letter-spacing:-.017em; line-height:1.05; text-wrap:balance}
+.sub{margin:3px 0 0; font-size:.72rem; color:var(--ink-2); max-width:62ch; line-height:1.4}
+.stamp{font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+  text-align:right; line-height:1.6; white-space:nowrap}
+.stamp b{color:var(--accent); font-weight:700}
+
+.band{display:flex; align-items:baseline; gap:10px; margin:2px 0 -4px}
+.band h2{margin:0; font-size:.68rem; letter-spacing:.13em; text-transform:uppercase; font-weight:700}
+.band .note{font-size:.68rem; color:var(--ink-3); line-height:1.4}
+.band .ln{flex:1; height:1px; background:var(--rule); align-self:center; min-width:12px}
+
+/* ---- master grid ---- */
+.scroller{overflow-x:auto}
+table{border-collapse:collapse; width:100%; table-layout:fixed; min-width:1000px}
+th,td{text-align:left; vertical-align:top; padding:5px 7px; border-bottom:1px solid var(--rule-2)}
+thead th{
+  font-size:.56rem; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-2);
+  font-weight:700; border-bottom:1px solid var(--rule); padding-bottom:4px; white-space:nowrap
+}
+tbody tr:last-child td{border-bottom:none}
+.grid td{font-size:.645rem; line-height:1.36; padding-top:9px; padding-bottom:9px}
+.grid td.bk{background:var(--bank)}
+/* layer boundary: a full-width rule anchored by an accent tick under the layer column */
+.grid tbody td{border-bottom:1px solid var(--rule)}
+.grid tbody td:first-child{border-bottom:2px solid var(--accent)}
+.grid tbody tr:last-child td{border-bottom:none}
+.grid tbody tr:hover td{background:var(--accent-soft)}
+.grid tbody tr:hover td.bk{background:var(--accent-soft)}
+col.c1{width:10.5%} col.c2{width:9%} col.c3{width:36%}
+col.c4{width:15%} col.c5{width:14%} col.c6{width:15.5%}
+
+.n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.6rem;
+  color:var(--accent); font-weight:700; letter-spacing:.04em}
+.lname{display:block; font-weight:700; font-size:.68rem; margin-top:1px; letter-spacing:-.005em}
+.dec{font-weight:600; color:var(--ink)}
+.v{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.6rem; letter-spacing:-.01em}
+.k{font-size:.55rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-weight:700}
+.built{color:var(--build); font-weight:700}
+.gap{color:var(--ink-3); font-style:italic}
+.hard{color:var(--hard); font-weight:700}
+
+
+/* ---- vendor chips ---- */
+.grp{display:grid; grid-template-columns:70px 1fr; gap:6px; align-items:start; margin-bottom:5px}
+.grp:last-child{margin-bottom:0}
+.gl{font-size:.55rem; letter-spacing:.08em; text-transform:uppercase; line-height:1.25;
+  color:var(--ink-3); font-weight:700; padding-top:1px; overflow-wrap:break-word}
+.chips{display:flex; flex-wrap:wrap; gap:3px}
+.ch{display:inline-flex; align-items:center; gap:3px; text-decoration:none;
+  font-size:.66rem; font-weight:600; color:var(--ink); letter-spacing:-.005em;
+  border:1px solid var(--rule); border-radius:3px; padding:0 5px 0 0; background:var(--sheet);
+  line-height:1.75; white-space:nowrap}
+.ch i{font-style:normal; font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:.55rem; font-weight:700; letter-spacing:.02em;
+  background:var(--accent-soft); color:var(--accent);
+  padding:0 4px; margin-right:5px; border-right:1px solid var(--rule); align-self:stretch;
+  display:flex; align-items:center}
+.ch:hover,.ch:focus-visible{border-color:var(--accent); background:var(--accent-soft)}
+.ch.nl{color:var(--ink-2); border-style:dashed}
+.ch.nl i{background:transparent; color:var(--ink-3)}
+
+
+/* ---- objective band (layer 00) ---- */
+.obj{border:1px solid var(--accent); border-left-width:3px; border-radius:2px;
+  background:var(--accent-soft); padding:9px 12px 10px; display:flex; flex-direction:column; gap:7px}
+.obj-h{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.obj-n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.62rem;
+  font-weight:700; background:var(--accent); color:var(--sheet); padding:1px 5px; border-radius:2px}
+.obj-t{font-size:.78rem; font-weight:800; letter-spacing:-.01em}
+.obj-s{font-size:.63rem; color:var(--ink-2); line-height:1.4; flex:1; min-width:220px}
+.obj-g{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.oc{background:var(--sheet); border:1px solid var(--rule); border-radius:2px; padding:7px 9px 8px;
+  display:flex; flex-direction:column; gap:4px}
+.oc-h{font-size:.68rem; font-weight:800; letter-spacing:-.005em}
+.oc-h span{display:block; font-size:.575rem; font-weight:600; color:var(--ink-3);
+  letter-spacing:.04em; text-transform:uppercase; margin-bottom:1px}
+.oc-r{font-size:.6rem; line-height:1.36; color:var(--ink-2)}
+.oc-r b{color:var(--ink); font-weight:700}
+.oc-r em{font-style:normal; color:var(--accent); font-weight:700}
+.obj-f{font-size:.615rem; line-height:1.4; color:var(--ink-2); border-top:1px solid var(--rule); padding-top:6px}
+.obj-f b{color:var(--ink)}
+@media (max-width:900px){ .obj-g{grid-template-columns:1fr} }
+
+/* ---- sheet 2 blocks ---- */
+.cols{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+.cols-3{display:grid; grid-template-columns:1.15fr 1fr .95fr; gap:18px}
+
+.plane{display:flex; flex-direction:column; gap:3px}
+.prow{display:grid; grid-template-columns:38px 1fr; gap:8px; align-items:baseline;
+  padding:3px 0; border-bottom:1px solid var(--rule-2)}
+.prow:last-child{border-bottom:none}
+.prow .pl{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.6rem;
+  font-weight:700; color:var(--accent)}
+.prow .pt{font-size:.635rem; line-height:1.34; color:var(--ink-2)}
+.prow .pt b{color:var(--ink)}
+
+.strip{display:flex; gap:2px; margin:4px 0 6px}
+.cell{flex:1; text-align:center; font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:.55rem; font-weight:700; padding:3px 0; border:1px solid var(--rule);
+  color:var(--ink-3); border-radius:1px}
+.cell.on{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+.cell.crit{background:var(--hard-soft); border-color:var(--hard); color:var(--hard)}
+.cell.home{background:var(--accent); border-color:var(--accent); color:var(--sheet)}
+.prow .pl.home{background:var(--accent); color:var(--sheet); padding:0 3px; border-radius:2px}
+
+ol.ord{margin:0; padding:0; list-style:none; counter-reset:o;
+  display:flex; flex-direction:column; gap:0}
+ol.ord li{counter-increment:o; display:grid; grid-template-columns:16px 1fr; gap:7px;
+  font-size:.635rem; line-height:1.34; padding:3px 0; border-bottom:1px solid var(--rule-2)}
+ol.ord li:last-child{border-bottom:none}
+ol.ord li::before{content:counter(o); font-family:ui-monospace,Menlo,monospace;
+  font-size:.58rem; font-weight:700; color:var(--accent)}
+
+.nums{display:flex; flex-direction:column; gap:0}
+.num{display:grid; grid-template-columns:auto 1fr; gap:9px; align-items:baseline;
+  padding:3.5px 0; border-bottom:1px solid var(--rule-2)}
+.num:last-child{border-bottom:none}
+.num .f{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-variant-numeric:tabular-nums;
+  font-size:.72rem; font-weight:700; color:var(--ink); white-space:nowrap}
+.num .d{font-size:.6rem; line-height:1.32; color:var(--ink-2)}
+
+.traps{display:flex; flex-direction:column; gap:0}
+.trap{padding:4px 0 4px 9px; border-left:2px solid var(--hard); border-bottom:1px solid var(--rule-2);
+  font-size:.635rem; line-height:1.34; color:var(--ink-2)}
+.trap:last-child{border-bottom:none}
+.trap b{color:var(--ink); display:block; font-size:.645rem}
+
+.foot{display:flex; justify-content:space-between; gap:16px; align-items:baseline;
+  border-top:1px solid var(--rule); padding-top:7px; margin-top:auto;
+  font-size:.575rem; color:var(--ink-3); line-height:1.4}
+.foot a{color:var(--accent); text-decoration:none}
+.foot a:hover,.foot a:focus-visible{text-decoration:underline}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+.legend{display:flex; gap:13px; flex-wrap:wrap; font-size:.575rem; color:var(--ink-3)}
+.legend i{font-style:normal; font-weight:700}
+
+@media (max-width:900px){
+  .cols,.cols-3{grid-template-columns:1fr}
+  .head{flex-direction:column; align-items:flex-start; gap:8px}
+  .stamp{text-align:left}
+}
+
+@media print{
+  @page{size:A4 landscape; margin:8mm}
+  /* flows to as many pages as the content needs; part 2 always starts a new page */
+  body{background:#fff; font-size:12px}
+  .wrap{padding:0; gap:0}
+  .sheet{max-width:none; width:auto; border:none; border-radius:0; padding:0; gap:10px;
+    page-break-after:always; break-after:page}
+  .sheet{gap:8px}
+  .sheet:last-child{page-break-after:auto; break-after:auto}
+  .scroller{overflow:visible}
+  table{min-width:0}
+  .grid td{font-size:7.2pt; line-height:1.3; padding:6px 5px}
+  .grid tbody tr:hover td{background:none}
+  thead th{font-size:5.6pt; padding-bottom:3px}
+  h1{font-size:1.22rem}
+  .sub{font-size:.62rem; line-height:1.32}
+  .head{padding-bottom:4px}
+  .lname{font-size:.645rem}
+  .n,.v,.k{font-size:.57rem}
+  .ch{font-size:.62rem; line-height:1.7}
+  .ch i{font-size:.52rem}
+  .gl{font-size:.52rem}
+  .grp{margin-bottom:4px}
+  .prow,.num,ol.ord li{padding:2.2px 0}
+  .prow .pt,.trap,ol.ord li,.num .d{font-size:.595rem; line-height:1.3}
+  .num .f{font-size:.68rem}
+  .trap{padding:2.2px 0 2.2px 8px}
+  .cols,.cols-3{gap:14px}
+  .obj{padding:7px 10px 8px}
+  .obj-g{gap:8px}
+  .oc{padding:6px 8px}
+  .oc-r{font-size:.58rem}
+  .foot{padding-top:5px; font-size:.55rem}
+  .noprint{display:none}
+  tr,.prow,.trap,.num,ol.ord li{page-break-inside:avoid; break-inside:avoid}
+}
+
+
+.two{display:grid; grid-template-columns:1.45fr 1fr; gap:14px; align-items:start}
+.three{display:grid; grid-template-columns:repeat(3,1fr); gap:11px}
+.card{border:1px solid var(--rule); border-radius:2px; padding:7px 9px 8px; display:flex; flex-direction:column; gap:3px}
+.card.hot{border-color:var(--hard); border-left-width:3px}
+.card.good{border-color:var(--build); border-left-width:3px}
+.card h3{margin:0; font-size:.68rem; font-weight:800; letter-spacing:-.008em}
+.card .eb{font-size:.53rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); font-weight:700}
+.card p{margin:0; font-size:.6rem; line-height:1.35; color:var(--ink-2)}
+.card p b{color:var(--ink)}
+.rt{width:100%; border-collapse:collapse}
+.rt th,.rt td{text-align:left; vertical-align:top; padding:3px 6px; font-size:.605rem; line-height:1.3;
+  border-bottom:1px solid var(--rule-2)}
+.rt thead th{font-size:.52rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-2);
+  border-bottom:1px solid var(--rule); font-weight:700}
+.rt tbody td:first-child{border-bottom:2px solid var(--accent)}
+.rt tbody td{border-bottom:1px solid var(--rule)}
+.rt tbody tr:last-child td{border-bottom:none}
+.rt .rn{font-weight:800; color:var(--ink); font-size:.635rem}
+.rt .rg{font-size:.52rem; color:var(--ink-3); text-transform:uppercase; letter-spacing:.06em; font-weight:700}
+.pill{display:inline-block; font-family:ui-monospace,Menlo,monospace; font-size:.5rem; font-weight:700;
+  padding:0 4px; border-radius:2px; letter-spacing:.03em; line-height:1.5}
+.pill.push{background:var(--build-soft); color:var(--build); border:1px solid var(--build)}
+.pill.pull{background:var(--hard-soft); color:var(--hard); border:1px solid var(--hard)}
+.num2{font-family:ui-monospace,"SF Mono",Menlo,monospace; font-weight:700; color:var(--ink);
+  font-variant-numeric:tabular-nums}
+.gapmark{color:var(--ink-3); font-style:italic}
+.scale{display:flex; gap:2px; align-items:stretch}
+.sg{flex:1; border:1px solid var(--rule); border-radius:2px; padding:4px 6px; display:flex; flex-direction:column; gap:1px}
+.sg .sw{font-family:ui-monospace,Menlo,monospace; font-size:.62rem; font-weight:700; color:var(--ink)}
+.sg .sr{font-size:.53rem; font-weight:700; color:var(--ink-2)}
+.sg .sx{font-size:.5rem; color:var(--ink-3); line-height:1.2}
+.sg.s1{border-color:var(--build)} .sg.s5{border-color:var(--hard); border-width:2px}
+.mini{width:100%; border-collapse:collapse}
+.mini td{padding:2px 5px; font-size:.575rem; line-height:1.28; border-bottom:1px solid var(--rule-2); vertical-align:top}
+.mini tr:last-child td{border-bottom:none}
+.mini td:first-child{font-family:ui-monospace,Menlo,monospace; font-weight:700; color:var(--accent); white-space:nowrap; width:46px}
+
+
+@media print{
+  /* placed after the component rules so the cascade actually applies */
+  .sheet{gap:4px}
+  .rt th,.rt td{font-size:.515rem; padding:1.4px 5px; line-height:1.22}
+  .rt thead th{font-size:.48rem}
+  .rt .rn{font-size:.555rem}
+  .card{padding:4px 7px; gap:1.5px}
+  .card p{font-size:.52rem; line-height:1.26}
+  .card h3{font-size:.615rem}
+  .card .eb{font-size:.48rem}
+  .mini td{font-size:.49rem; padding:1.1px 4px; line-height:1.23}
+  .mini td:first-child{width:42px}
+  .sg .sw{font-size:.56rem} .sg .sr{font-size:.48rem} .sg .sx{font-size:.45rem}
+  .sg{padding:3px 5px}
+  h1{font-size:1.15rem}
+  .sub{font-size:.575rem; line-height:1.28}
+  .head{padding-bottom:3px}
+  .band{margin:0} .band h2{font-size:.6rem} .band .note{font-size:.565rem}
+  .two,.three{gap:8px}
+  .card p{margin-top:0}
+  .ch{font-size:.555rem; line-height:1.45} .ch i{font-size:.46rem}
+  .gl{font-size:.48rem} .grp{margin-bottom:2px; grid-template-columns:58px 1fr}
+  .foot{padding-top:3px; font-size:.51rem}
+}
+</style>
+
+<div class="wrap">
+<section class="sheet">
+
+  <div class="head">
+    <div>
+      <h1>Payment Rails Cheatsheet</h1>
+      <p class="sub">How fast, which direction, how much, and how long you stay exposed. Verified against scheme and regulator primary sources, Aug 2026.</p>
+    </div>
+    <div class="stamp">One page<br>Rails &amp; access<br>Aug 2026</div>
+  </div>
+
+  <div class="band"><h2>The rails at a glance</h2><span class="ln"></span><span class="note">direction is the property that decides your architecture</span></div>
+  <table class="rt">
+    <thead><tr><th style="width:13%">Rail</th><th style="width:13%">Speed</th><th style="width:11%">Direction</th><th style="width:15%">Ceiling</th><th>How long you stay exposed &mdash; shortest to longest risk</th></tr></thead>
+    <tbody>
+<tr><td><span class="rn">Faster Payments</span><br><span class="rg">UK</span></td><td>Seconds, 24/7</td><td><span class="pill push">PUSH</span></td><td><span class='num2'>&pound;1m</span> scheme cap<br><span class='rg'>Feb 2022. PSPs set lower</span></td><td>Minutes to hours &mdash; a recall <em>attempt</em>, never a guarantee</td></tr>
+<tr><td><span class="rn">Bacs</span><br><span class="rg">UK</span></td><td><span class='num2'>3</span> working days<br><span class='rg'>input &middot; process &middot; entry</span></td><td><span class="pill push">PUSH</span> <span class="pill pull">PULL</span></td><td><span class='rg'>PSP-set</span></td><td><b>Direct Debit: effectively unbounded.</b> Indemnity claims under the Guarantee</td></tr>
+<tr><td><span class="rn">CHAPS</span><br><span class="rg">UK</span></td><td>Same day, <b>RTGS</b><br><span class='rg'>cut-off 17:40 scheme; banks earlier. Opens 01:30 from Sept 2027</span></td><td><span class="pill push">PUSH</span></td><td><span class='rg'>No scheme cap</span></td><td><b>None.</b> Final and irrevocable, settled individually in central bank money</td></tr>
+<tr><td><span class="rn">ACH</span><br><span class="rg">US</span></td><td><span class='num2'>1&ndash;2</span> banking days<br><span class='rg'>Same Day: 3 windows</span></td><td><span class="pill push">PUSH</span> <span class="pill pull">PULL</span></td><td><span class='num2'>$1m</span> Same Day<br><span class='rg'>&rarr; $10m Sept 2027</span></td><td><b>2 banking days</b> most codes. Consumer unauthorised: <b>60 calendar days</b> &mdash; and since Oct 2024 also 6 banking days after WSUD review, <b>whichever is first</b></td></tr>
+<tr><td><span class="rn">RTP</span><br><span class="rg">US</span></td><td>Seconds, 24/7</td><td><span class="pill push">PUSH</span></td><td><span class='num2'>$10m</span><br><span class='rg'>Feb 2025</span></td><td><b>None.</b> Final on receipt</td></tr>
+<tr><td><span class="rn">FedNow</span><br><span class="rg">US</span></td><td>Seconds, 24/7</td><td><span class="pill push">PUSH</span></td><td><span class='num2'>$10m</span> network max<br><span class='rg'>$100k default. Nov 2025</span></td><td><b>None.</b> Final on receipt</td></tr>
+<tr><td><span class="rn">SEPA SCT</span><br><span class="rg">EU</span></td><td><span class='num2'>1</span> business day</td><td><span class="pill push">PUSH</span></td><td><span class='rg'>No scheme cap</span></td><td>No scheme reversal right for authorised transfers</td></tr>
+<tr><td><span class="rn">SEPA SCT Inst</span><br><span class="rg">EU</span></td><td><span class='num2'>10</span> seconds, 24/7</td><td><span class="pill push">PUSH</span></td><td><span class='rg'>Cap removed</span><br><span class='rg'>5 Oct 2025</span></td><td><b>None.</b> If no confirmation in 10s the payer&rsquo;s PSP must restore the account</td></tr>
+<tr><td><span class="rn">SEPA SDD</span><br><span class="rg">EU</span></td><td>Scheduled collection</td><td><span class="pill push">PUSH</span> <span class="pill pull">PULL</span></td><td><span class='rg'>No scheme cap</span></td><td><b>Core: 8 weeks</b> no questions asked, <b>13 months</b> unauthorised. <b>B2B: no refund</b> for an <em>authorised</em> collection</td></tr>
+    </tbody>
+  </table>
+
+  <div class="band"><h2>The two things that decide your design</h2><span class="ln"></span></div>
+  <div class="three">
+    <div class="card good">
+      <span class="eb">Direction</span>
+      <h3>Credit-push cannot debit anyone</h3>
+      <p><b>FPS, CHAPS, RTP, FedNow and SEPA Inst are push-only.</b> They cannot pull funds, so none of them can carry a subscription, a repayment or any collection you initiate.</p>
+      <p>For that you need <b>Bacs Direct Debit</b> in the UK, <b>ACH debit</b> in the US or <b>SEPA SDD</b> in the EU &mdash; and every one of those brings a long reversal tail with it.</p>
+    </div>
+    <div class="card hot">
+      <span class="eb">Exposure</span>
+      <h3>Speed and finality move together</h3>
+      <p>The instant rails are <b>final on receipt</b> &mdash; there is no recall, which is exactly why scam interception has to happen <em>in flight</em>.</p>
+      <p>The slow rails reverse for <b>weeks or months</b>. A Bacs Direct Debit indemnity claim is effectively unbounded. Your ledger must hold a contingent position for the whole window, not until the payment clears.</p>
+    </div>
+    <div class="card">
+      <span class="eb">Access &mdash; Faster Payments only</span>
+      <h3>&ldquo;Direct&rdquo; describes the connection, not the settlement</h3>
+      <p><b>DCSP</b> &mdash; directly connected <em>and</em> settling, with its own account at the Bank of England.</p>
+      <p><b>DCNSP</b> &mdash; directly connected, but a sponsoring DCSP settles for it.</p>
+      <p><b>Indirect Agency</b> &mdash; reaches the rail through a DCSP or DCNSP.</p>
+      <p><b>FPS terms only.</b> Bacs has just Direct and Indirect Participant &mdash; no non-settling tier. CHAPS adds Indirect Access Provider.</p>
+    </div>
+  </div>
+
+
+  <div class="band"><h2>The rules you will meet in production</h2><span class="ln"></span></div>
+  <div class="two">
+    <div class="three" style="gap:11px">
+      <div>
+        <span class="eb" style="display:block;margin-bottom:3px">Bacs messages</span>
+        <table class="mini">
+          <tr><td>AUDDIS</td><td>Set up or cancel Direct Debit instructions at the paying PSP</td></tr>
+          <tr><td>ADDACS</td><td>The PSP tells you an instruction was amended or cancelled</td></tr>
+          <tr><td>ARUDD</td><td>Returned unpaid Direct Debits you could not collect</td></tr>
+          <tr><td>ARUCS</td><td>Returned unapplied Direct <em>Credits</em> &mdash; the credit-side counterpart to ARUDD</td></tr>
+          <tr><td>AWACS</td><td>Wrong account for credits &mdash; gives the correct destination for future ones</td></tr>
+          <tr><td>DDIC</td><td>Direct Debit Indemnity Claim. <span class="gapmark">Often written DDICA in vendor docs; DDIC is the Bacs term</span></td></tr>
+        </table>
+      </div>
+      <div>
+        <span class="eb" style="display:block;margin-bottom:3px">Nacha return rates</span>
+        <table class="mini">
+          <tr><td>0.5%</td><td><b>Unauthorized Return Rate <em>Threshold</em>.</b> The only enforceable one &mdash; triggers ODFI reporting and a duty to reduce. <span class="rg">R05 R07 R10 R11 R29 R51</span></td></tr>
+          <tr><td>3.0%</td><td>Administrative Return <em>Level</em>. <b>Inquiry trigger only</b> &mdash; not automatically a violation</td></tr>
+          <tr><td>15%</td><td>Overall Return <em>Level</em>. Inquiry trigger only</td></tr>
+        </table>
+      </div>
+      <div>
+        <span class="eb" style="display:block;margin-bottom:3px">SEPA instant &mdash; who is in scope</span>
+        <table class="mini">
+          <tr><td>PASSED</td><td>Euro-area PSPs: receive <b>9 Jan 2025</b>, send <b>9 Oct 2025</b>. Verification of Payee <b>9 Oct 2025</b></td></tr>
+          <tr><td>2027</td><td><b>Euro-area EMIs and payment institutions: 9 Apr 2027</b>, both directions. Not yet in scope</td></tr>
+          <tr><td>2027</td><td>Non-euro-area PSPs: receive 9 Jan 2027, send 9 Jul 2027</td></tr>
+        </table>
+      </div>
+    </div>
+    <div>
+      <span class="eb" style="display:block;margin-bottom:3px">Connectivity &mdash; every vendor linked</span>
+      <span class="grp"><span class="gl">Connectivity</span><span class="chips"><a class="ch" href="https://form3.tech" target="_blank" rel="noopener"><i>FO</i>Form3</a><a class="ch" href="https://iconsolutions.com" target="_blank" rel="noopener"><i>IS</i>Icon Solutions</a><a class="ch" href="https://volantetech.com" target="_blank" rel="noopener"><i>VO</i>Volante</a><a class="ch" href="https://aciworldwide.com" target="_blank" rel="noopener"><i>AW</i>ACI Worldwide</a><a class="ch" href="https://finastra.com" target="_blank" rel="noopener"><i>FI</i>Finastra</a></span></span><span class="grp"><span class="gl">Libraries</span><span class="chips"><a class="ch" href="https://jpos.org" target="_blank" rel="noopener"><i>JP</i>jPOS</a><a class="ch" href="https://github.com/moov-io" target="_blank" rel="noopener"><i>MO</i>Moov</a><a class="ch" href="https://prowidesoftware.com" target="_blank" rel="noopener"><i>PR</i>Prowide</a></span></span>
+      <div class="card" style="margin-top:6px">
+        <span class="eb">The sort code advantage</span>
+        <p><b>You can hold your own sort code while still being an indirect participant.</b> Customers get permanent account details from day one, and you can go direct later without a single detail changing.</p>
+        <p>There is no card equivalent &mdash; you cannot own a BIN without being a scheme principal member.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="legend">
+      <span><i class="pill push" style="border:none;background:none;padding:0">PUSH</i> credit only</span>
+      <span><i class="pill pull" style="border:none;background:none;padding:0">PULL</i> can debit a payer</span>
+      <span><i class="gapmark">italic</i> unconfirmed &mdash; marked, not guessed</span>
+    </div>
+    <div><b>Three traps.</b> &ldquo;60 days&rdquo; for ACH consumer returns is <b>incomplete</b> &mdash; since Oct 2024 a second 6-banking-day clock runs after WSUD review and the earlier one wins. Nacha&rsquo;s <b>3% and 15% are inquiry Levels, not thresholds</b>; only 0.5% is enforceable. And the SEPA instant cap was removed on <b>5 Oct 2025</b> &mdash; 9 Oct is the send deadline, and the two are routinely conflated.</div>
+  </div>
+
+</section>
+</div>
