@@ -128,6 +128,13 @@
   .tag.yes{color:var(--recon);border-color:var(--recon);background:var(--recon-soft)}
   .ord2{margin:0 0 18px; padding-left:22px}
 .ord2 li{margin-bottom:9px; line-height:1.55}
+.vlinks{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:6px; margin:14px 0 20px}
+.vlink{display:block; padding:7px 10px 7px 12px; border:1px solid var(--rule); border-left:3px solid var(--money);
+  border-radius:3px; text-decoration:none; color:inherit; transition:border-color .12s, background .12s}
+.vlink:hover,.vlink:focus-visible{border-color:var(--money); background:var(--money-soft)}
+.vlink b{display:block; font-size:.9rem; color:var(--ink)}
+.vlink span{display:block; font-size:.82rem; color:var(--ink-2); line-height:1.4; margin-top:2px}
+h4{margin:22px 0 8px; font-size:1rem; font-weight:700}
 .keynum{border-left:2px solid var(--money);background:var(--money-soft);
     padding:18px 22px;margin:26px 0;border-radius:0 3px 3px 0}
   .keynum p:last-child{margin-bottom:0}
@@ -317,8 +324,46 @@
 </div>
 
 <h3>Where the confusion actually bites</h3>
-<p><strong>&ldquo;Payment orchestration&rdquo; is the worst offender</strong>, because the merchant-side product of that name &mdash; Primer, Gr4vy, Spreedly &mdash; solves a genuinely different problem: routing one transaction across several acquirers to lift acceptance rates. A bank&rsquo;s orchestration layer routes across <em>rails</em>, owns the ledger posting, and has to survive a reversal window measured in months. Buying the former expecting the latter is a category error, not a procurement mistake.</p>
-<p><strong>And &ldquo;processor&rdquo; flips meaning entirely.</strong> An issuer processor works for the bank whose card is being used. An acquirer processor works for the merchant being paid. Same word, opposite ends of the same authorisation message.</p>
+<p><strong>&ldquo;Payment orchestration&rdquo; is the worst offender</strong>, because a whole product category owns that name on the merchant side and solves a genuinely different problem. It is worth being concrete about what it actually does, because the overlap with a bank&rsquo;s orchestration layer is close to zero.</p>
+
+<h4>What a merchant orchestration platform actually does</h4>
+<p>The premise is that a merchant of any size ends up with more than one acquirer &mdash; for geography, for redundancy, or for negotiating leverage &mdash; and then needs something above them:</p>
+<ul>
+<li><strong>Smart routing.</strong> Send each transaction to the acquirer most likely to approve it, or the cheapest one that will. <em>Example:</em> route a French-issued card to a European acquirer rather than a US one. The transaction stops being cross-border, which both lowers interchange and removes a common decline reason.</li>
+<li><strong>Cascading on soft declines.</strong> A decline for &ldquo;issuer unavailable&rdquo; or a timeout is not a real refusal. <em>Example:</em> acquirer A returns a soft decline, the platform immediately re-presents the same transaction through acquirer B, and the customer never sees a failure. Cascading a <em>hard</em> decline &mdash; stolen card, do not honour &mdash; is how you get scheme trouble, so the rules matter as much as the routing.</li>
+<li><strong>Failover.</strong> One PSP has an outage; volume moves without a deploy.</li>
+<li><strong>Vault portability and network tokens.</strong> Hold the card data yourself, or as network tokens through Visa Token Service and Mastercard MDES, so stored credentials survive changing PSP. Without it, switching acquirer means asking every customer to re-enter their card &mdash; which is the lock-in the whole category exists to break. This is Spreedly&rsquo;s original business.</li>
+<li><strong>One integration for many payment methods.</strong> iDEAL, Klarna, Bizum, BLIK, Pix, UPI &mdash; dozens of local methods behind a single API rather than dozens of separate builds.</li>
+<li><strong>Unified reporting across PSPs</strong>, so reconciliation does not fragment per provider.</li>
+</ul>
+
+<div class="vlinks">
+<a class="vlink" href="https://primer.io" target="_blank" rel="noopener"><b>Primer</b> <span>Workflow-driven routing built visually; founded by ex-PayPal and Braintree people</span></a><a class="vlink" href="https://gr4vy.com" target="_blank" rel="noopener"><b>Gr4vy</b> <span>Cloud-native, with isolated infrastructure per merchant; founded by a Braintree alumnus</span></a><a class="vlink" href="https://spreedly.com" target="_blank" rel="noopener"><b>Spreedly</b> <span>The oldest of them; came from card vaulting, and the vault is still the centre of gravity</span></a><a class="vlink" href="https://ixopay.com" target="_blank" rel="noopener"><b>IXOPAY</b> <span>White-label — often run by PSPs and acquirers themselves rather than by merchants</span></a><a class="vlink" href="https://y.uno" target="_blank" rel="noopener"><b>Yuno</b> <span>Latin-America first, where local method coverage is the hard part</span></a><a class="vlink" href="https://cellpointdigital.com" target="_blank" rel="noopener"><b>CellPoint Digital</b> <span>Airline and travel specific, where currency and settlement rules are unusual</span></a><a class="vlink" href="https://corefy.com" target="_blank" rel="noopener"><b>Corefy</b> <span>Orchestration aimed at PSPs and marketplaces</span></a><a class="vlink" href="https://paydock.com" target="_blank" rel="noopener"><b>Paydock</b> <span>Positions as an orchestration layer for banks and large enterprises</span></a>
+</div>
+
+<h4>Why none of it is what a bank means</h4>
+<div class="tbl">
+<table>
+<thead><tr><th></th><th>Merchant orchestration</th><th>A bank&rsquo;s payment orchestration</th></tr></thead>
+<tbody>
+<tr><td><b>Chooses between</b></td><td>Acquirers &mdash; several routes to the same card network</td><td><b>Rails</b> &mdash; FPS, Bacs, CHAPS, SWIFT, card, each with different finality</td></tr>
+<tr><td><b>Optimises for</b></td><td>Authorisation rate and cost per transaction</td><td>Correctness, finality and regulatory obligation. A payment sent twice is worse than one that fails</td></tr>
+<tr><td><b>Owns the ledger?</b></td><td>No. The merchant&rsquo;s ERP or the PSP holds the record</td><td><b>Yes.</b> It decides what posts, when, and how a hold becomes a settled entry</td></tr>
+<tr><td><b>Retry horizon</b></td><td>Seconds. Retry now or lose the sale</td><td>Days for a Bacs cycle, and reversal exposure to <b>60 days</b> on ACH or unbounded on Direct Debit indemnity</td></tr>
+<tr><td><b>Failure means</b></td><td>A lost conversion</td><td>A customer&rsquo;s salary is late, a Direct Debit is unpaid, or a regulatory deadline is breached</td></tr>
+<tr><td><b>Bought or built</b></td><td><b>Bought.</b> A real market of a dozen vendors</td><td><b>Built.</b> No vendor sells it, because it encodes your product</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="keynum">
+<p class="eyebrow">The twist that catches neobanks specifically</p>
+<p>You may well need both &mdash; because <strong>the moment you accept a debit-card top-up, you are a merchant.</strong> That flow has an acquirer, an authorisation rate, and a decline problem, and every argument above applies to it in full. A neobank at scale can quite reasonably run <strong>Primer or Spreedly over two acquirers for top-ups</strong>, while its own orchestration service handles everything on the banking side.</p>
+<p>They are not competitors. They sit on opposite sides of the same balance sheet &mdash; one optimising money coming <em>in</em> from cards, the other governing money moving <em>out</em> across rails.</p>
+</div>
+
+<p><strong>And &ldquo;processor&rdquo; flips meaning entirely.</strong> An issuer processor works for the bank whose card is being used. An acquirer processor works for the merchant being paid. Same word, opposite ends of the same authorisation message &mdash; and a newer generation, such as <a href="https://silverflow.com" target="_blank" rel="noopener">Silverflow</a>, sells cloud-native card processing to acquirers and PSPs rather than to either merchants or banks, which adds a third reading of the same term.</p>
+
 </div>
 
 <div class="prose">
