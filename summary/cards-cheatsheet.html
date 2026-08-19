@@ -1,0 +1,397 @@
+<title>Cards &amp; BIN Cheatsheet</title>
+<style>
+
+:root{
+  --paper:#FCFCFA; --sheet:#FFFFFF; --ink:#14181E; --ink-2:#4C5560; --ink-3:#69737F;
+  --rule:#D7DAE0; --rule-2:#EBEDF1;
+  --accent:#1E3E7B; --accent-soft:#EDF1F9;
+  --build:#1A6349; --build-soft:#E9F3EE;
+  --hard:#9E3319; --hard-soft:#FBEDE8;
+  --bank:#F6F7F9;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1116; --sheet:#161A20; --ink:#E9EBEF; --ink-2:#A3ADBA; --ink-3:#848F9C;
+    --rule:#2C323B; --rule-2:#222831;
+    --accent:#84A6E2; --accent-soft:#1A2436;
+    --build:#57BE93; --build-soft:#152A24;
+    --hard:#E28763; --hard-soft:#2E1C16;
+    --bank:#1B2028;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1116; --sheet:#161A20; --ink:#E9EBEF; --ink-2:#A3ADBA; --ink-3:#848F9C;
+  --rule:#2C323B; --rule-2:#222831;
+  --accent:#84A6E2; --accent-soft:#1A2436;
+  --build:#57BE93; --build-soft:#152A24;
+  --hard:#E28763; --hard-soft:#2E1C16;
+  --bank:#1B2028;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  font-size:15px; line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace}
+
+.wrap{display:flex; flex-direction:column; gap:20px; padding:20px 16px 56px; align-items:center}
+.sheet{
+  width:100%; max-width:1280px; background:var(--sheet); color:var(--ink);
+  border:1px solid var(--rule); border-radius:2px;
+  padding:20px 22px 18px;
+  display:flex; flex-direction:column; gap:14px;
+}
+
+/* ---- masthead ---- */
+.head{display:flex; align-items:flex-end; justify-content:space-between; gap:24px;
+  border-bottom:2px solid var(--ink); padding-bottom:8px}
+h1{margin:0; font-size:1.5rem; font-weight:800; letter-spacing:-.017em; line-height:1.05; text-wrap:balance}
+.sub{margin:3px 0 0; font-size:.72rem; color:var(--ink-2); max-width:62ch; line-height:1.4}
+.stamp{font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+  text-align:right; line-height:1.6; white-space:nowrap}
+.stamp b{color:var(--accent); font-weight:700}
+
+.band{display:flex; align-items:baseline; gap:10px; margin:2px 0 -4px}
+.band h2{margin:0; font-size:.68rem; letter-spacing:.13em; text-transform:uppercase; font-weight:700}
+.band .note{font-size:.68rem; color:var(--ink-3); line-height:1.4}
+.band .ln{flex:1; height:1px; background:var(--rule); align-self:center; min-width:12px}
+
+/* ---- master grid ---- */
+.scroller{overflow-x:auto}
+table{border-collapse:collapse; width:100%; table-layout:fixed; min-width:1000px}
+th,td{text-align:left; vertical-align:top; padding:5px 7px; border-bottom:1px solid var(--rule-2)}
+thead th{
+  font-size:.56rem; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-2);
+  font-weight:700; border-bottom:1px solid var(--rule); padding-bottom:4px; white-space:nowrap
+}
+tbody tr:last-child td{border-bottom:none}
+.grid td{font-size:.645rem; line-height:1.36; padding-top:9px; padding-bottom:9px}
+.grid td.bk{background:var(--bank)}
+/* layer boundary: a full-width rule anchored by an accent tick under the layer column */
+.grid tbody td{border-bottom:1px solid var(--rule)}
+.grid tbody td:first-child{border-bottom:2px solid var(--accent)}
+.grid tbody tr:last-child td{border-bottom:none}
+.grid tbody tr:hover td{background:var(--accent-soft)}
+.grid tbody tr:hover td.bk{background:var(--accent-soft)}
+col.c1{width:10.5%} col.c2{width:9%} col.c3{width:36%}
+col.c4{width:15%} col.c5{width:14%} col.c6{width:15.5%}
+
+.n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.6rem;
+  color:var(--accent); font-weight:700; letter-spacing:.04em}
+.lname{display:block; font-weight:700; font-size:.68rem; margin-top:1px; letter-spacing:-.005em}
+.dec{font-weight:600; color:var(--ink)}
+.v{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.6rem; letter-spacing:-.01em}
+.k{font-size:.55rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-weight:700}
+.built{color:var(--build); font-weight:700}
+.gap{color:var(--ink-3); font-style:italic}
+.hard{color:var(--hard); font-weight:700}
+
+
+/* ---- vendor chips ---- */
+.grp{display:grid; grid-template-columns:70px 1fr; gap:6px; align-items:start; margin-bottom:5px}
+.grp:last-child{margin-bottom:0}
+.gl{font-size:.55rem; letter-spacing:.08em; text-transform:uppercase; line-height:1.25;
+  color:var(--ink-3); font-weight:700; padding-top:1px; overflow-wrap:break-word}
+.chips{display:flex; flex-wrap:wrap; gap:3px}
+.ch{display:inline-flex; align-items:center; gap:3px; text-decoration:none;
+  font-size:.66rem; font-weight:600; color:var(--ink); letter-spacing:-.005em;
+  border:1px solid var(--rule); border-radius:3px; padding:0 5px 0 0; background:var(--sheet);
+  line-height:1.75; white-space:nowrap}
+.ch i{font-style:normal; font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:.55rem; font-weight:700; letter-spacing:.02em;
+  background:var(--accent-soft); color:var(--accent);
+  padding:0 4px; margin-right:5px; border-right:1px solid var(--rule); align-self:stretch;
+  display:flex; align-items:center}
+.ch:hover,.ch:focus-visible{border-color:var(--accent); background:var(--accent-soft)}
+.ch.nl{color:var(--ink-2); border-style:dashed}
+.ch.nl i{background:transparent; color:var(--ink-3)}
+
+
+/* ---- objective band (layer 00) ---- */
+.obj{border:1px solid var(--accent); border-left-width:3px; border-radius:2px;
+  background:var(--accent-soft); padding:9px 12px 10px; display:flex; flex-direction:column; gap:7px}
+.obj-h{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.obj-n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.62rem;
+  font-weight:700; background:var(--accent); color:var(--sheet); padding:1px 5px; border-radius:2px}
+.obj-t{font-size:.78rem; font-weight:800; letter-spacing:-.01em}
+.obj-s{font-size:.63rem; color:var(--ink-2); line-height:1.4; flex:1; min-width:220px}
+.obj-g{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.oc{background:var(--sheet); border:1px solid var(--rule); border-radius:2px; padding:7px 9px 8px;
+  display:flex; flex-direction:column; gap:4px}
+.oc-h{font-size:.68rem; font-weight:800; letter-spacing:-.005em}
+.oc-h span{display:block; font-size:.575rem; font-weight:600; color:var(--ink-3);
+  letter-spacing:.04em; text-transform:uppercase; margin-bottom:1px}
+.oc-r{font-size:.6rem; line-height:1.36; color:var(--ink-2)}
+.oc-r b{color:var(--ink); font-weight:700}
+.oc-r em{font-style:normal; color:var(--accent); font-weight:700}
+.obj-f{font-size:.615rem; line-height:1.4; color:var(--ink-2); border-top:1px solid var(--rule); padding-top:6px}
+.obj-f b{color:var(--ink)}
+@media (max-width:900px){ .obj-g{grid-template-columns:1fr} }
+
+/* ---- sheet 2 blocks ---- */
+.cols{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+.cols-3{display:grid; grid-template-columns:1.15fr 1fr .95fr; gap:18px}
+
+.plane{display:flex; flex-direction:column; gap:3px}
+.prow{display:grid; grid-template-columns:38px 1fr; gap:8px; align-items:baseline;
+  padding:3px 0; border-bottom:1px solid var(--rule-2)}
+.prow:last-child{border-bottom:none}
+.prow .pl{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.6rem;
+  font-weight:700; color:var(--accent)}
+.prow .pt{font-size:.635rem; line-height:1.34; color:var(--ink-2)}
+.prow .pt b{color:var(--ink)}
+
+.strip{display:flex; gap:2px; margin:4px 0 6px}
+.cell{flex:1; text-align:center; font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:.55rem; font-weight:700; padding:3px 0; border:1px solid var(--rule);
+  color:var(--ink-3); border-radius:1px}
+.cell.on{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+.cell.crit{background:var(--hard-soft); border-color:var(--hard); color:var(--hard)}
+.cell.home{background:var(--accent); border-color:var(--accent); color:var(--sheet)}
+.prow .pl.home{background:var(--accent); color:var(--sheet); padding:0 3px; border-radius:2px}
+
+ol.ord{margin:0; padding:0; list-style:none; counter-reset:o;
+  display:flex; flex-direction:column; gap:0}
+ol.ord li{counter-increment:o; display:grid; grid-template-columns:16px 1fr; gap:7px;
+  font-size:.635rem; line-height:1.34; padding:3px 0; border-bottom:1px solid var(--rule-2)}
+ol.ord li:last-child{border-bottom:none}
+ol.ord li::before{content:counter(o); font-family:ui-monospace,Menlo,monospace;
+  font-size:.58rem; font-weight:700; color:var(--accent)}
+
+.nums{display:flex; flex-direction:column; gap:0}
+.num{display:grid; grid-template-columns:auto 1fr; gap:9px; align-items:baseline;
+  padding:3.5px 0; border-bottom:1px solid var(--rule-2)}
+.num:last-child{border-bottom:none}
+.num .f{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-variant-numeric:tabular-nums;
+  font-size:.72rem; font-weight:700; color:var(--ink); white-space:nowrap}
+.num .d{font-size:.6rem; line-height:1.32; color:var(--ink-2)}
+
+.traps{display:flex; flex-direction:column; gap:0}
+.trap{padding:4px 0 4px 9px; border-left:2px solid var(--hard); border-bottom:1px solid var(--rule-2);
+  font-size:.635rem; line-height:1.34; color:var(--ink-2)}
+.trap:last-child{border-bottom:none}
+.trap b{color:var(--ink); display:block; font-size:.645rem}
+
+.foot{display:flex; justify-content:space-between; gap:16px; align-items:baseline;
+  border-top:1px solid var(--rule); padding-top:7px; margin-top:auto;
+  font-size:.575rem; color:var(--ink-3); line-height:1.4}
+.foot a{color:var(--accent); text-decoration:none}
+.foot a:hover,.foot a:focus-visible{text-decoration:underline}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+.legend{display:flex; gap:13px; flex-wrap:wrap; font-size:.575rem; color:var(--ink-3)}
+.legend i{font-style:normal; font-weight:700}
+
+@media (max-width:900px){
+  .cols,.cols-3{grid-template-columns:1fr}
+  .head{flex-direction:column; align-items:flex-start; gap:8px}
+  .stamp{text-align:left}
+}
+
+.vwrap{display:flex; flex-direction:column; gap:4px}
+.eb2{font-size:.55rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); font-weight:700}
+
+@media print{
+  @page{size:A4 landscape; margin:8mm}
+  /* flows to as many pages as the content needs; part 2 always starts a new page */
+  body{background:#fff; font-size:12px}
+  .wrap{padding:0; gap:0}
+  .sheet{max-width:none; width:auto; border:none; border-radius:0; padding:0; gap:10px;
+    page-break-after:always; break-after:page}
+  .sheet{gap:8px}
+  .sheet:last-child{page-break-after:auto; break-after:auto}
+  .scroller{overflow:visible}
+  table{min-width:0}
+  .grid td{font-size:7.2pt; line-height:1.3; padding:6px 5px}
+  .grid tbody tr:hover td{background:none}
+  thead th{font-size:5.6pt; padding-bottom:3px}
+  h1{font-size:1.22rem}
+  .sub{font-size:.62rem; line-height:1.32}
+  .head{padding-bottom:4px}
+  .lname{font-size:.645rem}
+  .n,.v,.k{font-size:.57rem}
+  .ch{font-size:.62rem; line-height:1.7}
+  .ch i{font-size:.52rem}
+  .gl{font-size:.52rem}
+  .grp{margin-bottom:4px}
+  .prow,.num,ol.ord li{padding:2.2px 0}
+  .prow .pt,.trap,ol.ord li,.num .d{font-size:.595rem; line-height:1.3}
+  .num .f{font-size:.68rem}
+  .trap{padding:2.2px 0 2.2px 8px}
+  .cols,.cols-3{gap:14px}
+  .noprint{display:none}
+  tr,.prow,.trap,.num,ol.ord li{page-break-inside:avoid; break-inside:avoid}
+}
+
+
+.two{display:grid; grid-template-columns:1.15fr 1fr; gap:16px; align-items:start}
+.three{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+.card{border:1px solid var(--rule); border-radius:2px; padding:8px 10px 9px; display:flex; flex-direction:column; gap:4px}
+.card.hot{border-color:var(--hard); border-left-width:3px}
+.card h3{margin:0; font-size:.72rem; font-weight:800; letter-spacing:-.008em}
+.card .eb{font-size:.55rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); font-weight:700}
+.card p{margin:0; font-size:.615rem; line-height:1.37; color:var(--ink-2)}
+.card p b{color:var(--ink)}
+svg{width:100%; height:auto; display:block}
+.lbl{font-size:11px; font-weight:700; fill:var(--ink); font-family:ui-sans-serif,-apple-system,sans-serif; letter-spacing:.09em}
+.lbl-2{font-size:9.6px; fill:var(--ink-2); font-family:ui-sans-serif,-apple-system,sans-serif}
+.lbl-3{font-size:9px; fill:var(--ink-3); font-family:ui-sans-serif,-apple-system,sans-serif}
+.em{fill:var(--accent); font-weight:700}
+.dig{font-size:26px; font-weight:700; fill:var(--ink); font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.dig.dim{fill:var(--ink-3); font-weight:500}
+.dig.chk{fill:var(--hard)}
+.bx-a{fill:none; stroke:var(--accent); stroke-width:2}
+.bx-b{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1; stroke-dasharray:3 2; opacity:.55}
+line.f{stroke:var(--ink-3); stroke-width:1}
+line.f2{stroke:var(--accent); stroke-width:2}
+.flow{display:flex; align-items:stretch; gap:0; flex-wrap:wrap}
+.st{flex:1; min-width:88px; border:1px solid var(--rule); border-right:none; padding:5px 7px; display:flex; flex-direction:column; gap:2px}
+.st:last-child{border-right:1px solid var(--rule)}
+.st.you{background:var(--accent-soft); border-color:var(--accent); border-right:1px solid var(--accent)}
+.st .sn{font-family:ui-monospace,Menlo,monospace; font-size:.5rem; color:var(--ink-3); font-weight:700}
+.st .sv{font-size:.6rem; font-weight:700; line-height:1.25}
+.st .sd{font-size:.55rem; color:var(--ink-3); line-height:1.25}
+.cmp{width:100%; border-collapse:collapse}
+.cmp th,.cmp td{text-align:left; vertical-align:top; padding:3.5px 6px; font-size:.615rem; line-height:1.34;
+  border-bottom:1px solid var(--rule-2)}
+.cmp thead th{font-size:.54rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-2);
+  border-bottom:1px solid var(--rule); font-weight:700}
+.cmp tbody tr:last-child td{border-bottom:none}
+.cmp td:first-child{font-weight:700; color:var(--ink); width:20%}
+.cmp .own{color:var(--build); font-weight:700}
+.cmp .spn{color:var(--hard); font-weight:700}
+
+@media print{
+  /* second print block — must come after the component rules above to win the cascade */
+  .sheet{gap:5px}
+  .cmp th,.cmp td{font-size:.535rem; line-height:1.28; padding:2.2px 5px}
+  .cmp thead th{font-size:.5rem}
+  .card{padding:5px 8px; gap:2px}
+  .card p{font-size:.545rem; line-height:1.3}
+  .card h3{font-size:.63rem}
+  .card .eb,.eb2{font-size:.5rem}
+  .st{padding:3px 5px}
+  .st .sv{font-size:.555rem}
+  .st .sd{font-size:.505rem; line-height:1.18}
+  .st .sn{font-size:.46rem}
+  h1{font-size:1.15rem}
+  .sub{font-size:.575rem; line-height:1.28}
+  .head{padding-bottom:3px}
+  .band{margin:0}
+  .band h2{font-size:.6rem}
+  .band .note{font-size:.575rem}
+  .two,.three{gap:9px}
+  .ch{font-size:.555rem; line-height:1.45}
+  .ch i{font-size:.46rem}
+  .gl{font-size:.48rem}
+  .grp{margin-bottom:2px; grid-template-columns:56px 1fr}
+  .foot{padding-top:4px; font-size:.53rem}
+  .dig{font-size:22px}
+}
+</style>
+
+<div class="wrap">
+<section class="sheet">
+
+  <div class="head">
+    <div>
+      <h1>Cards &amp; BIN Cheatsheet</h1>
+      <p class="sub">Who does what in a card programme, where the BIN sits, what happens in the two seconds a customer is standing at a terminal, and what it costs to rent a sponsor&rsquo;s licence instead of holding your own.</p>
+    </div>
+    <div class="stamp">One page<br>Card issuing<br>Aug 2026</div>
+  </div>
+
+  <div class="band"><h2>Four roles &mdash; usually four different companies</h2><span class="ln"></span><span class="note">the most common confusion in the whole stack</span></div>
+  <div class="two">
+    <div>
+      <table class="cmp">
+        <thead><tr><th>Role</th><th>What it actually does</th><th>Who</th></tr></thead>
+        <tbody>
+          <tr><td>Scheme</td><td>Owns the rails, rules, reason codes and interchange. Runs stand-in when you do not answer</td><td>Visa &middot; Mastercard</td></tr>
+          <tr><td>Issuer<br><span class="k">of record</span></td><td><b>Holds the BIN and the liability.</b> Must be a scheme principal member &mdash; a licence <em>plus</em> a separate application</td><td>You, or your <span class="spn">BIN sponsor</span></td></tr>
+          <tr><td>Processor</td><td>Takes the auth message, calls your service or applies your rules, answers inside the timeout</td><td>Thredd &middot; Marqeta &middot; Galileo</td></tr>
+          <tr><td>Programme<br>manager</td><td>The product: onboarding, app, limits, support, disputes intake. You, regardless of the other three</td><td><b>You</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div><svg viewBox="-12 0 706 168" role="img" aria-label="Anatomy of a card number. The first digit is the major industry identifier: 4 is Visa, 5 is Mastercard, 34 or 37 is Amex, 6 is Discover. The first eight digits are the issuer identification number, formerly six, which is the BIN and identifies the issuing institution. The middle digits are the account identifier assigned by the issuer. The final digit is a Luhn check digit.">
+<text x="0" y="13" class="lbl">ANATOMY OF A CARD NUMBER &mdash; WHERE THE BIN ACTUALLY SITS</text>
+<g class="dg">
+<text x="0" y="62" class="dig">5</text><text x="34" y="62" class="dig">4</text><text x="68" y="62" class="dig">1</text><text x="102" y="62" class="dig">2</text>
+<text x="150" y="62" class="dig">3</text><text x="184" y="62" class="dig">4</text><text x="218" y="62" class="dig">5</text><text x="252" y="62" class="dig">6</text>
+<text x="300" y="62" class="dig dim">7</text><text x="334" y="62" class="dig dim">8</text><text x="368" y="62" class="dig dim">9</text><text x="402" y="62" class="dig dim">0</text>
+<text x="450" y="62" class="dig dim">1</text><text x="484" y="62" class="dig dim">2</text><text x="518" y="62" class="dig dim">3</text><text x="552" y="62" class="dig chk">7</text>
+</g>
+<rect class="bx-a" x="-6" y="30" width="42" height="42" rx="2"/>
+<rect class="bx-b" x="-6" y="30" width="288" height="42" rx="2"/>
+<line class="f" x1="-6" y1="86" x2="36" y2="86"/><text x="-6" y="102" class="lbl-2"><tspan class="em">MII</tspan> &mdash; the network</text>
+<text x="-6" y="116" class="lbl-3">4 Visa &middot; 5 Mastercard &middot; 34/37 Amex &middot; 6 Discover</text>
+<line class="f2" x1="-6" y1="140" x2="282" y2="140"/><text x="-6" y="156" class="lbl-2"><tspan class="em">IIN / BIN</tspan> &mdash; 8 digits since 2022, was 6. Identifies the <tspan class="em">issuing institution</tspan>. This is what a sponsor rents you</text>
+<line class="f" x1="300" y1="86" x2="552" y2="86"/><text x="300" y="102" class="lbl-2">Account identifier &mdash; assigned by the issuer</text>
+<line class="f" x1="546" y1="118" x2="574" y2="118"/><text x="600" y="66" class="lbl-2">Luhn check digit</text>
+</svg></div>
+  </div>
+
+  <div class="band"><h2>Three events, not one &mdash; and they post differently</h2><span class="ln"></span></div>
+  <div class="three">
+    <div class="card hot">
+      <span class="eb">Real time &middot; ~2s scheme timeout</span>
+      <h3>1 &middot; Authorisation</h3>
+      <p><b>No money moves.</b> The issuer says yes or no and rings a hold against available balance. Your fraud score, limit checks and balance read all happen inside this window.</p>
+      <p><b>Post it as a hold</b> &mdash; pending, not settled.</p>
+    </div>
+    <div class="card">
+      <span class="eb">Usually T+1</span>
+      <h3>2 &middot; Clearing</h3>
+      <p>The merchant submits the real amount. <b>It can differ from the authorisation</b> &mdash; tips, fuel, partial shipment, currency conversion.</p>
+      <p><b>Post the actual</b> and release the hold. Ledgers that assume auth == clearing break here.</p>
+    </div>
+    <div class="card">
+      <span class="eb">Net, per cycle</span>
+      <h3>3 &middot; Settlement</h3>
+      <p>Money actually moves, <b>net</b>, between issuer and acquirer through the scheme&rsquo;s settlement bank.</p>
+      <p><b>Reconcile against the scheme file</b>, not against your own postings. This is where breaks surface.</p>
+    </div>
+  </div>
+
+  <div class="band"><h2>The authorisation path &mdash; and the only part you control</h2><span class="ln"></span><span class="note">miss the window and the scheme decides for you</span></div>
+  <div class="flow">
+    <div class="st"><span class="sn">01</span><span class="sv">Terminal</span><span class="sd">Tap, dip or card-not-present</span></div>
+    <div class="st"><span class="sn">02</span><span class="sv">Acquirer</span><span class="sd">The merchant&rsquo;s bank</span></div>
+    <div class="st"><span class="sn">03</span><span class="sv">Scheme</span><span class="sd">Routes on the BIN</span></div>
+    <div class="st"><span class="sn">04</span><span class="sv">Processor</span><span class="sd">Thredd, Marqeta, Galileo &mdash; or your own</span></div>
+    <div class="st you"><span class="sn">05</span><span class="sv">Your decision</span><span class="sd"><b>Fraud score + balance read + limits.</b> A few hundred ms</span></div>
+    <div class="st"><span class="sn">06</span><span class="sv">Response</span><span class="sd">Back up the chain, and the customer walks away</span></div>
+  </div>
+
+  <div class="band" style="margin-top:9px"><h2>Own BIN, or a sponsor&rsquo;s?</h2><span class="ln"></span></div>
+  <div class="two">
+    <table class="cmp">
+      <thead><tr><th></th><th class="own">Your own BIN</th><th class="spn">A sponsor&rsquo;s BIN</th></tr></thead>
+      <tbody>
+        <tr><td>To launch</td><td>Scheme principal membership <b>and</b> a licence. Months, and the two applications are separate</td><td>A contract. Weeks to a few months</td></tr>
+        <tr><td>Liability</td><td>Yours, directly to the scheme. No one absorbs it</td><td>The sponsor owes the scheme, then recovers from you by contract</td></tr>
+        <tr><td>Risk limits</td><td>Yours to set</td><td><b>Theirs.</b> Their tolerance decides when your programme gets restricted</td></tr>
+        <tr><td>Economics</td><td>Full interchange</td><td>Shared, plus per-card and per-transaction fees</td></tr>
+        <tr><td>Getting out</td><td>&mdash;</td><td><b>BIN migration.</b> Reissue every card, or run a scheme-approved BIN transfer</td></tr>
+      </tbody>
+    </table>
+    <div class="vwrap">
+      <span class="eb2">Vendors &mdash; every one linked</span>
+      <span class="grp"><span class="gl">Processor</span><span class="chips"><a class="ch" href="https://thredd.com" target="_blank" rel="noopener"><i>TH</i>Thredd</a><a class="ch" href="https://marqeta.com" target="_blank" rel="noopener"><i>MA</i>Marqeta</a><a class="ch" href="https://galileo-ft.com" target="_blank" rel="noopener"><i>GA</i>Galileo</a><a class="ch" href="https://enfuce.com" target="_blank" rel="noopener"><i>EN</i>Enfuce</a><a class="ch" href="https://i2cinc.com" target="_blank" rel="noopener"><i>I2</i>i2c</a><a class="ch" href="https://wallester.com" target="_blank" rel="noopener"><i>WA</i>Wallester</a></span></span><span class="grp"><span class="gl">HSM</span><span class="chips"><a class="ch" href="https://cpl.thalesgroup.com" target="_blank" rel="noopener"><i>TP</i>Thales payShield</a><a class="ch" href="https://futurex.com" target="_blank" rel="noopener"><i>FU</i>Futurex</a><a class="ch" href="https://utimaco.com" target="_blank" rel="noopener"><i>UT</i>Utimaco</a></span></span><span class="grp"><span class="gl">Cards</span><span class="chips"><a class="ch" href="https://idemia.com" target="_blank" rel="noopener"><i>ID</i>IDEMIA</a><a class="ch" href="https://gi-de.com" target="_blank" rel="noopener"><i>GD</i>Giesecke+Devrient</a><a class="ch" href="https://composecure.com" target="_blank" rel="noopener"><i>CO</i>CompoSecure</a></span></span><span class="grp"><span class="gl">Disputes</span><span class="chips"><a class="ch" href="https://quavo.com" target="_blank" rel="noopener"><i>QU</i>Quavo</a><a class="ch" href="https://pega.com" target="_blank" rel="noopener"><i>PS</i>Pega Smart Dispute</a><a class="ch" href="https://rivero.tech" target="_blank" rel="noopener"><i>RI</i>Rivero</a></span></span><span class="grp"><span class="gl">Pre-dispute</span><span class="chips"><a class="ch" href="https://ethoca.com" target="_blank" rel="noopener"><i>ET</i>Ethoca</a><a class="ch" href="https://www.verifi.com" target="_blank" rel="noopener"><i>VE</i>Verifi</a></span></span>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="legend">
+      <span><i class="hard">Red</i> hard external deadline</span>
+      <span><i class="em" style="color:var(--accent)">Blue</i> the part you own</span>
+    </div>
+    <div><b>A licence does not give you a BIN</b> &mdash; separate applications, separate bodies, separate timelines, and unlike a sort code there is no halfway house. <b>Four traps.</b> A slow balance read means the <b>scheme approves on your behalf</b> with your checks skipped. <b>Auth &ne; clearing</b> &mdash; tips and conversion move the amount. <b>Provisional credit is a contingent position</b>, real money on a case you have not won. And the <b>8-digit BIN</b> has been the standard since 2022 &mdash; systems that still parse six are silently mis-routing.</div>
+  </div>
+
+</section>
+</div>
