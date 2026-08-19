@@ -108,6 +108,28 @@ col.c4{width:15%} col.c5{width:14%} col.c6{width:15.5%}
 .ch.nl{color:var(--ink-2); border-style:dashed}
 .ch.nl i{background:transparent; color:var(--ink-3)}
 
+
+/* ---- objective band (layer 00) ---- */
+.obj{border:1px solid var(--accent); border-left-width:3px; border-radius:2px;
+  background:var(--accent-soft); padding:9px 12px 10px; display:flex; flex-direction:column; gap:7px}
+.obj-h{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.obj-n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.62rem;
+  font-weight:700; background:var(--accent); color:var(--sheet); padding:1px 5px; border-radius:2px}
+.obj-t{font-size:.78rem; font-weight:800; letter-spacing:-.01em}
+.obj-s{font-size:.63rem; color:var(--ink-2); line-height:1.4; flex:1; min-width:220px}
+.obj-g{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.oc{background:var(--sheet); border:1px solid var(--rule); border-radius:2px; padding:7px 9px 8px;
+  display:flex; flex-direction:column; gap:4px}
+.oc-h{font-size:.68rem; font-weight:800; letter-spacing:-.005em}
+.oc-h span{display:block; font-size:.575rem; font-weight:600; color:var(--ink-3);
+  letter-spacing:.04em; text-transform:uppercase; margin-bottom:1px}
+.oc-r{font-size:.6rem; line-height:1.36; color:var(--ink-2)}
+.oc-r b{color:var(--ink); font-weight:700}
+.oc-r em{font-style:normal; color:var(--accent); font-weight:700}
+.obj-f{font-size:.615rem; line-height:1.4; color:var(--ink-2); border-top:1px solid var(--rule); padding-top:6px}
+.obj-f b{color:var(--ink)}
+@media (max-width:900px){ .obj-g{grid-template-columns:1fr} }
+
 /* ---- sheet 2 blocks ---- */
 .cols{display:grid; grid-template-columns:1fr 1fr; gap:18px}
 .cols-3{display:grid; grid-template-columns:1.15fr 1fr .95fr; gap:18px}
@@ -196,6 +218,10 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .num .f{font-size:.68rem}
   .trap{padding:2.2px 0 2.2px 8px}
   .cols,.cols-3{gap:14px}
+  .obj{padding:7px 10px 8px}
+  .obj-g{gap:8px}
+  .oc{padding:6px 8px}
+  .oc-r{font-size:.58rem}
   .foot{padding-top:5px; font-size:.55rem}
   .noprint{display:none}
   tr,.prow,.trap,.num,ol.ord li{page-break-inside:avoid; break-inside:avoid}
@@ -210,7 +236,7 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   <div class="head">
     <div>
       <h1>Neobank Stack Cheatsheet</h1>
-      <p class="sub">Eleven decisions between a licence and a working bank &mdash; the shortlist at each, and what three real banks actually chose. Numbering is a dependency order, not a preference: each layer constrains the ones below it.</p>
+      <p class="sub">Eleven decisions between a licence and a working bank &mdash; the shortlist at each, and what three real banks actually chose. Numbering is a dependency order, not a preference: each layer constrains the ones below it. Start at <b>00</b> at the foot of the page &mdash; the objective decides the rest.</p>
     </div>
     <div class="stamp">
       Part <b>1</b><br>
@@ -324,6 +350,40 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
       </tr>
     </tbody>
   </table>
+  </div>
+
+
+  <div class="obj">
+    <div class="obj-h">
+      <span class="obj-n">00</span>
+      <span class="obj-t">Design for the user experience first &mdash; from the objective</span>
+      <span class="obj-s">Printed last because it is read last; it happens <b>first</b>. Every row above is a consequence of this one. Name the objective, map the use cases and features it demands, <em>then</em> check the stack can deliver them &mdash; not the reverse.</span>
+    </div>
+    <div class="obj-g">
+
+      <div class="oc">
+        <div class="oc-h"><span>Objective</span>Primacy</div>
+        <div class="oc-r"><b>Be the main account.</b> Salary in, bills out, card top of wallet</div>
+        <div class="oc-r"><b>Needs:</b> salary detection, Direct Debit origination, instant balance and notifications, joint accounts, a buffer or overdraft</div>
+        <div class="oc-r"><em>So the stack must:</em> hold your own sort code for inbound, originate Bacs, and answer a balance read in milliseconds. Primacy makes an outage existential &mdash; it buys layers <b>02</b>, <b>03</b> and <b>11</b></div>
+      </div>
+
+      <div class="oc">
+        <div class="oc-h"><span>Objective</span>Cheap user growth</div>
+        <div class="oc-r"><b>Lowest cost to acquire and serve.</b> Sign up in minutes, spend in seconds</div>
+        <div class="oc-r"><b>Needs:</b> near-instant onboarding, a virtual card at once, free P2P, referral loops, no fee wall on the basics</div>
+        <div class="oc-r"><em>So the stack must:</em> auto-approve most applicants without a human &mdash; manual review <b>is</b> the CAC &mdash; and keep cost per dormant account near zero. Buys layers <b>06</b> and <b>04</b>; a sponsor gets you there fastest</div>
+      </div>
+
+      <div class="oc">
+        <div class="oc-h"><span>Objective</span>Profitability</div>
+        <div class="oc-r"><b>Earn more per customer than they cost.</b> Interchange, lending, deposits, FX</div>
+        <div class="oc-r"><b>Needs:</b> credit and overdraft, savings, paid tiers, affordability data, loss control</div>
+        <div class="oc-r"><em>So the stack must:</em> decision credit and fund from deposits &mdash; which needs the licence, not a sponsor &mdash; and hold fraud and dispute losses down, because they come straight off margin. Buys layers <b>01</b>, <b>07</b> and <b>09</b></div>
+      </div>
+
+    </div>
+    <div class="obj-f"><b>The three pull against each other, and that is the real decision.</b> A BIN sponsor is the right answer for growth and a tax on profitability. Your own licence is the reverse. Direct scheme access buys primacy&rsquo;s reliability and does almost nothing for growth. <b>Chime chose growth and took no charter; Monzo chose primacy and built the rails.</b> Neither stack is better &mdash; each is downstream of a different objective. Pick yours before reading a single row above.</div>
   </div>
 
   <div class="foot">
