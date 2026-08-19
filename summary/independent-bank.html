@@ -389,6 +389,85 @@
 <p>You remain the participant and the regulated entity; they supply the pipe. Worth stating explicitly in board papers, because <em>"we use Form3"</em> is routinely misheard as <em>"we are indirect"</em>. Monzo built its own gateway — a deliberate Go monolith — but that was a choice, not a requirement of direct participation.</p>
 </div>
 
+</div>
+
+<div class="prose">
+<h2>Layer 02 in detail — the payment decisions</h2>
+<p class="lede">Scheme access is the layer with the most irreversible choices, so here it is in full rather than by reference.</p>
+<h3>First: three events, not one</h3>
+<p>Almost every expensive mistake here starts by treating <strong>authorisation, clearing and settlement</strong> as the same thing. They are three events, at three times, each a separate ledger posting.</p>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Stage</th><th>What it is</th><th>Has money moved?</th></tr></thead>
+<tbody>
+<tr><td><strong>Authorisation</strong></td><td>A real-time promise. An obligation is created and a hold placed</td><td><span class="tag no">no</span></td></tr>
+<tr><td><strong>Clearing</strong></td><td>Information exchanged and netted; the final amount becomes certain — and can differ</td><td><span class="tag no">still no</span></td></tr>
+<tr><td><strong>Settlement</strong></td><td>Funds actually transfer, in central bank money. Interchange applied</td><td><span class="tag yes">yes</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p>A ledger that posts once cannot answer <em>"why does available balance differ from cleared balance"</em>, and cannot reconcile against the scheme's daily files.</p>
+<h3>Second: how you reach each rail</h3>
+<p>The premise here is no sponsor, which means <strong>Directly Connected Settling Participant</strong>. The terminology is worth being exact about: a licence and scheme membership are different permissions, and <em>direct</em> describes the connection while settlement is a separate axis.</p>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Model</th><th>Connected?</th><th>Settles in its own name?</th><th>What it means for you</th></tr></thead>
+<tbody>
+<tr><td><strong>DCSP</strong> — Directly Connected <em>Settling</em></td><td><span class="tag yes">yes</span></td><td><span class="tag yes">yes</span></td><td>The no-sponsor answer. Own prefunded position, own settlement risk, 24/7 money on-call</td></tr>
+<tr><td><strong>DCNSP</strong> — Directly Connected <em>Non-Settling</em></td><td><span class="tag yes">yes</span></td><td><span class="tag no">no</span></td><td>Your own connection and limits, but no BoE account needed and the liquidity burden stays with a sponsor</td></tr>
+<tr><td><strong>Indirect</strong> — sponsorship / agency</td><td><span class="tag no">no</span></td><td><span class="tag no">no</span></td><td>An API integration, and a dependency whose incident is your outage</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<div class="keynum">
+<p class="eyebrow">Re-run your numbers if they predate July 2026</p>
+<p>Faster Payments settles on a <strong>prefunded</strong> basis: every participant holds cash covering its net position in a segregated, interest-bearing account at the Bank of England. That has been the single biggest economic barrier to direct participation.</p>
+<p>In <strong>July 2026 Pay.UK went live with a flexible liquidity model for Net Sender Caps</strong>, explicitly to reduce prefunding and lower the cost of direct access. If you evaluated direct participation before mid-2026 and rejected it on liquidity cost, <strong>that calculation has changed.</strong></p>
+</div>
+<h3>Third: what each rail actually demands</h3>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Rail</th><th>What you must build or buy</th><th>The part teams underestimate</th></tr></thead>
+<tbody>
+<tr><td><strong>Faster Payments</strong></td><td>A scheme gateway — build it (Monzo's is a deliberate Go monolith with four HSMs) or buy from Form3, Icon or Volante</td><td><strong>Store-and-forward stand-in</strong>: answer the hub on a timeout so internal slowness never becomes a rejected payment</td></tr>
+<tr><td><strong>Bacs</strong></td><td>SWIFT connectivity, HSMs signing file hashes, services generating and hashing the files</td><td><strong>AUDDIS, ADDACS, ARUDD and DDICA</strong> — a mandate lifecycle and an indemnity process. Not an integration; a product</td></tr>
+<tr><td><strong>CHAPS</strong></td><td>ISO 20022 since June 2023; the new RTGS core went live April 2025</td><td><strong>Purpose Codes and LEIs became mandatory on 1 May 2025.</strong> Model your internal messages on ISO 20022 now</td></tr>
+<tr><td><strong>Cards</strong></td><td>Processor, HSMs, manufacture — see layer 04</td><td>A slow balance read during authorisation makes <strong>the scheme approve on your behalf</strong>, beyond available balance, with your fraud checks skipped</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<h3>Fourth: size the reversal tail before you write the state machine</h3>
+<p>Every rail can take money back; what separates them is how long they have to do it. These windows decide how long you must retain the ability to reverse a posting cleanly — and how much exposure sits on your balance sheet at any moment.</p>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Rail</th><th>Reversal window</th></tr></thead>
+<tbody>
+<tr><td>RTP · FedNow <em>(US instant)</em></td><td><strong>None — final on receipt.</strong> Also credit-push only, so neither can debit a customer</td></tr>
+<tr><td>Faster Payments</td><td>Minutes to hours — a recall attempt, not a guarantee</td></tr>
+<tr><td>ACH</td><td>Two banking days for most codes; <strong>up to 60 days</strong> for consumer unauthorised</td></tr>
+<tr><td>Cards</td><td>Chargeback windows to <strong>120+ days</strong> under scheme rules</td></tr>
+<tr><td><strong>Bacs Direct Debit</strong></td><td><strong>Effectively unbounded</strong> — indemnity claims under the Direct Debit Guarantee</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<p>The full treatment — settlement mechanics, four payment archetypes with vendor options, ACH return codes and Nacha's 0.5% threshold, and the card programme coverage matrix — is in <a href="https://fernfant.github.io/neobank-stack/summary/payment-rails.html"><strong>Payment rails</strong></a>. How one bank actually did all of it, over six years, is in <a href="https://fernfant.github.io/neobank-stack/summary/monzo-payments.html"><strong>Monzo payments</strong></a>.</p>
+
 <h2><span class="n">03</span>The ledger, and the decision you cannot unwind</h2>
 <p>Buy from <strong>Thought Machine Vault Core</strong> (products as Smart Contracts), <strong>10x SuperCore</strong> (polyglot, built-in migration tooling), <strong>Temenos Transact</strong>, <strong>Mambu</strong>, <strong>Tuum</strong>, <strong>Finxact</strong> or <strong>Engine by Starling</strong>. Build on <strong>TigerBeetle</strong>, <strong>Formance</strong> or <strong>Blnk</strong>. Or build outright, as Monzo, Starling and Revolut did — months of engineering for the ledger itself, years for reconciliation and operations.</p>
 <p>Whichever you pick, the invariants are non-negotiable: sum-to-zero, postings as truth with balances derived, append-only, idempotent writes, bi-temporal records, hierarchical account paths. And the one nobody plans for — <strong>checkpoint your derived balances</strong>. Monzo hit P99 400–500ms on balance reads before fixing it, and a slow balance read during card authorisation hands your decision to the scheme.</p>
