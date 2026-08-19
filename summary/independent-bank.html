@@ -622,6 +622,124 @@
 <p>Name an owner for the <em>whole plane</em>, not for the case-management tool. And model the <strong>provisional credit as a contingent position</strong> on day one: it is real money, on your book, on a case you have not yet won.</p>
 </div>
 
+</div>
+
+<div class="prose">
+<h2>Building best-in-class dispute management</h2>
+<p class="lede">The industry resolves 26% of disputes before they become chargebacks. Best-in-class inverts that number — and almost none of the work happens in the case-management tool.</p>
+<p>Two statistics reframe the whole problem. <strong>75% of customers go straight to their bank</strong> rather than the merchant — so <em>you</em> are the front door. And <strong>73.6% of disputes become chargebacks; only 26.4% are resolved before one is filed.</strong> Every case you deflect at the top costs a fraction of one you fight at the bottom.</p>
+<p>So build it as a funnel, and spend your effort at the widest part.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 1000 430" role="img" aria-label="The dispute funnel. Of a thousand customer queries, transaction enrichment in the app resolves many before a query is even raised. Deflection tools such as Visa Order Insight and Mastercard Consumer Clarity pull merchant detail into the app at the moment of query, resolving more. Auto-decisioning settles small-value cases where the cost to fight exceeds the amount. What remains is worked as formal chargebacks, and won recoveries must then reconcile. Industry average deflects only 26 percent before a chargeback is filed.">
+<defs><marker id="fn-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-money"/></marker></defs>
+
+<text x="20" y="26" class="lbl">THE DISPUTE FUNNEL — WHERE THE MONEY AND THE EFFORT ACTUALLY GO</text>
+
+<rect class="bx-sor" x="90" y="46" width="820" height="52" rx="2"/>
+<text x="500" y="68" class="lbl" text-anchor="middle">0 · TRANSACTION ENRICHMENT — before any query exists</text>
+<text x="500" y="86" class="lbl-2" text-anchor="middle">Merchant name, logo, location and category in the feed — the cheapest dispute prevention there is.</text>
+
+<line class="f-money" x1="500" y1="100" x2="500" y2="116" marker-end="url(#fn-ah)"/>
+
+<rect class="bx-sor" x="130" y="120" width="740" height="52" rx="2"/>
+<text x="500" y="142" class="lbl" text-anchor="middle">1 · DEFLECTION AT INTAKE — the biggest single lever</text>
+<text x="500" y="160" class="lbl-2" text-anchor="middle">Visa Order Insight · Mastercard Consumer Clarity — merchant receipt detail, pulled into your app as they ask</text>
+
+<line class="f-money" x1="500" y1="174" x2="500" y2="190" marker-end="url(#fn-ah)"/>
+
+<rect class="bx" x="180" y="194" width="640" height="52" rx="2"/>
+<text x="500" y="216" class="lbl" text-anchor="middle">2 · AUTO-DECISION — where fighting costs more than the amount</text>
+<text x="500" y="234" class="lbl-2" text-anchor="middle">Credit below a threshold and close — analyst time is the real constraint</text>
+
+<line class="f-money" x1="500" y1="248" x2="500" y2="264" marker-end="url(#fn-ah)"/>
+
+<rect class="bx" x="240" y="268" width="520" height="52" rx="2"/>
+<text x="500" y="290" class="lbl" text-anchor="middle">3 · WORKED CASES — evidence, representment, pre-arbitration</text>
+<text x="500" y="308" class="lbl-2" text-anchor="middle">Quavo · Pega · Rivero — hard scheme deadlines, against merchants armed with CE 3.0</text>
+
+<line class="f-money" x1="500" y1="322" x2="500" y2="338" marker-end="url(#fn-ah)"/>
+
+<rect class="bx-sor" x="300" y="342" width="400" height="46" rx="2"/>
+<text x="500" y="362" class="lbl" text-anchor="middle">4 · RECOVERY, RECONCILED</text>
+<text x="500" y="378" class="lbl-2" text-anchor="middle">A won chargeback must match a scheme settlement file</text>
+
+<text x="20" y="150" class="t-flag">INDUSTRY:</text>
+<text x="20" y="166" class="t-flag">only 26.4%</text>
+<text x="20" y="182" class="t-flag">deflected here</text>
+<text x="930" y="150" class="t-recon">BEST-IN-CLASS</text>
+<text x="930" y="166" class="t-recon">INVERTS THIS</text>
+
+<text x="500" y="414" class="t-money" text-anchor="middle">EVERY CASE DEFLECTED AT STAGE 0 OR 1 COSTS A FRACTION OF ONE FOUGHT AT STAGE 3</text>
+</svg>
+</div>
+<figcaption><b>Spend at the top.</b> Stages 0 and 1 are product and integration work — an enriched transaction feed and a deflection tool wired into the "I don't recognise this" flow. Stages 3 and 4 are headcount and platform licences. The industry currently deflects roughly a quarter of disputes before a chargeback exists; that ratio, not win rate, is the number that separates a good dispute operation from an expensive one.</figcaption>
+</figure>
+
+<div class="prose">
+<h3>The clock you must never miss — and it is not the scheme&#39;s</h3>
+<p>There are <strong>two independent deadline systems</strong>, and the regulatory one binds first and harder. This is the single most under-appreciated fact in dispute design.</p>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th></th><th>United Kingdom — PSRs 2017</th><th>United States — Regulation E</th></tr></thead>
+<tbody>
+<tr><td><strong>Refund the customer</strong></td><td><strong>By the end of the business day following</strong> the day you become aware of an unauthorised transaction</td><td><strong>Provisional credit within 10 business days</strong> of notification (20 for new accounts)</td></tr>
+<tr><td><strong>Investigation window</strong></td><td>Investigate <em>after</em> refunding — the refund is not contingent on the outcome</td><td>10 business days; extendable to <strong>45 days</strong> if provisional credit is given — <strong>90 days</strong> for debit POS and foreign ATM</td></tr>
+<tr><td><strong>Withholding it</strong></td><td>Only if the payer acted <strong>fraudulently, or with intent or gross negligence</strong> — and you must <strong>provide supporting evidence</strong></td><td>Recoverable if the investigation finds no error, with notice</td></tr>
+<tr><td><strong>Notification duties</strong></td><td>Refund charges and lost interest too</td><td>Notify within <strong>2 business days</strong> of provisional credit; correct within <strong>1</strong> of finding an error; report within <strong>3</strong> of completing</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<div class="keynum">
+<p class="eyebrow">The design consequence for a UK bank</p>
+<p><strong>You refund first and investigate afterwards.</strong> Next business day, unless you can evidence fraud or gross negligence — and the burden of that evidence is yours.</p>
+<p>That makes two things architectural rather than operational: a <strong>deadline engine</strong> that cannot fail silently, and a ledger that models the refund as a <strong>contingent position</strong> from the moment it posts. A UK issuer carries dispute exposure on its book far earlier than a US one, and for cases it may never win.</p>
+</div>
+
+<h3>Where first-party fraud changed the game</h3>
+<p>The uncomfortable trend: <strong>first-party misuse has risen to roughly 36% of reported fraud, from about 15% in 2023</strong>, and some estimates put the share of <em>disputes</em> far higher. Meanwhile <strong>83% of issuers say rising customer awareness of the dispute process is itself driving volume.</strong> Customers have learned that disputing works.</p>
+<p>Two consequences you must design for:</p>
+<ul>
+<li><strong>Detecting your own customers.</strong> Repeat disputers, dispute-after-delivery patterns, and disputes clustering on a device or address. This is a model, not a rule — and it is uncomfortable, because the subject is a customer you are also trying to retain.</li>
+<li><strong>Merchants now fight back with evidence.</strong> <strong>Compelling Evidence 3.0</strong> lets a merchant link a disputed transaction to prior legitimate purchases from the same device and account. Full CE 3.0 evidence overturns <strong>40–60% of eligible disputes</strong>, against 15–20% for a receipt alone. If your case files cannot answer that, you will lose cases you used to win.</li>
+</ul>
+
+<h3>The flywheel most issuers never build</h3>
+<p><strong>Dispute outcomes are labelled training data.</strong> A confirmed fraud chargeback is ground truth — the cleanest label your fraud models will ever get, arriving free, continuously, and correctly timed. Stripe's structural advantage on the acquiring side is exactly this: labels arrive automatically when cardholders dispute.</p>
+<p>Wire disputes back into three places and the system compounds: <strong>fraud model training</strong>, <strong>merchant risk scoring</strong> built from your own outcomes rather than a bought list, and <strong>first-party fraud detection</strong>. Most issuers treat disputes as a cost centre and let this data die in a case-management tool.</p>
+
+<h3>What to build, in order</h3>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>#</th><th>Build</th><th>Why this order</th></tr></thead>
+<tbody>
+<tr><td class="n">1</td><td><strong>Transaction enrichment</strong> in the feed — merchant name, logo, location, category</td><td>Prevents the query ever being raised. Cheapest possible intervention, and it improves the product regardless</td></tr>
+<tr><td class="n">2</td><td><strong>A deadline engine</strong> with regulatory <em>and</em> scheme clocks, alerting before breach</td><td>The one component whose failure is a regulatory breach rather than a lost case</td></tr>
+<tr><td class="n">3</td><td><strong>Deflection at intake</strong> — Order Insight / Consumer Clarity in the "I don't recognise this" flow</td><td>The biggest single lever on cost per case</td></tr>
+<tr><td class="n">4</td><td><strong>Contingent-position modelling</strong> in the ledger</td><td>Provisional credit is real exposure; it must be visible to finance from day one</td></tr>
+<tr><td class="n">5</td><td><strong>Auto-decision thresholds</strong> by amount, reason code and customer history</td><td>Protects analyst time, which is the actual constraint</td></tr>
+<tr><td class="n">6</td><td><strong>Automatic evidence assembly</strong> — device, location, 3DS, session, prior purchases</td><td>Now table stakes against CE 3.0</td></tr>
+<tr><td class="n">7</td><td><strong>The feedback loop</strong> into fraud models and merchant scoring</td><td>Where a dispute operation stops being a cost centre</td></tr>
+<tr><td class="n">8</td><td><strong>Recovery reconciliation</strong> as its own break class</td><td>Otherwise won money goes unmatched for months</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<h3>The metrics that tell you if it is working</h3>
+<p><strong>Deflection rate</strong> — resolved before a chargeback exists, against the 26.4% industry baseline. This is the headline number. <strong>Cost per case</strong>, fully loaded with analyst time. <strong>Win rate by reason code</strong>, not in aggregate — an aggregate win rate hides which reason codes you are systematically losing. <strong>Time to provisional credit</strong> as a compliance metric, not an efficiency one. <strong>First-party share</strong> and <strong>repeat-disputer rate</strong>. And <strong>aged unreconciled recoveries</strong>, which is where the money quietly goes missing.</p>
+<p>Buy the case platform. <strong>Build the funnel around it</strong> — that is where best-in-class actually lives, and none of it is a feature on a vendor comparison sheet.</p>
+</div>
+
+<div class="prose">
 <h2>The decisions, ranked by regret cost</h2>
 <ol>
 <li><strong>The ledger's invariants and balance checkpointing.</strong> Retrofitting is an online migration of your most sensitive table.</li>

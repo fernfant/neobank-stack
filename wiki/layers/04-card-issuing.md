@@ -247,6 +247,82 @@ disputes are just an unrecognisable descriptor), and case history and audit trai
 **The clause to read before the API docs:** *who absorbs a loss when root cause is contested, and
 what is the process for deciding?*
 
+## Building best-in-class dispute management
+
+Two statistics reframe the problem `[reported]`:
+
+- **75% of customers go straight to their bank**, not the merchant — you are the front door.
+- **73.6% of disputes become chargebacks; only 26.4% are resolved first.** Best-in-class inverts
+  that ratio, and deflection rate — not win rate — is the number that separates a good dispute
+  operation from an expensive one.
+
+### The funnel, and where to spend
+
+| Stage | What it is |
+| --- | --- |
+| **0 · Transaction enrichment** | Merchant name, logo, location, category in the feed. Prevents the query ever being raised — and is why Monzo's and Revolut's feeds look as they do |
+| **1 · Deflection at intake** | **Visa Order Insight** and **Mastercard Consumer Clarity** pull merchant receipt-level detail into your app the moment the customer asks "what is this?" The biggest single lever on cost per case |
+| **2 · Auto-decision** | Credit below a threshold and close. Analyst time is the real constraint |
+| **3 · Worked cases** | Evidence, representment, pre-arbitration on Quavo/Pega/Rivero, to hard scheme deadlines |
+| **4 · Recovery reconciliation** | A won chargeback must match a scheme settlement file |
+
+Stages 0 and 1 are product and integration work. Stages 3 and 4 are headcount and licences.
+
+### Two clocks, and the regulatory one binds harder
+
+| | **UK — PSRs 2017** | **US — Regulation E** |
+| --- | --- | --- |
+| Refund | **End of the business day following** awareness of an unauthorised transaction | **Provisional credit within 10 business days** (20 for new accounts) |
+| Investigation | *After* refunding — the refund is not contingent on outcome | 10 business days, extendable to **45** with provisional credit; **90** for debit POS and foreign ATM |
+| Withholding | Only for **fraud, or intent or gross negligence** — and you must **provide supporting evidence** | Recoverable if no error found, with notice |
+| Notices | Refund charges and lost interest too | **2 business days** after provisional credit; **1** to correct on finding an error; **3** to report results |
+
+`[reported]` for both. **The UK design consequence:** you refund first and investigate afterwards,
+which makes a **deadline engine** and **contingent-position modelling in the ledger**
+architectural, not operational. A UK issuer carries dispute exposure far earlier than a US one,
+on cases it may never win.
+
+### First-party fraud changed the economics
+
+**First-party misuse has risen to roughly 36% of reported fraud from about 15% in 2023**, and
+**83% of issuers say growing customer awareness of the dispute process is itself driving volume**
+`[reported]`. Customers have learned that disputing works.
+
+And merchants now fight back: **Compelling Evidence 3.0** lets them link a disputed transaction to
+prior legitimate purchases from the same device and account. Full CE 3.0 evidence overturns
+**40–60% of eligible disputes**, against 15–20% for a receipt alone `[reported]`. If your case
+files cannot answer that, you will start losing cases you used to win.
+
+### The flywheel most issuers never build
+
+**Dispute outcomes are labelled training data** — a confirmed fraud chargeback is the cleanest
+ground truth your fraud models will ever get, arriving free, continuously and correctly timed.
+Stripe's structural advantage on the acquiring side is exactly this. Wire outcomes back into
+**fraud model training**, **merchant risk scoring** built from your own data rather than a bought
+list, and **first-party fraud detection**. Most issuers let this die inside a case-management tool.
+
+### Build order
+
+1. **Transaction enrichment** — cheapest intervention, improves the product anyway
+2. **A deadline engine** carrying both regulatory and scheme clocks — the one component whose
+   failure is a regulatory breach rather than a lost case
+3. **Deflection at intake** — Order Insight / Consumer Clarity in the "I don't recognise this" flow
+4. **Contingent-position modelling** in the ledger
+5. **Auto-decision thresholds** by amount, reason code and history
+6. **Automatic evidence assembly** — device, location, 3DS, session, prior purchases
+7. **The feedback loop** into fraud models and merchant scoring
+8. **Recovery reconciliation** as its own break class
+
+### Metrics
+
+**Deflection rate** against the 26.4% baseline (the headline number) · **cost per case** fully
+loaded · **win rate by reason code**, never in aggregate — an aggregate rate hides which codes you
+systematically lose · **time to provisional credit** as a compliance metric · **first-party share**
+and **repeat-disputer rate** · **aged unreconciled recoveries**, where money quietly goes missing.
+
+**Buy the case platform; build the funnel around it.** None of the leverage is a feature on a
+vendor comparison sheet.
+
 ## Open questions
 
 - What is ChimeCore actually built on, and does it hold the deposit sub-ledger or only
