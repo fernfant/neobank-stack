@@ -465,6 +465,38 @@
 </table>
 </div>
 
+
+<div class="prose">
+<h3>Fifth: money coming <em>in</em> is a different vendor entirely</h3>
+<p>Everything above is about interbank movement — the rails you settle on. It does not cover <strong>how customers put money into your bank in the first place</strong>, and that is a separate procurement most layer models quietly skip.</p>
+<p>If a customer funds their account with a debit card, <strong>you are accepting a card payment</strong> — which is <em>acquiring</em>, not issuing. Form3, ClearBank and your own scheme gateway do nothing for it.</p>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Money movement</th><th>What it actually is</th><th>Who supplies it</th></tr></thead>
+<tbody>
+<tr><td><strong>In — by bank transfer</strong></td><td>Inbound Faster Payments to your own sort code</td><td>Your scheme connection — <strong>Form3 · Icon · Volante</strong>, or build it</td></tr>
+<tr><td><strong>In — by card top-up</strong></td><td><strong>Acquiring.</strong> You are the merchant; the customer's other bank is the issuer</td><td><strong>Checkout.com · Adyen · Stripe · Worldpay · Nuvei</strong></td></tr>
+<tr><td><strong>In — by Direct Debit</strong></td><td>A Bacs collection you originate</td><td>Your own Bacs connection (or Adyen, which supports top-ups over SEPA, Bacs and ACH)</td></tr>
+<tr><td><strong>Out — interbank</strong></td><td>FPS, Bacs, CHAPS</td><td>Your scheme connection</td></tr>
+<tr><td><strong>Out — push-to-card</strong></td><td>Visa Direct · Mastercard Send</td><td><strong>Checkout.com</strong> (Card Payouts) · Adyen · Visa/Mastercard directly</td></tr>
+<tr><td><strong>Out — card spending</strong></td><td>Issuing authorisation</td><td>Your issuer processor — layer 04</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<div class="keynum">
+<p class="eyebrow">So where does Checkout.com sit?</p>
+<p><strong>Not where Form3 sits — the two are not substitutes.</strong> Form3 connects <em>your bank</em> to domestic payment schemes, where you are the scheme participant. Checkout is an <strong>acquirer</strong>: it takes card payments <em>in</em>, where you are the merchant.</p>
+<p>But a neobank almost certainly needs both. Checkout's actual surface is checkout, gateway, tokenisation, processing, <strong>local acquiring in 55+ countries</strong>, fraud controls, <strong>payouts</strong> — Bank Payouts over real-time networks and Card Payouts via Visa Direct and Mastercard Send — and, newly, <strong>issuing capabilities rolling out in the UAE and US</strong>, plus open banking and stablecoin investment.</p>
+<p>So: <strong>Checkout for card top-ups and payouts; Form3 (or your own gateway) for the schemes you settle on.</strong> Two different jobs, two contracts.</p>
+</div>
+
+<p>The convergence is worth watching, though. <strong>Adyen already holds its own banking licence and does issuing; Checkout is now moving the same way.</strong> The line between acquirer and issuer-side vendor is blurring at the edges, and within a few years "which side of the transaction is this vendor on?" may stop being a clean question.</p>
+</div>
+
 <div class="prose">
 <p>The full treatment — settlement mechanics, four payment archetypes with vendor options, ACH return codes and Nacha's 0.5% threshold, and the card programme coverage matrix — is in <a href="https://fernfant.github.io/neobank-stack/summary/payment-rails.html"><strong>Payment rails</strong></a>. How one bank actually did all of it, over six years, is in <a href="https://fernfant.github.io/neobank-stack/summary/monzo-payments.html"><strong>Monzo payments</strong></a>.</p>
 

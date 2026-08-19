@@ -131,6 +131,34 @@ is down, routed either through the primary's **edge services** (partial outage �
 in the payment path and most resilient) or **direct from the data centres** (severe failure)
 `[confirmed]`. Detail in [Resilience, regulatory reporting and operations](../layers/10-resilience-regulatory.md) and [Monzo (UK)](../banks/monzo.md).
 
+## Money coming *in* is a different vendor entirely — the gap most layer models skip
+
+Rails cover interbank movement. They do **not** cover how customers put money into your bank. If a
+customer funds their account with a debit card, **you are accepting a card payment — that is
+acquiring, not issuing**, and your scheme connection does nothing for it.
+
+| Money movement | What it actually is | Who supplies it |
+| --- | --- | --- |
+| **In — bank transfer** | Inbound FPS to your own sort code | Your scheme connection: Form3 · Icon · Volante, or build |
+| **In — card top-up** | **Acquiring.** You are the merchant; the customer's other bank is the issuer | **Checkout.com · Adyen · Stripe · Worldpay · Nuvei** |
+| **In — Direct Debit** | A Bacs collection you originate | Your Bacs connection (Adyen also supports top-ups over SEPA, Bacs and ACH) |
+| **Out — interbank** | FPS, Bacs, CHAPS | Your scheme connection |
+| **Out — push-to-card** | Visa Direct · Mastercard Send | **Checkout.com** (Card Payouts) · Adyen · the schemes directly |
+| **Out — card spending** | Issuing authorisation | Your issuer processor — [Card issuing and processing](../layers/04-card-issuing.md) |
+
+**Checkout.com and Form3 are not substitutes** `[reported]`. Form3 connects *your bank* to domestic
+schemes where you are the participant; Checkout is an **acquirer** taking card payments *in* where
+you are the merchant. A neobank needs both.
+
+Checkout's actual surface: checkout, gateway, tokenisation, processing, **local acquiring in 55+
+countries**, fraud controls, **payouts** — Bank Payouts over real-time networks and Card Payouts
+via Visa Direct and Mastercard Send — and **issuing capabilities now rolling out in the UAE and
+US**, plus open banking and stablecoin investment `[reported]`.
+
+**The convergence to watch:** Adyen already holds its own banking licence and does issuing;
+Checkout is moving the same way. "Which side of the transaction is this vendor on?" is becoming a
+less clean question — see [Card issuing and processing](../layers/04-card-issuing.md).
+
 ## Open questions
 
 - What are the actual per-transaction economics of RTP vs FedNow vs Same Day ACH for a
