@@ -24,7 +24,7 @@ ART = {
  "vend": ("https://fernfant.github.io/neobank-stack/summary/vendor-map.html", "Vendor map — who runs what", "43 vendors across 8 layers, with the banks publicly named as using each — and the gaps marked honestly."),
  "deep": ("https://fernfant.github.io/neobank-stack/summary/deep-dive.html", "The four you build", "Reconciliation, rail adapters, KYC orchestration, fraud — with real architectures and 30+ named packages."),
  "brief":("https://fernfant.github.io/neobank-stack/summary/summary-with-diagram.html", "Executive brief", "Nine minutes: six findings, three archetypes, where the two markets diverge, build-vs-buy defaults."),
- "cheat":("https://fernfant.github.io/neobank-stack/summary/cheatsheet.html", "Cheatsheet", "All 85 vendors as linked chips across ten layers, what Monzo, Revolut and Chime each chose, the fraud and chargeback planes, reversal windows and five traps."),
+ "cheat":("https://fernfant.github.io/neobank-stack/summary/cheatsheet.html", "Cheatsheet", "Eleven layers with all 85 vendors as linked chips, what Monzo, Revolut and Chime each chose, the fraud and chargeback planes, reversal windows and five traps."),
 }
 
 def parse(f):

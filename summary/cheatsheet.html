@@ -67,8 +67,14 @@ thead th{
   font-weight:700; border-bottom:1px solid var(--rule); padding-bottom:4px; white-space:nowrap
 }
 tbody tr:last-child td{border-bottom:none}
-.grid td{font-size:.645rem; line-height:1.36}
+.grid td{font-size:.645rem; line-height:1.36; padding-top:9px; padding-bottom:9px}
 .grid td.bk{background:var(--bank)}
+/* layer boundary: a full-width rule anchored by an accent tick under the layer column */
+.grid tbody td{border-bottom:1px solid var(--rule)}
+.grid tbody td:first-child{border-bottom:2px solid var(--accent)}
+.grid tbody tr:last-child td{border-bottom:none}
+.grid tbody tr:hover td{background:var(--accent-soft)}
+.grid tbody tr:hover td.bk{background:var(--accent-soft)}
 col.c1{width:10.5%} col.c2{width:9%} col.c3{width:36%}
 col.c4{width:15%} col.c5{width:14%} col.c6{width:15.5%}
 
@@ -121,6 +127,8 @@ col.c4{width:15%} col.c5{width:14%} col.c6{width:15.5%}
   color:var(--ink-3); border-radius:1px}
 .cell.on{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
 .cell.crit{background:var(--hard-soft); border-color:var(--hard); color:var(--hard)}
+.cell.home{background:var(--accent); border-color:var(--accent); color:var(--sheet)}
+.prow .pl.home{background:var(--accent); color:var(--sheet); padding:0 3px; border-radius:2px}
 
 ol.ord{margin:0; padding:0; list-style:none; counter-reset:o;
   display:flex; flex-direction:column; gap:0}
@@ -171,7 +179,8 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .sheet:last-child{page-break-after:auto; break-after:auto}
   .scroller{overflow:visible}
   table{min-width:0}
-  .grid td{font-size:7.2pt; line-height:1.3; padding:4px 5px}
+  .grid td{font-size:7.2pt; line-height:1.3; padding:6px 5px}
+  .grid tbody tr:hover td{background:none}
   thead th{font-size:5.6pt; padding-bottom:3px}
   h1{font-size:1.22rem}
   .sub{font-size:.62rem; line-height:1.32}
@@ -201,11 +210,11 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   <div class="head">
     <div>
       <h1>Neobank Stack Cheatsheet</h1>
-      <p class="sub">Ten decisions between a licence and a working bank &mdash; the shortlist at each, and what three real banks actually chose. Numbering is a dependency order, not a preference: each layer constrains the ones below it.</p>
+      <p class="sub">Eleven decisions between a licence and a working bank &mdash; the shortlist at each, and what three real banks actually chose. Numbering is a dependency order, not a preference: each layer constrains the ones below it.</p>
     </div>
     <div class="stamp">
       Part <b>1</b><br>
-      Ten layers<br>
+      Eleven layers<br>
       Aug 2026
     </div>
   </div>
@@ -267,22 +276,30 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
       <tr>
         <td><span class="n">06</span><span class="lname">Identity &amp; KYC</span></td>
         <td class="dec">Own the orchestration?</td>
-        <td><span class="grp"><span class="gl">IDV</span><span class="chips"><a class="ch" href="https://onfido.com" target="_blank" rel="noopener"><i>ON</i>Onfido</a><a class="ch" href="https://jumio.com" target="_blank" rel="noopener"><i>JU</i>Jumio</a><a class="ch" href="https://withpersona.com" target="_blank" rel="noopener"><i>PE</i>Persona</a><a class="ch" href="https://veriff.com" target="_blank" rel="noopener"><i>VE</i>Veriff</a><a class="ch" href="https://sumsub.com" target="_blank" rel="noopener"><i>SU</i>Sumsub</a><a class="ch" href="https://alloy.com" target="_blank" rel="noopener"><i>AL</i>Alloy</a></span></span><span class="grp"><span class="gl">Screening</span><span class="chips"><a class="ch" href="https://complyadvantage.com" target="_blank" rel="noopener"><i>CO</i>ComplyAdvantage</a><a class="ch" href="https://opensanctions.org" target="_blank" rel="noopener"><i>OP</i>OpenSanctions</a><a class="ch" href="https://napier.ai" target="_blank" rel="noopener"><i>NA</i>Napier</a></span></span><span class="grp"><span class="gl">KYB</span><span class="chips"><a class="ch" href="https://senzing.com" target="_blank" rel="noopener"><i>SE</i>Senzing</a><a class="ch" href="https://quantexa.com" target="_blank" rel="noopener"><i>QU</i>Quantexa</a><a class="ch" href="https://moj-analytical-services.github.io/splink" target="_blank" rel="noopener"><i>SP</i>Splink</a></span></span></td>
+        <td><span class="grp"><span class="gl">IDV</span><span class="chips"><a class="ch" href="https://onfido.com" target="_blank" rel="noopener"><i>ON</i>Onfido</a><a class="ch" href="https://jumio.com" target="_blank" rel="noopener"><i>JU</i>Jumio</a><a class="ch" href="https://withpersona.com" target="_blank" rel="noopener"><i>PE</i>Persona</a><a class="ch" href="https://veriff.com" target="_blank" rel="noopener"><i>VE</i>Veriff</a><a class="ch" href="https://sumsub.com" target="_blank" rel="noopener"><i>SU</i>Sumsub</a><a class="ch" href="https://alloy.com" target="_blank" rel="noopener"><i>AL</i>Alloy</a></span></span><span class="grp"><span class="gl">KYB</span><span class="chips"><a class="ch" href="https://senzing.com" target="_blank" rel="noopener"><i>SE</i>Senzing</a><a class="ch" href="https://quantexa.com" target="_blank" rel="noopener"><i>QU</i>Quantexa</a><a class="ch" href="https://moj-analytical-services.github.io/splink" target="_blank" rel="noopener"><i>SP</i>Splink</a></span></span></td>
         <td class="bk">Onfido + in-house capture UX. <b>73% fewer</b> selfie errors</td>
         <td class="bk">Onfido. <b>+293%</b> check volume, <b>38s faster</b> than previous</td>
         <td class="bk"><span class="gap">not publicly documented</span></td>
       </tr>
       <tr>
-        <td><span class="n">07</span><span class="lname">Fincrime &amp; disputes</span>
-          <span class="k" style="display:block;margin-top:3px">fraud &amp; chargebacks<br>are planes &rarr; part 2</span></td>
-        <td class="dec">Buy to launch, build detection?</td>
-        <td><span class="grp"><span class="gl">Monitoring</span><span class="chips"><a class="ch" href="https://unit21.ai" target="_blank" rel="noopener"><i>UN</i>Unit21</a><a class="ch" href="https://feedzai.com" target="_blank" rel="noopener"><i>FE</i>Feedzai</a><a class="ch" href="https://hawk.ai" target="_blank" rel="noopener"><i>HA</i>Hawk AI</a><a class="ch" href="https://featurespace.com" target="_blank" rel="noopener"><i>FE</i>Featurespace</a><a class="ch" href="https://sardine.ai" target="_blank" rel="noopener"><i>SA</i>Sardine</a><a class="ch" href="https://checkmarble.com" target="_blank" rel="noopener"><i>MA</i>Marble</a></span></span><span class="grp"><span class="gl">Disputes</span><span class="chips"><a class="ch" href="https://quavo.com" target="_blank" rel="noopener"><i>QU</i>Quavo</a><a class="ch" href="https://pega.com" target="_blank" rel="noopener"><i>PS</i>Pega Smart Dispute</a><a class="ch" href="https://rivero.tech" target="_blank" rel="noopener"><i>RI</i>Rivero</a></span></span><span class="grp"><span class="gl">Pre-dispute</span><span class="chips"><a class="ch" href="https://ethoca.com" target="_blank" rel="noopener"><i>ET</i>Ethoca</a><a class="ch" href="https://www.verifi.com" target="_blank" rel="noopener"><i>VE</i>Verifi</a></span></span></td>
-        <td class="bk"><span class="built">Built.</span> Starlark control platform, multi-task NN, LLM feature extraction. <span class="gap">dispute vendor not public</span></td>
-        <td class="bk"><span class="built">Built.</span> In-house real-time pipelines. <span class="gap">dispute vendor not public</span></td>
+        <td><span class="n">07</span><span class="lname">Fraud &amp; risk decisioning</span>
+          <span class="k" style="display:block;margin-top:3px">also a plane &mdash;<br>touches 10 of 11 &rarr; part 2</span></td>
+        <td class="dec"><span class="hard">Real-time detection &mdash; the hot path</span></td>
+        <td><span class="grp"><span class="gl">Real-time</span><span class="chips"><a class="ch" href="https://feedzai.com" target="_blank" rel="noopener"><i>FE</i>Feedzai</a><a class="ch" href="https://featurespace.com" target="_blank" rel="noopener"><i>FE</i>Featurespace</a><a class="ch" href="https://sardine.ai" target="_blank" rel="noopener"><i>SA</i>Sardine</a></span></span><span class="grp"><span class="gl">Rules & cases</span><span class="chips"><a class="ch" href="https://unit21.ai" target="_blank" rel="noopener"><i>UN</i>Unit21</a><a class="ch" href="https://hawk.ai" target="_blank" rel="noopener"><i>HA</i>Hawk AI</a><a class="ch" href="https://checkmarble.com" target="_blank" rel="noopener"><i>MA</i>Marble</a></span></span></td>
+        <td class="bk"><span class="built">Built.</span> Starlark control platform, multi-task NN, LLM feature extraction over a 3-tier feature service</td>
+        <td class="bk"><span class="built">Built.</span> In-house real-time pipelines</td>
         <td class="bk">Unit21. Founding member of its Fintech Fraud DAO</td>
       </tr>
       <tr>
-        <td><span class="n">08</span><span class="lname">Credit &amp; decisioning</span></td>
+        <td><span class="n">08</span><span class="lname">AML &amp; disputes</span></td>
+        <td class="dec">Screening, monitoring, and who owns the case?</td>
+        <td><span class="grp"><span class="gl">Screening & TM</span><span class="chips"><a class="ch" href="https://complyadvantage.com" target="_blank" rel="noopener"><i>CO</i>ComplyAdvantage</a><a class="ch" href="https://opensanctions.org" target="_blank" rel="noopener"><i>OP</i>OpenSanctions</a><a class="ch" href="https://napier.ai" target="_blank" rel="noopener"><i>NA</i>Napier</a></span></span><span class="grp"><span class="gl">Disputes</span><span class="chips"><a class="ch" href="https://quavo.com" target="_blank" rel="noopener"><i>QU</i>Quavo</a><a class="ch" href="https://pega.com" target="_blank" rel="noopener"><i>PS</i>Pega Smart Dispute</a><a class="ch" href="https://rivero.tech" target="_blank" rel="noopener"><i>RI</i>Rivero</a></span></span><span class="grp"><span class="gl">Pre-dispute</span><span class="chips"><a class="ch" href="https://ethoca.com" target="_blank" rel="noopener"><i>ET</i>Ethoca</a><a class="ch" href="https://www.verifi.com" target="_blank" rel="noopener"><i>VE</i>Verifi</a></span></span></td>
+        <td class="bk"><span class="gap">dispute vendor not public</span></td>
+        <td class="bk"><span class="gap">dispute vendor not public</span></td>
+        <td class="bk"><span class="gap">not publicly documented</span></td>
+      </tr>
+      <tr>
+        <td><span class="n">09</span><span class="lname">Credit &amp; decisioning</span></td>
         <td class="dec">Bureau score, plus what?</td>
         <td><span class="grp"><span class="gl">Bureaus</span><span class="chips"><a class="ch" href="https://experian.co.uk" target="_blank" rel="noopener"><i>EX</i>Experian</a><a class="ch" href="https://equifax.co.uk" target="_blank" rel="noopener"><i>EQ</i>Equifax</a><a class="ch" href="https://transunion.co.uk" target="_blank" rel="noopener"><i>TR</i>TransUnion</a></span></span><span class="grp"><span class="gl">Open banking</span><span class="chips"><a class="ch" href="https://truelayer.com" target="_blank" rel="noopener"><i>TR</i>TrueLayer</a><a class="ch" href="https://tink.com" target="_blank" rel="noopener"><i>TI</i>Tink</a><a class="ch" href="https://yapily.com" target="_blank" rel="noopener"><i>YA</i>Yapily</a><a class="ch" href="https://plaid.com" target="_blank" rel="noopener"><i>PL</i>Plaid</a></span></span><span class="grp"><span class="gl">Engines</span><span class="chips"><a class="ch" href="https://taktile.com" target="_blank" rel="noopener"><i>TA</i>Taktile</a><a class="ch" href="https://provenir.com" target="_blank" rel="noopener"><i>PR</i>Provenir</a><a class="ch" href="https://oscilar.com" target="_blank" rel="noopener"><i>OS</i>Oscilar</a><a class="ch" href="https://gorules.io" target="_blank" rel="noopener"><i>GO</i>GoRules</a><a class="ch" href="https://openpolicyagent.org" target="_blank" rel="noopener"><i>OP</i>Open Policy Agent</a></span></span></td>
         <td class="bk"><span class="built">Built.</span> Credit risk, utilisation forecasting, shared feature store</td>
@@ -290,7 +307,7 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
         <td class="bk"><span class="gap">not publicly documented</span></td>
       </tr>
       <tr>
-        <td><span class="n">09</span><span class="lname">Data &amp; ML</span></td>
+        <td><span class="n">10</span><span class="lname">Data &amp; ML</span></td>
         <td class="dec">Decision path &ne; analytics path</td>
         <td><span class="grp"><span class="gl">Stream</span><span class="chips"><a class="ch" href="https://confluent.io" target="_blank" rel="noopener"><i>CO</i>Confluent</a><a class="ch" href="https://redpanda.com" target="_blank" rel="noopener"><i>RE</i>Redpanda</a><a class="ch" href="https://flink.apache.org" target="_blank" rel="noopener"><i>FL</i>Apache Flink</a></span></span><span class="grp"><span class="gl">Warehouse</span><span class="chips"><a class="ch" href="https://cloud.google.com/bigquery" target="_blank" rel="noopener"><i>BI</i>BigQuery</a><a class="ch" href="https://snowflake.com" target="_blank" rel="noopener"><i>SN</i>Snowflake</a><a class="ch" href="https://databricks.com" target="_blank" rel="noopener"><i>DA</i>Databricks</a><a class="ch" href="https://getdbt.com" target="_blank" rel="noopener"><i>DB</i>dbt</a></span></span><span class="grp"><span class="gl">Features</span><span class="chips"><a class="ch" href="https://chronon.ai" target="_blank" rel="noopener"><i>CH</i>Chronon</a><a class="ch" href="https://feast.dev" target="_blank" rel="noopener"><i>FE</i>Feast</a><a class="ch" href="https://tecton.ai" target="_blank" rel="noopener"><i>TE</i>Tecton</a><a class="ch" href="https://hopsworks.ai" target="_blank" rel="noopener"><i>HO</i>Hopsworks</a></span></span></td>
         <td class="bk">BigQuery &middot; dbt (<b>12,000+</b> models, 100+ teams) &middot; Kafka &middot; in-house 3-tier feature service</td>
@@ -298,7 +315,7 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
         <td class="bk">MySQL + Snowflake. Galileo RDF files moved off MySQL</td>
       </tr>
       <tr>
-        <td><span class="n">10</span><span class="lname">Resilience &amp; reporting</span></td>
+        <td><span class="n">11</span><span class="lname">Resilience &amp; reporting</span></td>
         <td class="dec">Reconcile, survive, report</td>
         <td><span class="grp"><span class="gl">Recon</span><span class="chips"><a class="ch" href="https://du.co" target="_blank" rel="noopener"><i>DU</i>Duco</a><a class="ch" href="https://autorek.com" target="_blank" rel="noopener"><i>AU</i>AutoRek</a><a class="ch" href="https://smartstream-stp.com" target="_blank" rel="noopener"><i>SM</i>SmartStream</a><a class="ch" href="https://greshamtech.com" target="_blank" rel="noopener"><i>GR</i>Gresham</a></span></span><span class="grp"><span class="gl">Reg report</span><span class="chips"><a class="ch" href="https://regnology.net" target="_blank" rel="noopener"><i>RE</i>Regnology</a><a class="ch" href="https://suade.org" target="_blank" rel="noopener"><i>SL</i>Suade Labs</a><a class="ch" href="https://wolterskluwer.com" target="_blank" rel="noopener"><i>WK</i>Wolters Kluwer</a></span></span></td>
         <td class="bk">Stand-in on GCP. <b>18 services</b> vs ~3,000, <b>~1%</b> of primary cost</td>
@@ -326,7 +343,7 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   <div class="head">
     <div>
       <h1>Planes, Clocks &amp; Traps</h1>
-      <p class="sub">What the ten-layer grid cannot show: the concerns that cut <em>across</em> layers, the deadlines set outside your company, and the failures that come from treating a plane as a layer.</p>
+      <p class="sub">What the eleven-layer grid cannot show: the concerns that cut <em>across</em> layers, the deadlines set outside your company, and the failures that come from treating a plane as a layer.</p>
     </div>
     <div class="stamp">
       Part <b>2</b><br>
@@ -338,11 +355,9 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   <div class="cols">
 
     <div>
-      <div class="band"><h2>Fraud &mdash; touches 9 of 10</h2><span class="ln"></span><span class="note">most cross-cutting thing in the stack</span></div>
+      <div class="band"><h2>Fraud &mdash; touches 10 of 11</h2><span class="ln"></span><span class="note">most cross-cutting thing in the stack</span></div>
       <div class="strip">
-        <span class="cell">01</span><span class="cell on">02</span><span class="cell on">03</span>
-        <span class="cell crit">04</span><span class="cell crit">05</span><span class="cell on">06</span>
-        <span class="cell on">07</span><span class="cell on">08</span><span class="cell on">09</span><span class="cell on">10</span>
+        <span class="cell">01</span><span class="cell on">02</span><span class="cell on">03</span><span class="cell crit">04</span><span class="cell crit">05</span><span class="cell on">06</span><span class="cell home">07</span><span class="cell on">08</span><span class="cell on">09</span><span class="cell on">10</span><span class="cell on">11</span>
       </div>
       <div class="plane">
         <div class="prow"><span class="pl">02</span><span class="pt"><b>Sets the reporting obligation.</b> Under a sponsor, their thresholds become yours by contract &mdash; their tolerance decides when you get restricted</span></div>
@@ -350,26 +365,25 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
         <div class="prow"><span class="pl hard">04</span><span class="pt"><b>Card fraud: sub-second, no retry.</b> Decided once inside the scheme timeout. No asynchronous fallback</span></div>
         <div class="prow"><span class="pl hard">05</span><span class="pt"><b>Scams: in-flight or not at all.</b> The customer authorised it, so nothing looks anomalous. Stop it before the money leaves</span></div>
         <div class="prow"><span class="pl">06</span><span class="pt"><b>Two jobs, opposite directions.</b> Fraudsters out at onboarding; mules detected later. Owned by a team measured on conversion</span></div>
-        <div class="prow"><span class="pl">07</span><span class="pt"><b>Where the platform lives &mdash; not where fraud happens.</b> Supplies decisions to four layers, owns the outcome at none</span></div>
-        <div class="prow"><span class="pl">08</span><span class="pt"><b>First-party fraud lands here.</b> Bust-out looks like credit deterioration until it does not</span></div>
-        <div class="prow"><span class="pl">09</span><span class="pt"><b>One feature store, six consumers.</b> Same velocity, device and behaviour features. Computing them twice is the standard expensive mistake</span></div>
-        <div class="prow"><span class="pl">10</span><span class="pt"><b>The decision log is the defence.</b> Not logged at decision time = does not exist</span></div>
+        <div class="prow"><span class="pl home">07</span><span class="pt"><b>Its own layer &mdash; and still not where fraud happens.</b> The platform, models and cases live here; the interventions all execute elsewhere</span></div>
+        <div class="prow"><span class="pl">08</span><span class="pt"><b>AML is a different discipline.</b> Fraud chases customer loss in real time; AML chases regulatory reporting. Shared data, different clocks, different regulators</span></div>
+        <div class="prow"><span class="pl">09</span><span class="pt"><b>First-party fraud lands here.</b> Bust-out looks like credit deterioration until it does not</span></div>
+        <div class="prow"><span class="pl">10</span><span class="pt"><b>One feature store, six consumers.</b> Same velocity, device and behaviour features. Computing them twice is the standard expensive mistake</span></div>
+        <div class="prow"><span class="pl">11</span><span class="pt"><b>The decision log is the defence.</b> Not logged at decision time = does not exist</span></div>
       </div>
     </div>
 
     <div>
-      <div class="band"><h2>Chargebacks &mdash; touches 5 of 10</h2><span class="ln"></span><span class="note">nobody owns it end to end by default</span></div>
+      <div class="band"><h2>Chargebacks &mdash; touches 5 of 11</h2><span class="ln"></span><span class="note">nobody owns it end to end by default</span></div>
       <div class="strip">
-        <span class="cell">01</span><span class="cell on">02</span><span class="cell on">03</span>
-        <span class="cell on">04</span><span class="cell">05</span><span class="cell">06</span>
-        <span class="cell on">07</span><span class="cell">08</span><span class="cell">09</span><span class="cell on">10</span>
+        <span class="cell">01</span><span class="cell on">02</span><span class="cell on">03</span><span class="cell on">04</span><span class="cell">05</span><span class="cell">06</span><span class="cell">07</span><span class="cell on">08</span><span class="cell">09</span><span class="cell">10</span><span class="cell on">11</span>
       </div>
       <div class="plane">
         <div class="prow"><span class="pl">02</span><span class="pt"><b>Sets the liability.</b> As principal member the loss is yours. With a BIN sponsor, the sponsor is liable to the scheme then recovers from you by contract</span></div>
         <div class="prow"><span class="pl">03</span><span class="pt"><b>Two postings, not one.</b> Provisional credit at intake, reversal or confirmation at resolution. Model a <em>contingent</em> balance</span></div>
         <div class="prow"><span class="pl">04</span><span class="pt"><b>Delivers the message.</b> Thredd, Marqeta and Galileo all expose it by API &mdash; enough to launch, rarely enough at volume</span></div>
-        <div class="prow"><span class="pl">07</span><span class="pt"><b>Where the case lives.</b> Evidence, representment, pre-arbitration, hard scheme deadlines</span></div>
-        <div class="prow"><span class="pl">10</span><span class="pt"><b>Closes the loop.</b> A won chargeback is money arriving that must match a settlement file &mdash; its own break class</span></div>
+        <div class="prow"><span class="pl">08</span><span class="pt"><b>Where the case lives.</b> Evidence, representment, pre-arbitration, hard scheme deadlines</span></div>
+        <div class="prow"><span class="pl">11</span><span class="pt"><b>Closes the loop.</b> A won chargeback is money arriving that must match a settlement file &mdash; its own break class</span></div>
       </div>
 
       <div class="band" style="margin-top:14px"><h2>Reversal windows &mdash; know before you build</h2><span class="ln"></span></div>
@@ -415,7 +429,7 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
     <div>
       <div class="band"><h2>Five traps</h2><span class="ln"></span></div>
       <div class="traps">
-        <div class="trap"><b>Treating fraud as a layer</b>It is six problems &mdash; onboarding, ATO, card, scam, mule, first-party &mdash; at five layers with different deadlines and owners</div>
+        <div class="trap"><b>Thinking the fraud layer owns fraud</b>It now has its own layer, and still executes at six others. Six problems &mdash; onboarding, ATO, card, scam, mule, first-party &mdash; with different deadlines and owners</div>
         <div class="trap"><b>Buying TM first because it is procurable</b>You get good case management on a stack too slow to use it. Build card auth and scam interception first</div>
         <div class="trap"><b>Reading balance latency as a performance metric</b>It is an authorisation control. Monzo: P99 400&ndash;500ms &rarr; ~200ms</div>
         <div class="trap"><b>Booking provisional credit as one posting</b>It is real money on your book on a case you have not won. Finance must see it from day one</div>
