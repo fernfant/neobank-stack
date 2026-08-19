@@ -1,0 +1,410 @@
+<title>Neobank Stack Cheatsheet</title>
+<style>
+:root{
+  --paper:#FCFCFA; --sheet:#FFFFFF; --ink:#14181E; --ink-2:#4C5560; --ink-3:#69737F;
+  --rule:#D7DAE0; --rule-2:#EBEDF1;
+  --accent:#1E3E7B; --accent-soft:#EDF1F9;
+  --build:#1A6349; --build-soft:#E9F3EE;
+  --hard:#9E3319; --hard-soft:#FBEDE8;
+  --bank:#F6F7F9;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1116; --sheet:#161A20; --ink:#E9EBEF; --ink-2:#A3ADBA; --ink-3:#848F9C;
+    --rule:#2C323B; --rule-2:#222831;
+    --accent:#84A6E2; --accent-soft:#1A2436;
+    --build:#57BE93; --build-soft:#152A24;
+    --hard:#E28763; --hard-soft:#2E1C16;
+    --bank:#1B2028;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1116; --sheet:#161A20; --ink:#E9EBEF; --ink-2:#A3ADBA; --ink-3:#848F9C;
+  --rule:#2C323B; --rule-2:#222831;
+  --accent:#84A6E2; --accent-soft:#1A2436;
+  --build:#57BE93; --build-soft:#152A24;
+  --hard:#E28763; --hard-soft:#2E1C16;
+  --bank:#1B2028;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  font-size:15px; line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace}
+
+.wrap{display:flex; flex-direction:column; gap:20px; padding:20px 16px 56px; align-items:center}
+.sheet{
+  width:100%; max-width:1280px; background:var(--sheet); color:var(--ink);
+  border:1px solid var(--rule); border-radius:2px;
+  padding:20px 22px 18px;
+  display:flex; flex-direction:column; gap:14px;
+}
+
+/* ---- masthead ---- */
+.head{display:flex; align-items:flex-end; justify-content:space-between; gap:24px;
+  border-bottom:2px solid var(--ink); padding-bottom:8px}
+h1{margin:0; font-size:1.5rem; font-weight:800; letter-spacing:-.017em; line-height:1.05; text-wrap:balance}
+.sub{margin:3px 0 0; font-size:.72rem; color:var(--ink-2); max-width:62ch; line-height:1.4}
+.stamp{font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+  text-align:right; line-height:1.6; white-space:nowrap}
+.stamp b{color:var(--accent); font-weight:700}
+
+.band{display:flex; align-items:baseline; gap:10px; margin:2px 0 -4px}
+.band h2{margin:0; font-size:.68rem; letter-spacing:.13em; text-transform:uppercase; font-weight:700}
+.band .note{font-size:.68rem; color:var(--ink-3); line-height:1.4}
+.band .ln{flex:1; height:1px; background:var(--rule); align-self:center; min-width:12px}
+
+/* ---- master grid ---- */
+.scroller{overflow-x:auto}
+table{border-collapse:collapse; width:100%; table-layout:fixed; min-width:1000px}
+th,td{text-align:left; vertical-align:top; padding:5px 7px; border-bottom:1px solid var(--rule-2)}
+thead th{
+  font-size:.56rem; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-2);
+  font-weight:700; border-bottom:1px solid var(--rule); padding-bottom:4px; white-space:nowrap
+}
+tbody tr:last-child td{border-bottom:none}
+.grid td{font-size:.645rem; line-height:1.36}
+.grid td.bk{background:var(--bank)}
+col.c1{width:12.5%} col.c2{width:11%} col.c3{width:25.5%}
+col.c4{width:17%} col.c5{width:16%} col.c6{width:18%}
+
+.n{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.6rem;
+  color:var(--accent); font-weight:700; letter-spacing:.04em}
+.lname{display:block; font-weight:700; font-size:.68rem; margin-top:1px; letter-spacing:-.005em}
+.dec{font-weight:600; color:var(--ink)}
+.v{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.6rem; letter-spacing:-.01em}
+.k{font-size:.55rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-weight:700}
+.built{color:var(--build); font-weight:700}
+.gap{color:var(--ink-3); font-style:italic}
+.hard{color:var(--hard); font-weight:700}
+
+/* ---- sheet 2 blocks ---- */
+.cols{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+.cols-3{display:grid; grid-template-columns:1.15fr 1fr .95fr; gap:18px}
+
+.plane{display:flex; flex-direction:column; gap:3px}
+.prow{display:grid; grid-template-columns:38px 1fr; gap:8px; align-items:baseline;
+  padding:3px 0; border-bottom:1px solid var(--rule-2)}
+.prow:last-child{border-bottom:none}
+.prow .pl{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.6rem;
+  font-weight:700; color:var(--accent)}
+.prow .pt{font-size:.635rem; line-height:1.34; color:var(--ink-2)}
+.prow .pt b{color:var(--ink)}
+
+.strip{display:flex; gap:2px; margin:4px 0 6px}
+.cell{flex:1; text-align:center; font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:.55rem; font-weight:700; padding:3px 0; border:1px solid var(--rule);
+  color:var(--ink-3); border-radius:1px}
+.cell.on{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+.cell.crit{background:var(--hard-soft); border-color:var(--hard); color:var(--hard)}
+
+ol.ord{margin:0; padding:0; list-style:none; counter-reset:o;
+  display:flex; flex-direction:column; gap:0}
+ol.ord li{counter-increment:o; display:grid; grid-template-columns:16px 1fr; gap:7px;
+  font-size:.635rem; line-height:1.34; padding:3px 0; border-bottom:1px solid var(--rule-2)}
+ol.ord li:last-child{border-bottom:none}
+ol.ord li::before{content:counter(o); font-family:ui-monospace,Menlo,monospace;
+  font-size:.58rem; font-weight:700; color:var(--accent)}
+
+.nums{display:flex; flex-direction:column; gap:0}
+.num{display:grid; grid-template-columns:auto 1fr; gap:9px; align-items:baseline;
+  padding:3.5px 0; border-bottom:1px solid var(--rule-2)}
+.num:last-child{border-bottom:none}
+.num .f{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-variant-numeric:tabular-nums;
+  font-size:.72rem; font-weight:700; color:var(--ink); white-space:nowrap}
+.num .d{font-size:.6rem; line-height:1.32; color:var(--ink-2)}
+
+.traps{display:flex; flex-direction:column; gap:0}
+.trap{padding:4px 0 4px 9px; border-left:2px solid var(--hard); border-bottom:1px solid var(--rule-2);
+  font-size:.635rem; line-height:1.34; color:var(--ink-2)}
+.trap:last-child{border-bottom:none}
+.trap b{color:var(--ink); display:block; font-size:.645rem}
+
+.foot{display:flex; justify-content:space-between; gap:16px; align-items:baseline;
+  border-top:1px solid var(--rule); padding-top:7px; margin-top:auto;
+  font-size:.575rem; color:var(--ink-3); line-height:1.4}
+.foot a{color:var(--accent); text-decoration:none}
+.foot a:hover,.foot a:focus-visible{text-decoration:underline}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+.legend{display:flex; gap:13px; flex-wrap:wrap; font-size:.575rem; color:var(--ink-3)}
+.legend i{font-style:normal; font-weight:700}
+
+@media (max-width:900px){
+  .cols,.cols-3{grid-template-columns:1fr}
+  .head{flex-direction:column; align-items:flex-start; gap:8px}
+  .stamp{text-align:left}
+}
+
+@media print{
+  @page{size:A4 landscape; margin:8mm}
+  /* values below measured against a 1063x734px printable area — sheets land at 90% and 93% */
+  body{background:#fff; font-size:12px}
+  .wrap{padding:0; gap:0}
+  .sheet{max-width:none; width:auto; border:none; border-radius:0; padding:0; gap:10px;
+    page-break-after:always; break-after:page}
+  .sheet:last-child{page-break-after:auto; break-after:auto}
+  .scroller{overflow:visible}
+  table{min-width:0}
+  .grid td{font-size:6.7pt; line-height:1.23; padding:3.2px 5px}
+  thead th{font-size:5.6pt; padding-bottom:3px}
+  h1{font-size:1.32rem}
+  .sub{font-size:.66rem}
+  .head{padding-bottom:5px}
+  .lname{font-size:.645rem}
+  .n,.v,.k{font-size:.57rem}
+  .prow,.num,ol.ord li{padding:2.2px 0}
+  .prow .pt,.trap,ol.ord li,.num .d{font-size:.595rem; line-height:1.3}
+  .num .f{font-size:.68rem}
+  .trap{padding:2.2px 0 2.2px 8px}
+  .cols,.cols-3{gap:14px}
+  .foot{padding-top:5px; font-size:.55rem}
+  .noprint{display:none}
+  tr,.prow,.trap,.num,ol.ord li{page-break-inside:avoid; break-inside:avoid}
+}
+</style>
+
+<div class="wrap">
+
+<!-- ══════════════ SHEET 1 ══════════════ -->
+<section class="sheet">
+
+  <div class="head">
+    <div>
+      <h1>Neobank Stack Cheatsheet</h1>
+      <p class="sub">Ten decisions between a licence and a working bank &mdash; the shortlist at each, and what three real banks actually chose. Numbering is a dependency order, not a preference: each layer constrains the ones below it.</p>
+    </div>
+    <div class="stamp">
+      Sheet <b>1</b> of 2<br>
+      Ten layers<br>
+      Aug 2026
+    </div>
+  </div>
+
+  <div class="scroller">
+  <table class="grid">
+    <colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5"><col class="c6"></colgroup>
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>The decision</th>
+        <th>Build or named vendors</th>
+        <th>Monzo &mdash; UK bank</th>
+        <th>Revolut &mdash; UK bank</th>
+        <th>Chime &mdash; no licence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="n">01</span><span class="lname">Licence &amp; authorisation</span></td>
+        <td class="dec">Bank licence, or EMI first?</td>
+        <td>Mobilisation route <span class="v">~&pound;1m &rarr; &pound;5m</span> &middot; EMI now, convert later &middot; acquire a licensed entity</td>
+        <td class="bk">UK bank licence <span class="v">PRA + FCA</span></td>
+        <td class="bk">UK bank licence + EU <span class="v">(Lithuania)</span></td>
+        <td class="bk"><b>None. Not a bank.</b><br>The Bancorp + Stride hold the deposits</td>
+      </tr>
+      <tr>
+        <td><span class="n">02</span><span class="lname">Scheme &amp; rail access</span></td>
+        <td class="dec">Direct participant, or sponsored?</td>
+        <td><span class="k">Build</span> own gateway<br><span class="k">Buy</span> <span class="v">Form3 &middot; Icon IPF &middot; Volante &middot; ACI &middot; Finastra</span></td>
+        <td class="bk"><span class="built">Built own FPS gateway.</span> Go monolith, 4 HSMs, DRBD. Bacs direct since Sept 2022. Own BoE settlement a/c</td>
+        <td class="bk">Own licence. <span class="gap">scheme access not public</span></td>
+        <td class="bk">via sponsor banks. No direct participation</td>
+      </tr>
+      <tr>
+        <td><span class="n">03</span><span class="lname">Core ledger</span></td>
+        <td class="dec">Build, buy, or sidecar?</td>
+        <td><span class="k">Buy</span> <span class="v">Vault Core &middot; 10x SuperCore &middot; Temenos &middot; Mambu &middot; Tuum &middot; Finxact</span><br><span class="k">Build on</span> <span class="v">TigerBeetle &middot; Formance &middot; Blnk</span></td>
+        <td class="bk"><span class="built">Built.</span> <span class="v">service.ledger</span> on Cassandra, <b>300k reads/sec</b></td>
+        <td class="bk"><span class="built">Built.</span> Postgres event store using <span class="v">LISTEN / NOTIFY</span></td>
+        <td class="bk"><span class="built">Built. ChimeCore.</span> CoreDB = MySQL on RDS, <b>40TB</b>, 30k connections</td>
+      </tr>
+      <tr>
+        <td><span class="n">04</span><span class="lname">Card issuing</span></td>
+        <td class="dec">Own BIN, or a sponsor's?</td>
+        <td><span class="k">Processor</span> <span class="v">Thredd &middot; Marqeta &middot; Galileo &middot; Enfuce &middot; i2c &middot; Wallester</span><br><span class="k">HSM</span> <span class="v">Thales payShield &middot; Futurex &middot; Utimaco</span><br><span class="k">Cards</span> <span class="v">IDEMIA &middot; Thales &middot; G+D &middot; CompoSecure</span></td>
+        <td class="bk"><span class="built">Built own processor.</span> GPS/Thredd only for the retired prepaid card</td>
+        <td class="bk">Thredd + Galileo for the US business</td>
+        <td class="bk">Galileo &rarr; ChimeCore. <b>100%</b> of credit-card volume since late 2024</td>
+      </tr>
+      <tr>
+        <td><span class="n">05</span><span class="lname">Payment orchestration</span></td>
+        <td class="dec"><span class="hard">None &mdash; you always build it</span></td>
+        <td><span class="k">Libraries</span> <span class="v">jPOS &middot; moov-io &middot; Prowide</span><br><span class="k">Workflow</span> <span class="v">Temporal &middot; Cadence &middot; Camunda</span></td>
+        <td class="bk"><span class="built">Built.</span> adapter &rarr; deciders &rarr; effects. 40+ currencies via correspondent banking on SWIFT</td>
+        <td class="bk"><span class="built">Built.</span> Event-driven services over the Postgres event store</td>
+        <td class="bk"><span class="gap">not publicly documented</span></td>
+      </tr>
+      <tr>
+        <td><span class="n">06</span><span class="lname">Identity &amp; KYC</span></td>
+        <td class="dec">Own the orchestration?</td>
+        <td><span class="k">IDV</span> <span class="v">Onfido &middot; Jumio &middot; Persona &middot; Veriff &middot; Sumsub</span><br><span class="k">Screening</span> <span class="v">ComplyAdvantage &middot; yente (self-host) &middot; Napier</span><br><span class="k">KYB</span> <span class="v">Senzing &middot; Quantexa &middot; Splink</span></td>
+        <td class="bk">Onfido + in-house capture UX. <b>73% fewer</b> selfie errors</td>
+        <td class="bk">Onfido. <b>+293%</b> check volume, <b>38s faster</b> than previous</td>
+        <td class="bk"><span class="gap">not publicly documented</span></td>
+      </tr>
+      <tr>
+        <td><span class="n">07</span><span class="lname">Fincrime &amp; disputes</span>
+          <span class="k" style="display:block;margin-top:3px">fraud &amp; chargebacks<br>are planes &rarr; sheet 2</span></td>
+        <td class="dec">Buy to launch, build detection?</td>
+        <td><span class="k">TM</span> <span class="v">ComplyAdvantage &middot; Unit21 &middot; Feedzai &middot; Hawk AI &middot; Featurespace</span><br><span class="k">Disputes</span> <span class="v">Quavo &middot; Pega &middot; Rivero</span><br><span class="k">Pre-dispute</span> <span class="v">Ethoca &middot; Verifi</span></td>
+        <td class="bk"><span class="built">Built.</span> Starlark control platform, multi-task NN, LLM feature extraction. <span class="gap">dispute vendor not public</span></td>
+        <td class="bk"><span class="built">Built.</span> In-house real-time pipelines. <span class="gap">dispute vendor not public</span></td>
+        <td class="bk">Unit21. Founding member of its Fintech Fraud DAO</td>
+      </tr>
+      <tr>
+        <td><span class="n">08</span><span class="lname">Credit &amp; decisioning</span></td>
+        <td class="dec">Bureau score, plus what?</td>
+        <td><span class="k">Bureaus</span> <span class="v">Experian &middot; Equifax &middot; TransUnion</span><br><span class="k">Open banking</span> <span class="v">TrueLayer &middot; Tink &middot; Yapily &middot; Plaid</span><br><span class="k">Engines</span> <span class="v">Taktile &middot; Provenir &middot; Oscilar &middot; GoRules &middot; OPA</span></td>
+        <td class="bk"><span class="built">Built.</span> Credit risk, utilisation forecasting, shared feature store</td>
+        <td class="bk"><span class="built">Built.</span> PRAGMA foundation model on banking event streams</td>
+        <td class="bk"><span class="gap">not publicly documented</span></td>
+      </tr>
+      <tr>
+        <td><span class="n">09</span><span class="lname">Data &amp; ML</span></td>
+        <td class="dec">Decision path &ne; analytics path</td>
+        <td><span class="k">Stream</span> <span class="v">Kafka &middot; Redpanda &middot; Flink</span><br><span class="k">Warehouse</span> <span class="v">BigQuery &middot; Snowflake &middot; Databricks</span><br><span class="k">Features</span> <span class="v">Chronon &middot; Feast &middot; Tecton &middot; Hopsworks</span></td>
+        <td class="bk">BigQuery &middot; dbt (<b>12,000+</b> models, 100+ teams) &middot; Kafka &middot; in-house 3-tier feature service</td>
+        <td class="bk">GCP &middot; PostgreSQL</td>
+        <td class="bk">MySQL + Snowflake. Galileo RDF files moved off MySQL</td>
+      </tr>
+      <tr>
+        <td><span class="n">10</span><span class="lname">Resilience &amp; reporting</span></td>
+        <td class="dec">Reconcile, survive, report</td>
+        <td><span class="k">Recon</span> <span class="v">Duco &middot; AutoRek &middot; SmartStream &middot; Gresham</span><br><span class="k">RegRep</span> <span class="v">Regnology &middot; Suade &middot; OneSumX</span><br><span class="k">Continuity</span> second-cloud stand-in</td>
+        <td class="bk">Stand-in on GCP. <b>18 services</b> vs ~3,000, <b>~1%</b> of primary cost</td>
+        <td class="bk"><span class="gap">not publicly documented</span></td>
+        <td class="bk">EKS &middot; <b>~1,000 deploys/day</b>. Argo CD. Open-sourced ha-nat and Mani-Diffy</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="foot">
+    <div class="legend">
+      <span><i class="built">Built</i> in-house</span>
+      <span><i class="gap">italic</i> genuine public gap, not an omission</span>
+      <span><i class="hard">red</i> no vendor exists / hard deadline</span>
+    </div>
+    <div><b>Two things that are not on this grid:</b> a <b>licence is not scheme membership</b> &mdash; it is a prerequisite, applied for separately. And a <b>card top-up is acquiring, not issuing</b> &mdash; a merchant acquirer (Checkout &middot; Adyen &middot; Stripe &middot; Worldpay) that no layer above names.</div>
+  </div>
+
+</section>
+
+<!-- ══════════════ SHEET 2 ══════════════ -->
+<section class="sheet">
+
+  <div class="head">
+    <div>
+      <h1>Planes, Clocks &amp; Traps</h1>
+      <p class="sub">What the ten-layer grid cannot show: the concerns that cut <em>across</em> layers, the deadlines set outside your company, and the failures that come from treating a plane as a layer.</p>
+    </div>
+    <div class="stamp">
+      Sheet <b>2</b> of 2<br>
+      Cross-cutting<br>
+      Aug 2026
+    </div>
+  </div>
+
+  <div class="cols">
+
+    <div>
+      <div class="band"><h2>Fraud &mdash; touches 9 of 10</h2><span class="ln"></span><span class="note">most cross-cutting thing in the stack</span></div>
+      <div class="strip">
+        <span class="cell">01</span><span class="cell on">02</span><span class="cell on">03</span>
+        <span class="cell crit">04</span><span class="cell crit">05</span><span class="cell on">06</span>
+        <span class="cell on">07</span><span class="cell on">08</span><span class="cell on">09</span><span class="cell on">10</span>
+      </div>
+      <div class="plane">
+        <div class="prow"><span class="pl">02</span><span class="pt"><b>Sets the reporting obligation.</b> Under a sponsor, their thresholds become yours by contract &mdash; their tolerance decides when you get restricted</span></div>
+        <div class="prow"><span class="pl">03</span><span class="pt"><b>Read latency is a fraud control.</b> Miss the auth deadline and the <em>scheme</em> approves on your behalf, with your checks skipped</span></div>
+        <div class="prow"><span class="pl hard">04</span><span class="pt"><b>Card fraud: sub-second, no retry.</b> Decided once inside the scheme timeout. No asynchronous fallback</span></div>
+        <div class="prow"><span class="pl hard">05</span><span class="pt"><b>Scams: in-flight or not at all.</b> The customer authorised it, so nothing looks anomalous. Stop it before the money leaves</span></div>
+        <div class="prow"><span class="pl">06</span><span class="pt"><b>Two jobs, opposite directions.</b> Fraudsters out at onboarding; mules detected later. Owned by a team measured on conversion</span></div>
+        <div class="prow"><span class="pl">07</span><span class="pt"><b>Where the platform lives &mdash; not where fraud happens.</b> Supplies decisions to four layers, owns the outcome at none</span></div>
+        <div class="prow"><span class="pl">08</span><span class="pt"><b>First-party fraud lands here.</b> Bust-out looks like credit deterioration until it does not</span></div>
+        <div class="prow"><span class="pl">09</span><span class="pt"><b>One feature store, six consumers.</b> Same velocity, device and behaviour features. Computing them twice is the standard expensive mistake</span></div>
+        <div class="prow"><span class="pl">10</span><span class="pt"><b>The decision log is the defence.</b> Not logged at decision time = does not exist</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="band"><h2>Chargebacks &mdash; touches 5 of 10</h2><span class="ln"></span><span class="note">nobody owns it end to end by default</span></div>
+      <div class="strip">
+        <span class="cell">01</span><span class="cell on">02</span><span class="cell on">03</span>
+        <span class="cell on">04</span><span class="cell">05</span><span class="cell">06</span>
+        <span class="cell on">07</span><span class="cell">08</span><span class="cell">09</span><span class="cell on">10</span>
+      </div>
+      <div class="plane">
+        <div class="prow"><span class="pl">02</span><span class="pt"><b>Sets the liability.</b> As principal member the loss is yours. With a BIN sponsor, the sponsor is liable to the scheme then recovers from you by contract</span></div>
+        <div class="prow"><span class="pl">03</span><span class="pt"><b>Two postings, not one.</b> Provisional credit at intake, reversal or confirmation at resolution. Model a <em>contingent</em> balance</span></div>
+        <div class="prow"><span class="pl">04</span><span class="pt"><b>Delivers the message.</b> Thredd, Marqeta and Galileo all expose it by API &mdash; enough to launch, rarely enough at volume</span></div>
+        <div class="prow"><span class="pl">07</span><span class="pt"><b>Where the case lives.</b> Evidence, representment, pre-arbitration, hard scheme deadlines</span></div>
+        <div class="prow"><span class="pl">10</span><span class="pt"><b>Closes the loop.</b> A won chargeback is money arriving that must match a settlement file &mdash; its own break class</span></div>
+      </div>
+
+      <div class="band" style="margin-top:14px"><h2>Reversal windows &mdash; know before you build</h2><span class="ln"></span></div>
+      <div class="nums">
+        <div class="num"><span class="f">None</span><span class="d"><b>RTP &middot; FedNow.</b> Final on receipt. Credit-push only, so neither can debit a customer</span></div>
+        <div class="num"><span class="f">min&ndash;hrs</span><span class="d"><b>Faster Payments.</b> A recall <em>attempt</em>, not a guarantee</span></div>
+        <div class="num"><span class="f">2&ndash;60d</span><span class="d"><b>ACH.</b> Two banking days for most codes; up to 60 for consumer unauthorised</span></div>
+        <div class="num"><span class="f">120d+</span><span class="d"><b>Cards.</b> Chargeback windows under scheme rules</span></div>
+        <div class="num"><span class="f">&infin;</span><span class="d"><b>Bacs Direct Debit.</b> Effectively unbounded &mdash; indemnity claims under the Guarantee</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cols-3" style="margin-top:4px">
+
+    <div>
+      <div class="band"><h2>Best-in-class disputes &mdash; build order</h2><span class="ln"></span></div>
+      <ol class="ord">
+        <li><span>Transaction enrichment in the feed &mdash; merchant name, logo, location, category. <em>Prevents the query being raised at all</em></span></li>
+        <li><span>Deadline engine with regulatory and scheme clocks. <em>The one component whose failure is a breach, not a lost case</em></span></li>
+        <li><span>Deflection at intake &mdash; Order Insight / Consumer Clarity. <em>Biggest single lever on cost per case</em></span></li>
+        <li><span>Contingent-position modelling in the ledger. <em>Provisional credit is real exposure</em></span></li>
+        <li><span>Auto-decision thresholds by amount, reason code, history. <em>Analyst time is the real constraint</em></span></li>
+        <li><span>Automatic evidence assembly &mdash; device, location, 3DS, session. <em>Table stakes against CE 3.0</em></span></li>
+        <li><span>Feedback loop into fraud models and merchant scoring</span></li>
+        <li><span>Recovery reconciliation as its own break class</span></li>
+      </ol>
+    </div>
+
+    <div>
+      <div class="band"><h2>Clocks set outside your company</h2><span class="ln"></span></div>
+      <div class="nums">
+        <div class="num"><span class="f">next day</span><span class="d"><b>UK PSRs 2017.</b> Refund an unauthorised payment by end of the next business day</span></div>
+        <div class="num"><span class="f">10 days</span><span class="d"><b>US Reg E.</b> Provisional credit within 10 business days; 45/90 days to investigate</span></div>
+        <div class="num"><span class="f">50 / 50</span><span class="d"><b>UK APP reimbursement</b> splits between sending and receiving PSP &mdash; so inbound mule detection is a <em>revenue</em> line</span></div>
+        <div class="num"><span class="f">0.5%</span><span class="d"><b>Nacha</b> Unauthorized Return Rate Threshold</span></div>
+        <div class="num"><span class="f">~36%</span><span class="d"><b>First-party fraud</b> as a share of reported fraud</span></div>
+        <div class="num"><span class="f">Jul 2026</span><span class="d"><b>Pay.UK</b> flexible Net Sender Cap model</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="band"><h2>Five traps</h2><span class="ln"></span></div>
+      <div class="traps">
+        <div class="trap"><b>Treating fraud as a layer</b>It is six problems &mdash; onboarding, ATO, card, scam, mule, first-party &mdash; at five layers with different deadlines and owners</div>
+        <div class="trap"><b>Buying TM first because it is procurable</b>You get good case management on a stack too slow to use it. Build card auth and scam interception first</div>
+        <div class="trap"><b>Reading balance latency as a performance metric</b>It is an authorisation control. Monzo: P99 400&ndash;500ms &rarr; ~200ms</div>
+        <div class="trap"><b>Booking provisional credit as one posting</b>It is real money on your book on a case you have not won. Finance must see it from day one</div>
+        <div class="trap"><b>Assuming a licence gets you the rails</b>Scheme membership is applied for separately &mdash; and "direct" describes the connection, not settlement (DCSP vs DCNSP)</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="foot">
+    <div>Sources are primary where possible &mdash; engineering blogs, regulator publications and scheme documentation. Where nothing is public, this card says so rather than guessing.</div>
+    <div class="noprint"><a href="https://fernfant.github.io/neobank-stack/">fernfant.github.io/neobank-stack</a></div>
+  </div>
+
+</section>
+
+</div>
