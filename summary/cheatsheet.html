@@ -236,13 +236,47 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   <div class="head">
     <div>
       <h1>Neobank Stack Cheatsheet</h1>
-      <p class="sub">Eleven decisions between a licence and a working bank &mdash; the shortlist at each, and what three real banks actually chose. Numbering is a dependency order, not a preference: each layer constrains the ones below it. Start at <b>00</b> at the foot of the page &mdash; the objective decides the rest.</p>
+      <p class="sub">Eleven decisions between a licence and a working bank &mdash; the shortlist at each, and what three real banks actually chose. Numbering is a dependency order, not a preference: each layer constrains the ones below it. It starts at <b>00</b>, directly below &mdash; the objective decides the rest.</p>
     </div>
     <div class="stamp">
       Part <b>1</b><br>
       Eleven layers<br>
       Aug 2026
     </div>
+  </div>
+
+
+  <div class="obj">
+    <div class="obj-h">
+      <span class="obj-n">00</span>
+      <span class="obj-t">Design for the user experience first &mdash; from the objective</span>
+      <span class="obj-s">Numbered 00 because it happens before layer 01 and decides it. Name the objective, map the use cases and features it demands, <em>then</em> check the stack can deliver them &mdash; not the reverse. Every row below is a consequence of this one.</span>
+    </div>
+    <div class="obj-g">
+
+      <div class="oc">
+        <div class="oc-h"><span>Objective</span>Primacy</div>
+        <div class="oc-r"><b>Be the main account.</b> Salary in, bills out, card top of wallet</div>
+        <div class="oc-r"><b>Needs:</b> salary detection, Direct Debit origination, instant balance and notifications, joint accounts, a buffer or overdraft</div>
+        <div class="oc-r"><em>So the stack must:</em> hold your own sort code for inbound, originate Bacs, and answer a balance read in milliseconds. Primacy makes an outage existential &mdash; it buys layers <b>02</b>, <b>03</b> and <b>11</b></div>
+      </div>
+
+      <div class="oc">
+        <div class="oc-h"><span>Objective</span>Cheap user growth</div>
+        <div class="oc-r"><b>Lowest cost to acquire and serve.</b> Sign up in minutes, spend in seconds</div>
+        <div class="oc-r"><b>Needs:</b> near-instant onboarding, a virtual card at once, free P2P, referral loops, no fee wall on the basics</div>
+        <div class="oc-r"><em>So the stack must:</em> auto-approve most applicants without a human &mdash; manual review <b>is</b> the CAC &mdash; and keep cost per dormant account near zero. Buys layers <b>06</b> and <b>04</b>; a sponsor gets you there fastest</div>
+      </div>
+
+      <div class="oc">
+        <div class="oc-h"><span>Objective</span>Profitability</div>
+        <div class="oc-r"><b>Earn more per customer than they cost.</b> Interchange, lending, deposits, FX</div>
+        <div class="oc-r"><b>Needs:</b> credit and overdraft, savings, paid tiers, affordability data, loss control</div>
+        <div class="oc-r"><em>So the stack must:</em> decision credit and fund from deposits &mdash; which needs the licence, not a sponsor &mdash; and hold fraud and dispute losses down, because they come straight off margin. Buys layers <b>01</b>, <b>07</b> and <b>09</b></div>
+      </div>
+
+    </div>
+    <div class="obj-f"><b>The three pull against each other, and that is the real decision.</b> A BIN sponsor is the right answer for growth and a tax on profitability. Your own licence is the reverse. Direct scheme access buys primacy&rsquo;s reliability and does almost nothing for growth. <b>Chime chose growth and took no charter; Monzo chose primacy and built the rails.</b> Neither stack is better &mdash; each is downstream of a different objective. Pick yours before reading a single row below.</div>
   </div>
 
   <div class="scroller">
@@ -352,39 +386,6 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   </table>
   </div>
 
-
-  <div class="obj">
-    <div class="obj-h">
-      <span class="obj-n">00</span>
-      <span class="obj-t">Design for the user experience first &mdash; from the objective</span>
-      <span class="obj-s">Printed last because it is read last; it happens <b>first</b>. Every row above is a consequence of this one. Name the objective, map the use cases and features it demands, <em>then</em> check the stack can deliver them &mdash; not the reverse.</span>
-    </div>
-    <div class="obj-g">
-
-      <div class="oc">
-        <div class="oc-h"><span>Objective</span>Primacy</div>
-        <div class="oc-r"><b>Be the main account.</b> Salary in, bills out, card top of wallet</div>
-        <div class="oc-r"><b>Needs:</b> salary detection, Direct Debit origination, instant balance and notifications, joint accounts, a buffer or overdraft</div>
-        <div class="oc-r"><em>So the stack must:</em> hold your own sort code for inbound, originate Bacs, and answer a balance read in milliseconds. Primacy makes an outage existential &mdash; it buys layers <b>02</b>, <b>03</b> and <b>11</b></div>
-      </div>
-
-      <div class="oc">
-        <div class="oc-h"><span>Objective</span>Cheap user growth</div>
-        <div class="oc-r"><b>Lowest cost to acquire and serve.</b> Sign up in minutes, spend in seconds</div>
-        <div class="oc-r"><b>Needs:</b> near-instant onboarding, a virtual card at once, free P2P, referral loops, no fee wall on the basics</div>
-        <div class="oc-r"><em>So the stack must:</em> auto-approve most applicants without a human &mdash; manual review <b>is</b> the CAC &mdash; and keep cost per dormant account near zero. Buys layers <b>06</b> and <b>04</b>; a sponsor gets you there fastest</div>
-      </div>
-
-      <div class="oc">
-        <div class="oc-h"><span>Objective</span>Profitability</div>
-        <div class="oc-r"><b>Earn more per customer than they cost.</b> Interchange, lending, deposits, FX</div>
-        <div class="oc-r"><b>Needs:</b> credit and overdraft, savings, paid tiers, affordability data, loss control</div>
-        <div class="oc-r"><em>So the stack must:</em> decision credit and fund from deposits &mdash; which needs the licence, not a sponsor &mdash; and hold fraud and dispute losses down, because they come straight off margin. Buys layers <b>01</b>, <b>07</b> and <b>09</b></div>
-      </div>
-
-    </div>
-    <div class="obj-f"><b>The three pull against each other, and that is the real decision.</b> A BIN sponsor is the right answer for growth and a tax on profitability. Your own licence is the reverse. Direct scheme access buys primacy&rsquo;s reliability and does almost nothing for growth. <b>Chime chose growth and took no charter; Monzo chose primacy and built the rails.</b> Neither stack is better &mdash; each is downstream of a different objective. Pick yours before reading a single row above.</div>
-  </div>
 
   <div class="foot">
     <div class="legend">
