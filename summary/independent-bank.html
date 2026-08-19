@@ -861,6 +861,78 @@
 
 </div>
 
+
+<div class="prose">
+<h2>And where does fraud sit?</h2>
+<p class="lede">Layer 07 — but that answer hides more than it reveals. "Fraud" is six different problems, caught at five different layers, with latency budgets ranging from sub-second to weeks.</p>
+<p>Like chargebacks, fraud is a plane. Unlike chargebacks, its pieces have genuinely different owners, models and interventions — so treating it as one layer is how neobanks end up with a fraud team that cannot stop the fraud that is actually costing them.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 1000 424" role="img" aria-label="Six distinct fraud problems mapped across the stack. Onboarding fraud is caught at layer 06 in seconds. Account takeover spans layers 02 and 05 in real time. Card fraud is caught at layer 04 in under a second, inside the scheme timeout. Scam or APP fraud is caught at layer 05 in flight, before the payment leaves. Mule accounts are caught at layers 06 and 07 over hours to days. First-party fraud is detected at layers 07 and 08 after the fact. Layer 07 is where the platform lives, not where fraud happens.">
+<text x="20" y="26" class="lbl">&#34;FRAUD&#34; IS SIX DIFFERENT PROBLEMS, CAUGHT IN DIFFERENT PLACES</text>
+<text x="20" y="52" class="gut">THE PROBLEM</text><text x="290" y="52" class="gut">CAUGHT AT</text><text x="410" y="52" class="gut">BUDGET</text><text x="560" y="52" class="gut">THE INTERVENTION</text>
+<line class="f" x1="20" y1="60" x2="980" y2="60" stroke-opacity=".3"/>
+<rect class="bandbg" x="20" y="66" width="960" height="54"/>
+<text x="26" y="88" class="lbl">Onboarding fraud</text>
+<text x="26" y="103" class="lbl-2">synthetic &amp; stolen identity</text>
+<rect class="bx" x="280" y="70" width="105" height="40" rx="2"/>
+<text x="332" y="95" class="lbl" text-anchor="middle">06</text>
+<text x="405" y="95" class="lbl-2">seconds</text>
+<text x="560" y="95" class="lbl-2">Decline · refer to review · step-up evidence</text>
+<text x="26" y="144" class="lbl">Account takeover</text>
+<text x="26" y="159" class="lbl-2">credentials, SIM swap, coercion</text>
+<rect class="bx" x="280" y="126" width="105" height="40" rx="2"/>
+<text x="332" y="151" class="lbl" text-anchor="middle">02 · 05</text>
+<text x="405" y="151" class="lbl-2">real-time</text>
+<text x="560" y="151" class="lbl-2">Step-up auth · block · Known Locations, Trusted Contacts</text>
+<rect class="bandbg" x="20" y="178" width="960" height="54"/>
+<text x="26" y="200" class="lbl">Card fraud</text>
+<text x="26" y="215" class="lbl-2">unauthorised, card-not-present</text>
+<rect class="bx-sor" x="280" y="182" width="105" height="40" rx="2"/>
+<text x="332" y="207" class="lbl" text-anchor="middle">04</text>
+<text x="405" y="207" class="lbl-2"><b>sub-second</b></text>
+<text x="560" y="207" class="lbl-2">Decline inside the scheme timeout — no second chance</text>
+<text x="26" y="256" class="lbl">Scam / APP fraud</text>
+<text x="26" y="271" class="lbl-2">the customer is authorising it</text>
+<rect class="bx-sor" x="280" y="238" width="105" height="40" rx="2"/>
+<text x="332" y="263" class="lbl" text-anchor="middle">05</text>
+<text x="405" y="263" class="lbl-2">seconds, <b>in-flight</b></text>
+<text x="560" y="263" class="lbl-2">Warn · add friction · block before the payment leaves</text>
+<rect class="bandbg" x="20" y="290" width="960" height="54"/>
+<text x="26" y="312" class="lbl">Mule accounts</text>
+<text x="26" y="327" class="lbl-2">inbound, receiving stolen funds</text>
+<rect class="bx" x="280" y="294" width="105" height="40" rx="2"/>
+<text x="332" y="319" class="lbl" text-anchor="middle">06 · 07</text>
+<text x="405" y="319" class="lbl-2">hours to days</text>
+<text x="560" y="319" class="lbl-2">Freeze · report · exit. <b>50/50 UK liability makes this revenue</b></text>
+<text x="26" y="368" class="lbl">First-party fraud</text>
+<text x="26" y="383" class="lbl-2">your own customer disputes</text>
+<rect class="bx" x="280" y="350" width="105" height="40" rx="2"/>
+<text x="332" y="375" class="lbl" text-anchor="middle">07 · 08</text>
+<text x="405" y="375" class="lbl-2">after the fact</text>
+<text x="560" y="375" class="lbl-2">Recover · decline future disputes · exit the relationship</text>
+<line class="boundary" x1="20" y1="400" x2="980" y2="400"/>
+<text x="500" y="418" class="t-money" text-anchor="middle">LAYER 07 IS WHERE THE PLATFORM LIVES — IT IS NOT WHERE FRAUD HAPPENS</text>
+</svg>
+</div>
+<figcaption><b>Six problems, one word.</b> The two solid rows are the ones with hard external deadlines: <b>card fraud</b> must be decided inside the scheme's authorisation timeout — which is why a slow balance read at layer 03 means the scheme approves on your behalf with your checks skipped — and <b>scam interception</b> must happen <em>in flight</em>, before the payment leaves, because after that the UK reimbursement liability is already yours. Everything else has time to think.</figcaption>
+</figure>
+
+<div class="prose">
+<h3>What this means for how you build it</h3>
+<ul>
+<li><strong>Layer 07 owns the platform, not the outcome.</strong> The control engine, feature service and case management live there. The <em>interventions</em> execute at 04, 05 and 06 — inside someone else's latency budget.</li>
+<li><strong>Two of the six have no second chance.</strong> Card authorisation and scam interception are decided once, in the path, under a deadline. Design those first; the rest can be asynchronous.</li>
+<li><strong>Onboarding fraud is fraud, not compliance.</strong> It sits at layer 06 and is usually owned by a KYC team measured on conversion — which is precisely the wrong incentive.</li>
+<li><strong>Inbound mule detection is revenue in the UK.</strong> The 50/50 split of APP reimbursement between sending and receiving PSP means your inbound risk model has a direct P&amp;L line, not just a compliance one.</li>
+<li><strong>First-party fraud is a customer problem, not a criminal one</strong> — detected at 07 and 08, and uncomfortable because the subject is someone you are also trying to retain.</li>
+<li><strong>All six feed one feature store.</strong> Velocity, device, behaviour and balance volatility are the same features. Computing them twice is the most common expensive mistake at layer 09.</li>
+</ul>
+<p>The vendors at layer 07 — Unit21, Feedzai, Hawk AI, Featurespace, Sardine — cover different subsets of this. <strong>Ask which of the six a vendor actually addresses</strong> before comparing feature lists; most are strong at two or three and silent on the rest.</p>
+</div>
+
 <div class="prose">
 <h2>Building best-in-class dispute management</h2>
 <p class="lede">The industry resolves 26% of disputes before they become chargebacks. Best-in-class inverts that number — and almost none of the work happens in the case-management tool.</p>

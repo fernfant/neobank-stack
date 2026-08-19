@@ -85,6 +85,41 @@ positioned so that the auditable decision is still made by a calibrated supervis
   latency budget `[confirmed]`. The Action Applier rate-limits per action type and alerts
   engineers when a threshold trips — a bug in a new control cannot cascade.
 
+## "Fraud" is six problems, not one layer
+
+This layer owns the fraud *platform*. It does not own fraud — the interventions execute at other
+layers, inside other people's latency budgets. Treating fraud as one layer is how a neobank ends up
+with a fraud team that cannot stop the fraud actually costing it money.
+
+| The problem | Caught at | Budget | The intervention |
+|---|---|---|---|
+| Onboarding fraud — synthetic and stolen identity | [[05-kyc-onboarding]] | seconds | Decline, refer to review, step-up evidence |
+| Account takeover — credentials, SIM swap, coercion | [[03-payment-rails]] + device | real-time | Step-up auth, block, Known Locations / Trusted Contacts |
+| Card fraud — unauthorised, card-not-present | [[04-card-issuing]] | **sub-second** | Decline inside the scheme timeout. No second chance |
+| Scam / APP fraud — the customer is authorising it | [[03-payment-rails]] | seconds, **in-flight** | Warn, add friction, block before the payment leaves |
+| Mule accounts — inbound, receiving stolen funds | [[05-kyc-onboarding]] + here | hours to days | Freeze, report, exit |
+| First-party fraud — your own customer disputes | here + [[07-credit-scoring]] | after the fact | Recover, decline future disputes, exit |
+
+Consequences for the build:
+
+- **Two of the six have no second chance.** Card authorisation and scam interception are decided
+  once, in the path, under an external deadline. Design those first; the other four can be
+  asynchronous. This is also why [[02-core-ledger]] read latency is a fraud control and not just a
+  performance metric — if the balance read misses the scheme's authorisation timeout, the scheme
+  approves on your behalf with your checks skipped. `[confirmed]` for the mechanism, see
+  [[04-card-issuing]].
+- **Onboarding fraud is fraud, not compliance.** It sits at [[05-kyc-onboarding]] and is usually
+  owned by a team measured on conversion — the wrong incentive for a fraud control.
+- **Inbound mule detection is a revenue line in the UK.** The 50/50 split of APP reimbursement
+  between sending and receiving PSP means the inbound risk model has direct P&L impact, not just
+  compliance impact. See the APP section below.
+- **All six share one feature store.** Velocity, device, behaviour and balance volatility are the
+  same features. Computing them twice is the common expensive mistake at [[08-data-ml-platform]].
+
+When comparing vendors below, ask which of the six each actually addresses. Most are strong at two
+or three and silent on the rest — the feature lists do not make this obvious. `[inferred]` from
+vendor positioning; no vendor publishes a coverage matrix in these terms.
+
 ## Vendors
 
 | Vendor | Category | Notes |
