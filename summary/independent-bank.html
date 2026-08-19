@@ -130,6 +130,33 @@
   .sitenav .here{color:var(--ink);background:var(--surface-2);padding:2px 5px;border-radius:2px;border:1px solid var(--rule)}
   .sitenav .sep{color:var(--rule)}
 </style>
+<style>
+  .vsec{margin:0 0 6px}
+  .vhead{display:flex;align-items:baseline;gap:10px;margin:30px 0 12px;padding-bottom:8px;
+    border-bottom:1px solid var(--rule)}
+  .vhead .vn{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--money);font-weight:700}
+  .vhead .vt{font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:15px;
+    font-weight:640;color:var(--ink);letter-spacing:-.01em}
+  .vhead .vd{font-size:12.5px;color:var(--ink-3);margin-left:auto;text-align:right}
+  .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:8px}
+  .vcard{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--rule-2);
+    border-radius:4px;text-decoration:none;background:var(--surface);transition:border-color .15s,transform .15s}
+  .vcard:hover{border-color:var(--money);transform:translateY(-1px)}
+  .vm{flex:0 0 34px;height:34px;border-radius:5px;display:grid;place-items:center;
+    font-family:ui-monospace,Menlo,monospace;font-size:11.5px;font-weight:700;letter-spacing:-.04em}
+  .vm.c{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--rule)}
+  .vm.o{background:var(--recon-soft);color:var(--recon);border:1px solid var(--recon)}
+  .vb{min-width:0}
+  .vnm{font-family:ui-sans-serif,-apple-system,system-ui,sans-serif;font-size:14px;font-weight:640;
+    color:var(--ink);letter-spacing:-.008em;display:block;margin-bottom:2px}
+  .vnm .ar{color:var(--ink-3);font-size:11px;margin-left:4px}
+  .vds{font-size:12.5px;line-height:1.45;color:var(--ink-3);display:block}
+  .vkey{display:flex;gap:20px;flex-wrap:wrap;margin:22px 0 0;padding:14px 18px;background:var(--surface-2);
+    border:1px solid var(--rule-2);border-radius:3px;font-size:12.5px;color:var(--ink-2);
+    font-family:ui-monospace,Menlo,monospace}
+  .vkey span{display:flex;align-items:center;gap:8px}
+  .vkey i{width:20px;height:20px;border-radius:4px;display:inline-block}
+</style>
 <div class="wrap">
 
 <header class="top">
@@ -147,132 +174,203 @@
 
 <figure class="bleed">
 <div class="scroller">
-<svg viewBox="0 0 1000 934" role="img" aria-label="Ten-layer decision stack for building an independent bank with its own licence and no sponsor. Each layer shows the decision, whether you build it, and named vendor options: licence and authorisation; scheme and card network access; core ledger; card issuing with your own BIN; payment orchestration; identity and KYC; financial crime and disputes; credit decisioning; data and machine learning; and resilience, reconciliation and regulatory reporting.">
-<text x="8" y="30" class="gut">LAYER</text>
-<text x="190" y="30" class="gut">THE DECISION</text>
-<text x="465" y="30" class="gut">YOU BUILD</text>
-<text x="588" y="30" class="gut">OPTIONS — BUILD OR NAMED VENDORS</text>
-<line class="f" x1="8" y1="40" x2="985" y2="40" stroke-opacity=".3"/>
-<rect class="bandbg" x="8" y="48" width="977" height="88"/>
-<text x="12" y="76" class="gut-n">01</text>
-<text x="38" y="76" class="gut">LICENCE</text>
-<text x="38" y="89" class="gut">authorisation</text>
-<rect class="bx" x="185" y="54" width="265" height="76" rx="2"/>
-<text x="317" y="97" class="lbl" text-anchor="middle">Bank licence, or EMI first?</text>
-<rect class="bx-v" x="460" y="54" width="110" height="76" rx="2"/>
-<text x="515" y="97" class="lbl" text-anchor="middle">—</text>
-<rect class="bx-v" x="580" y="54" width="405" height="76" rx="2"/>
-<text x="592" y="76" class="lbl-2">Two-stage mobilisation: ~£1m restricted → £5m full authorisation</text>
-<text x="592" y="93" class="lbl-2">Alternatives: EMI now and convert later · acquire a licensed entity</text>
-<text x="592" y="110" class="lbl-2">Forces: Basel 3.1, ICAAP/ILAAP, SM&amp;CR, a treasury function</text>
-<text x="12" y="160" class="gut-n">02</text>
-<text x="38" y="160" class="gut">SCHEME</text>
-<text x="38" y="173" class="gut">access</text>
-<rect class="bx" x="185" y="138" width="265" height="76" rx="2"/>
-<text x="317" y="181" class="lbl" text-anchor="middle">DCSP + card principal member</text>
-<rect class="bx-sor" x="460" y="138" width="110" height="76" rx="2"/>
-<text x="515" y="181" class="lbl" text-anchor="middle">gateway?</text>
-<rect class="bx-v" x="580" y="138" width="405" height="76" rx="2"/>
-<text x="592" y="160" class="lbl-2">BUILD (Monzo) · Form3 · Icon IPF · Volante · ACI · Finastra</text>
-<text x="592" y="177" class="lbl-2">BoE settlement account · prefunding (eased July 2026)</text>
-<text x="592" y="194" class="lbl-2">Card scheme dues run into millions of euros a year</text>
-<rect class="bandbg" x="8" y="216" width="977" height="88"/>
-<text x="12" y="244" class="gut-n">03</text>
-<text x="38" y="244" class="gut">CORE</text>
-<text x="38" y="257" class="gut">ledger</text>
-<rect class="bx" x="185" y="222" width="265" height="76" rx="2"/>
-<text x="317" y="265" class="lbl" text-anchor="middle">Build, buy, or sidecar?</text>
-<rect class="bx-sor" x="460" y="222" width="110" height="76" rx="2"/>
-<text x="515" y="265" class="lbl" text-anchor="middle">the ledger?</text>
-<rect class="bx-v" x="580" y="222" width="405" height="76" rx="2"/>
-<text x="592" y="244" class="lbl-2">Vault Core · 10x SuperCore · Temenos · Mambu · Tuum · Finxact · Engine</text>
-<text x="592" y="261" class="lbl-2">OSS substrate: TigerBeetle · Formance · Blnk</text>
-<text x="592" y="278" class="lbl-2">Six invariants — and checkpoint your balances before year five</text>
-<text x="12" y="328" class="gut-n">04</text>
-<text x="38" y="328" class="gut">CARDS</text>
-<text x="38" y="341" class="gut">own BIN</text>
-<rect class="bx" x="185" y="306" width="265" height="76" rx="2"/>
-<text x="317" y="349" class="lbl" text-anchor="middle">No sponsor needed — you are principal</text>
-<rect class="bx-sor" x="460" y="306" width="110" height="76" rx="2"/>
-<text x="515" y="349" class="lbl" text-anchor="middle">processor?</text>
-<rect class="bx-v" x="580" y="306" width="405" height="76" rx="2"/>
-<text x="592" y="328" class="lbl-2">Thredd · Marqeta · Galileo · Enfuce · i2c · Wallester · or build</text>
-<text x="592" y="345" class="lbl-2">HSM: Thales payShield · Futurex · Utimaco</text>
-<text x="592" y="362" class="lbl-2">Manufacture: IDEMIA · Thales · Giesecke+Devrient · CompoSecure</text>
-<rect class="bandbg" x="8" y="384" width="977" height="88"/>
-<text x="12" y="412" class="gut-n">05</text>
-<text x="38" y="412" class="gut">PAYMENT</text>
-<text x="38" y="425" class="gut">orchestration</text>
-<rect class="bx" x="185" y="390" width="265" height="76" rx="2"/>
-<text x="317" y="433" class="lbl" text-anchor="middle">Always build the adapter layer</text>
-<rect class="bx-sor" x="460" y="390" width="110" height="76" rx="2"/>
-<text x="515" y="433" class="lbl" text-anchor="middle">ALWAYS</text>
-<rect class="bx-v" x="580" y="390" width="405" height="76" rx="2"/>
-<text x="592" y="412" class="lbl-2">jPOS (ISO 8583) · moov-io (ACH, wire, Metro 2) · Prowide (ISO 20022)</text>
-<text x="592" y="429" class="lbl-2">Workflow: Temporal · Cadence · Camunda · Step Functions</text>
-<text x="592" y="446" class="lbl-2">One canonical event, a state machine, and the returns branch</text>
-<text x="12" y="496" class="gut-n">06</text>
-<text x="38" y="496" class="gut">IDENTITY</text>
-<text x="38" y="509" class="gut">KYC / KYB</text>
-<rect class="bx" x="185" y="474" width="265" height="76" rx="2"/>
-<text x="317" y="517" class="lbl" text-anchor="middle">Own the orchestration, buy signals</text>
-<rect class="bx-sor" x="460" y="474" width="110" height="76" rx="2"/>
-<text x="515" y="517" class="lbl" text-anchor="middle">the router</text>
-<rect class="bx-v" x="580" y="474" width="405" height="76" rx="2"/>
-<text x="592" y="496" class="lbl-2">IDV: Onfido · Jumio · Persona · Veriff · Sumsub</text>
-<text x="592" y="513" class="lbl-2">Screening: ComplyAdvantage · yente self-hosted · Napier · Dow Jones</text>
-<text x="592" y="530" class="lbl-2">KYB entity resolution: Senzing · Quantexa · Splink (open source)</text>
-<rect class="bandbg" x="8" y="552" width="977" height="88"/>
-<text x="12" y="580" class="gut-n">07</text>
-<text x="38" y="580" class="gut">FINANCIAL</text>
-<text x="38" y="593" class="gut">crime + disputes</text>
-<rect class="bx" x="185" y="558" width="265" height="76" rx="2"/>
-<text x="317" y="601" class="lbl" text-anchor="middle">Buy to launch, build detection</text>
-<rect class="bx-sor" x="460" y="558" width="110" height="76" rx="2"/>
-<text x="515" y="601" class="lbl" text-anchor="middle">detection</text>
-<rect class="bx-v" x="580" y="558" width="405" height="76" rx="2"/>
-<text x="592" y="580" class="lbl-2">TM: ComplyAdvantage · Unit21 · Feedzai · Hawk AI · Featurespace</text>
-<text x="592" y="597" class="lbl-2">Disputes: Quavo · Pega Smart Dispute · Rivero (Amiko)</text>
-<text x="592" y="614" class="lbl-2">Pre-dispute: Ethoca · Verifi   ·   Of record: VROL · MasterCom</text>
-<text x="12" y="664" class="gut-n">08</text>
-<text x="38" y="664" class="gut">CREDIT</text>
-<text x="38" y="677" class="gut">decisioning</text>
-<rect class="bx" x="185" y="642" width="265" height="76" rx="2"/>
-<text x="317" y="685" class="lbl" text-anchor="middle">Bureau score plus your own overlay</text>
-<rect class="bx-sor" x="460" y="642" width="110" height="76" rx="2"/>
-<text x="515" y="685" class="lbl" text-anchor="middle">the overlay</text>
-<rect class="bx-v" x="580" y="642" width="405" height="76" rx="2"/>
-<text x="592" y="664" class="lbl-2">Bureaus: Experian · Equifax · TransUnion</text>
-<text x="592" y="681" class="lbl-2">Open banking: TrueLayer · Tink · Yapily · GoCardless BAD · Plaid</text>
-<text x="592" y="698" class="lbl-2">Engines: Taktile · Provenir · Oscilar · GoRules · OPA/Rego</text>
-<rect class="bandbg" x="8" y="720" width="977" height="88"/>
-<text x="12" y="748" class="gut-n">09</text>
-<text x="38" y="748" class="gut">DATA</text>
-<text x="38" y="761" class="gut">and ML</text>
-<rect class="bx" x="185" y="726" width="265" height="76" rx="2"/>
-<text x="317" y="769" class="lbl" text-anchor="middle">Decision path ≠ analytics path</text>
-<rect class="bx-sor" x="460" y="726" width="110" height="76" rx="2"/>
-<text x="515" y="769" class="lbl" text-anchor="middle">the features</text>
-<rect class="bx-v" x="580" y="726" width="405" height="76" rx="2"/>
-<text x="592" y="748" class="lbl-2">Kafka / Confluent · Redpanda · Flink · dbt</text>
-<text x="592" y="765" class="lbl-2">Warehouse: BigQuery · Snowflake · Databricks</text>
-<text x="592" y="782" class="lbl-2">Feature store: Chronon · Feast · Tecton · Hopsworks</text>
-<text x="12" y="832" class="gut-n">10</text>
-<text x="38" y="832" class="gut">RESILIENCE</text>
-<text x="38" y="845" class="gut">and reporting</text>
-<rect class="bx" x="185" y="810" width="265" height="76" rx="2"/>
-<text x="317" y="853" class="lbl" text-anchor="middle">Reconcile, survive, and report</text>
-<rect class="bx-sor" x="460" y="810" width="110" height="76" rx="2"/>
-<text x="515" y="853" class="lbl" text-anchor="middle">reconciliation</text>
-<rect class="bx-v" x="580" y="810" width="405" height="76" rx="2"/>
-<text x="592" y="832" class="lbl-2">Recon: build the taxonomy on Duco · AutoRek · SmartStream · Gresham</text>
-<text x="592" y="849" class="lbl-2">RegRep: Regnology · Suade Labs (FIRE) · Wolters Kluwer OneSumX</text>
-<text x="592" y="866" class="lbl-2">Continuity: a second-cloud stand-in — Monzo's costs ~1% of primary</text>
-<text x="500" y="922" class="t-money" text-anchor="middle">NO SPONSOR ANYWHERE · YOU SETTLE IN YOUR OWN NAME AND YOU ARE THE ISSUER OF RECORD</text>
-</svg>
+<svg viewBox="0 0 900 934" role="img" aria-label="Ten-layer decision stack for an independent bank: licence, scheme access, core ledger, card issuing, payment orchestration, identity, financial crime and disputes, credit decisioning, data and machine learning, and resilience with regulatory reporting. Each row states the decision that layer forces and whether building it is the default.">
+<text x="8" y="30" class="gut">LAYER</text><text x="190" y="30" class="gut">THE DECISION IT FORCES</text><text x="650" y="30" class="gut">YOU BUILD</text>
+<line class="f" x1="8" y1="40" x2="885" y2="40" stroke-opacity=".3"/>
+<rect class="bandbg" x="8" y="48" width="877" height="88"/>
+<text x="12" y="76" class="gut-n">01</text><text x="38" y="76" class="gut">LICENCE</text><text x="38" y="89" class="gut">authorisation</text>
+<rect class="bx" x="185" y="54" width="440" height="76" rx="2"/>
+<text x="405" y="88" class="lbl" text-anchor="middle">Bank licence, or EMI first?</text>
+<text x="405" y="106" class="lbl-2" text-anchor="middle">Mobilisation: ~£1m restricted → £5m full</text>
+<rect class="bx-v" x="645" y="54" width="240" height="76" rx="2"/>
+<text x="765" y="97" class="lbl" text-anchor="middle">—</text>
+<text x="12" y="160" class="gut-n">02</text><text x="38" y="160" class="gut">SCHEME</text><text x="38" y="173" class="gut">access</text>
+<rect class="bx" x="185" y="138" width="440" height="76" rx="2"/>
+<text x="405" y="172" class="lbl" text-anchor="middle">Direct participant, or sponsored?</text>
+<text x="405" y="190" class="lbl-2" text-anchor="middle">Own BoE settlement account + prefunding</text>
+<rect class="bx-sor" x="645" y="138" width="240" height="76" rx="2"/>
+<text x="765" y="181" class="lbl" text-anchor="middle">gateway?</text>
+<rect class="bandbg" x="8" y="216" width="877" height="88"/>
+<text x="12" y="244" class="gut-n">03</text><text x="38" y="244" class="gut">CORE</text><text x="38" y="257" class="gut">ledger</text>
+<rect class="bx" x="185" y="222" width="440" height="76" rx="2"/>
+<text x="405" y="256" class="lbl" text-anchor="middle">Build, buy, or run a sidecar?</text>
+<text x="405" y="274" class="lbl-2" text-anchor="middle">Six invariants — and checkpoint your balances</text>
+<rect class="bx-sor" x="645" y="222" width="240" height="76" rx="2"/>
+<text x="765" y="265" class="lbl" text-anchor="middle">the ledger?</text>
+<text x="12" y="328" class="gut-n">04</text><text x="38" y="328" class="gut">CARDS</text><text x="38" y="341" class="gut">own BIN</text>
+<rect class="bx" x="185" y="306" width="440" height="76" rx="2"/>
+<text x="405" y="340" class="lbl" text-anchor="middle">Own principal membership, or a sponsor's BIN?</text>
+<text x="405" y="358" class="lbl-2" text-anchor="middle">Processor + HSMs + a physical supply chain</text>
+<rect class="bx-sor" x="645" y="306" width="240" height="76" rx="2"/>
+<text x="765" y="349" class="lbl" text-anchor="middle">processor?</text>
+<rect class="bandbg" x="8" y="384" width="877" height="88"/>
+<text x="12" y="412" class="gut-n">05</text><text x="38" y="412" class="gut">PAYMENT</text><text x="38" y="425" class="gut">orchestration</text>
+<rect class="bx" x="185" y="390" width="440" height="76" rx="2"/>
+<text x="405" y="424" class="lbl" text-anchor="middle">None — you always build this layer</text>
+<text x="405" y="442" class="lbl-2" text-anchor="middle">Only the libraries you build it on are a choice</text>
+<rect class="bx-sor" x="645" y="390" width="240" height="76" rx="2"/>
+<text x="765" y="433" class="lbl" text-anchor="middle">ALWAYS</text>
+<text x="12" y="496" class="gut-n">06</text><text x="38" y="496" class="gut">IDENTITY</text><text x="38" y="509" class="gut">KYC / KYB</text>
+<rect class="bx" x="185" y="474" width="440" height="76" rx="2"/>
+<text x="405" y="508" class="lbl" text-anchor="middle">Who owns the orchestration?</text>
+<text x="405" y="526" class="lbl-2" text-anchor="middle">Buy the signals, own the router</text>
+<rect class="bx-sor" x="645" y="474" width="240" height="76" rx="2"/>
+<text x="765" y="517" class="lbl" text-anchor="middle">the router</text>
+<rect class="bandbg" x="8" y="552" width="877" height="88"/>
+<text x="12" y="580" class="gut-n">07</text><text x="38" y="580" class="gut">FINCRIME</text><text x="38" y="593" class="gut">+ disputes</text>
+<rect class="bx" x="185" y="558" width="440" height="76" rx="2"/>
+<text x="405" y="592" class="lbl" text-anchor="middle">Buy to launch, build detection when?</text>
+<text x="405" y="610" class="lbl-2" text-anchor="middle">UK APP liability decides this for you</text>
+<rect class="bx-sor" x="645" y="558" width="240" height="76" rx="2"/>
+<text x="765" y="601" class="lbl" text-anchor="middle">detection</text>
+<text x="12" y="664" class="gut-n">08</text><text x="38" y="664" class="gut">CREDIT</text><text x="38" y="677" class="gut">decisioning</text>
+<rect class="bx" x="185" y="642" width="440" height="76" rx="2"/>
+<text x="405" y="676" class="lbl" text-anchor="middle">Bureau score, plus what overlay?</text>
+<text x="405" y="694" class="lbl-2" text-anchor="middle">Model and policy versioned separately</text>
+<rect class="bx-sor" x="645" y="642" width="240" height="76" rx="2"/>
+<text x="765" y="685" class="lbl" text-anchor="middle">the overlay</text>
+<rect class="bandbg" x="8" y="720" width="877" height="88"/>
+<text x="12" y="748" class="gut-n">09</text><text x="38" y="748" class="gut">DATA</text><text x="38" y="761" class="gut">and ML</text>
+<rect class="bx" x="185" y="726" width="440" height="76" rx="2"/>
+<text x="405" y="760" class="lbl" text-anchor="middle">Decision path must not depend on analytics</text>
+<text x="405" y="778" class="lbl-2" text-anchor="middle">The warehouse can be down without declining</text>
+<rect class="bx-sor" x="645" y="726" width="240" height="76" rx="2"/>
+<text x="765" y="769" class="lbl" text-anchor="middle">the features</text>
+<text x="12" y="832" class="gut-n">10</text><text x="38" y="832" class="gut">RESILIENCE</text><text x="38" y="845" class="gut">and reporting</text>
+<rect class="bx" x="185" y="810" width="440" height="76" rx="2"/>
+<text x="405" y="844" class="lbl" text-anchor="middle">Reconcile, survive an outage, and report</text>
+<text x="405" y="862" class="lbl-2" text-anchor="middle">No one to hand any of it to</text>
+<rect class="bx-sor" x="645" y="810" width="240" height="76" rx="2"/>
+<text x="765" y="853" class="lbl" text-anchor="middle">reconciliation</text>
+<text x="446" y="922" class="t-money" text-anchor="middle">NO SPONSOR ANYWHERE · YOU SETTLE IN YOUR OWN NAME AND YOU ARE THE ISSUER OF RECORD</text></svg>
 </div>
-<figcaption><b>The whole stack, with the decision at each layer.</b> Solid boxes in the middle column are layers where building is the default or a serious option; dashed are where you almost certainly buy. Read it top to bottom once for the decisions, then again down the right-hand column for who can actually fill each one. Note layer 05: the adapter layer is the one place with no vendor answer — <b>you always build it</b>, the only choice being what you build it on.</figcaption>
+<figcaption><b>The stack, and the decision each layer forces.</b> The right-hand column is what building looks like at that layer — solid where it is the default or a serious option, dashed where you almost certainly buy. Note layer 05: payment orchestration is the one place with no vendor answer at all. <b>You always build it</b>; the only choice is what you build it on. The vendors who can fill every other layer are listed below.</figcaption>
 </figure>
+
+<div class="prose">
+<h2>The vendors, layer by layer</h2>
+<p class="lede">Eighty-five options, one line each, every one linked. Teal marks open source.</p>
+<p>Layer 01 is omitted — authorisation has advisors, not vendors. Layer 05 has no vendor answer either: you always build the adapter layer, so what follows are the libraries worth building it on.</p>
+<div class="vkey">
+  <span><i class="vm o" style="border:1px solid var(--recon);background:var(--recon-soft)"></i> open source</span>
+  <span><i class="vm c" style="border:1px solid var(--rule);background:var(--surface-2)"></i> commercial</span>
+  <span>every card links to the vendor &#8599;</span>
+</div>
+</div>
+<div class="prose vsec">
+<div class="vhead"><span class="vn">02</span><span class="vt">Scheme &amp; rail access</span><span class="vd">you settle in your own name; these supply the pipe</span></div>
+<div class="vgrid">
+<a class="vcard" href="https://form3.tech" target="_blank" rel="noopener"><span class="vm c">FO</span><span class="vb"><span class="vnm">Form3<span class="ar">&#8599;</span></span><span class="vds">Cloud-native payments-as-a-service across UK, EU and US rails</span></span></a>
+<a class="vcard" href="https://iconsolutions.com" target="_blank" rel="noopener"><span class="vm c">IS</span><span class="vb"><span class="vnm">Icon Solutions<span class="ar">&#8599;</span></span><span class="vds">IPF — a highly customisable payments framework; connected to TCH and SEPA Inst</span></span></a>
+<a class="vcard" href="https://volantetech.com" target="_blank" rel="noopener"><span class="vm c">VO</span><span class="vb"><span class="vnm">Volante<span class="ar">&#8599;</span></span><span class="vds">Cloud-native payment hub for mid-to-large institutions</span></span></a>
+<a class="vcard" href="https://aciworldwide.com" target="_blank" rel="noopener"><span class="vm c">AW</span><span class="vb"><span class="vnm">ACI Worldwide<span class="ar">&#8599;</span></span><span class="vds">Incumbent payment hub, broad rail coverage</span></span></a>
+<a class="vcard" href="https://finastra.com" target="_blank" rel="noopener"><span class="vm c">FI</span><span class="vb"><span class="vnm">Finastra<span class="ar">&#8599;</span></span><span class="vds">Incumbent payment hub and banking software</span></span></a>
+</div>
+<div class="vhead"><span class="vn">03</span><span class="vt">Core ledger</span><span class="vd">the decision you cannot unwind</span></div>
+<div class="vgrid">
+<a class="vcard" href="https://thoughtmachine.net" target="_blank" rel="noopener"><span class="vm c">TM</span><span class="vb"><span class="vnm">Thought Machine<span class="ar">&#8599;</span></span><span class="vds">Vault Core — products defined as Smart Contracts in a Python-flavoured DSL</span></span></a>
+<a class="vcard" href="https://10xbanking.com" target="_blank" rel="noopener"><span class="vm c">1B</span><span class="vb"><span class="vnm">10x Banking<span class="ar">&#8599;</span></span><span class="vds">SuperCore — polyglot runtime, built-in migration tooling. Chase UK, Westpac</span></span></a>
+<a class="vcard" href="https://temenos.com" target="_blank" rel="noopener"><span class="vm c">TE</span><span class="vb"><span class="vnm">Temenos<span class="ar">&#8599;</span></span><span class="vds">Transact — the most widely deployed core; Varo at charter go-live</span></span></a>
+<a class="vcard" href="https://mambu.com" target="_blank" rel="noopener"><span class="vm c">MA</span><span class="vb"><span class="vnm">Mambu<span class="ar">&#8599;</span></span><span class="vds">SaaS core, strongest in lending. N26, ABN AMRO, 260+ customers</span></span></a>
+<a class="vcard" href="https://tuum.com" target="_blank" rel="noopener"><span class="vm c">TU</span><span class="vb"><span class="vnm">Tuum<span class="ar">&#8599;</span></span><span class="vds">Modular API core for European banks and fintechs</span></span></a>
+<a class="vcard" href="https://finxact.com" target="_blank" rel="noopener"><span class="vm c">FI</span><span class="vb"><span class="vnm">Finxact<span class="ar">&#8599;</span></span><span class="vds">US-first real-time core, now part of Fiserv</span></span></a>
+<a class="vcard" href="https://enginebystarling.com" target="_blank" rel="noopener"><span class="vm c">EB</span><span class="vb"><span class="vnm">Engine by Starling<span class="ar">&#8599;</span></span><span class="vds">The platform Starling runs its own bank on, sold to others</span></span></a>
+<a class="vcard" href="https://tigerbeetle.com" target="_blank" rel="noopener"><span class="vm o">TI</span><span class="vb"><span class="vnm">TigerBeetle<span class="ar">&#8599;</span></span><span class="vds">Purpose-built financial database — accounts and transfers are the schema</span></span></a>
+<a class="vcard" href="https://formance.com" target="_blank" rel="noopener"><span class="vm o">FO</span><span class="vb"><span class="vnm">Formance<span class="ar">&#8599;</span></span><span class="vds">Double-entry ledger with Numscript; deploys as a sidecar to an existing core</span></span></a>
+<a class="vcard" href="https://blnkfinance.com" target="_blank" rel="noopener"><span class="vm o">BL</span><span class="vb"><span class="vnm">Blnk<span class="ar">&#8599;</span></span><span class="vds">Open-source double-entry ledger core</span></span></a>
+</div>
+<div class="vhead"><span class="vn">04</span><span class="vt">Card issuing</span><span class="vd">processor, HSMs and a physical supply chain</span></div>
+<div class="vgrid">
+<a class="vcard" href="https://thredd.com" target="_blank" rel="noopener"><span class="vm c">TH</span><span class="vb"><span class="vnm">Thredd<span class="ar">&#8599;</span></span><span class="vds">Issuer processor — 2bn+ transactions a year across 50+ countries</span></span></a>
+<a class="vcard" href="https://marqeta.com" target="_blank" rel="noopener"><span class="vm c">MA</span><span class="vb"><span class="vnm">Marqeta<span class="ar">&#8599;</span></span><span class="vds">Largest independent issuer-processor; TransactPay adds UK/EU BIN sponsorship</span></span></a>
+<a class="vcard" href="https://galileo-ft.com" target="_blank" rel="noopener"><span class="vm c">GA</span><span class="vb"><span class="vnm">Galileo<span class="ar">&#8599;</span></span><span class="vds">SoFi-owned processor behind Chime, Robinhood and Varo</span></span></a>
+<a class="vcard" href="https://enfuce.com" target="_blank" rel="noopener"><span class="vm c">EN</span><span class="vb"><span class="vnm">Enfuce<span class="ar">&#8599;</span></span><span class="vds">European card issuing and BIN sponsorship</span></span></a>
+<a class="vcard" href="https://i2cinc.com" target="_blank" rel="noopener"><span class="vm c">I2</span><span class="vb"><span class="vnm">i2c<span class="ar">&#8599;</span></span><span class="vds">Global issuing and processing platform</span></span></a>
+<a class="vcard" href="https://wallester.com" target="_blank" rel="noopener"><span class="vm c">WA</span><span class="vb"><span class="vnm">Wallester<span class="ar">&#8599;</span></span><span class="vds">European virtual and physical card issuing</span></span></a>
+<a class="vcard" href="https://cpl.thalesgroup.com" target="_blank" rel="noopener"><span class="vm c">TP</span><span class="vb"><span class="vnm">Thales payShield<span class="ar">&#8599;</span></span><span class="vds">The category-leading payment HSM — FIPS 140-2 Level 3, ~1,000 TPS</span></span></a>
+<a class="vcard" href="https://futurex.com" target="_blank" rel="noopener"><span class="vm c">FU</span><span class="vb"><span class="vnm">Futurex<span class="ar">&#8599;</span></span><span class="vds">Payment and general-purpose HSMs; FIPS L3 and PCI HSM validated</span></span></a>
+<a class="vcard" href="https://utimaco.com" target="_blank" rel="noopener"><span class="vm c">UT</span><span class="vb"><span class="vnm">Utimaco<span class="ar">&#8599;</span></span><span class="vds">European HSMs with a data-sovereignty focus; Atalla AT1000</span></span></a>
+<a class="vcard" href="https://idemia.com" target="_blank" rel="noopener"><span class="vm c">ID</span><span class="vb"><span class="vnm">IDEMIA<span class="ar">&#8599;</span></span><span class="vds">Card manufacture — 800m+ cards a year across 180+ countries</span></span></a>
+<a class="vcard" href="https://gi-de.com" target="_blank" rel="noopener"><span class="vm c">GD</span><span class="vb"><span class="vnm">Giesecke+Devrient<span class="ar">&#8599;</span></span><span class="vds">Card manufacture and personalisation</span></span></a>
+<a class="vcard" href="https://composecure.com" target="_blank" rel="noopener"><span class="vm c">CO</span><span class="vb"><span class="vnm">CompoSecure<span class="ar">&#8599;</span></span><span class="vds">Metal payment cards</span></span></a>
+</div>
+<div class="vhead"><span class="vn">05</span><span class="vt">Payment orchestration</span><span class="vd">you build it — these are what you build it on</span></div>
+<div class="vgrid">
+<a class="vcard" href="https://jpos.org" target="_blank" rel="noopener"><span class="vm o">JP</span><span class="vb"><span class="vnm">jPOS<span class="ar">&#8599;</span></span><span class="vds">The de-facto open-source ISO 8583 implementation; production in 120+ countries</span></span></a>
+<a class="vcard" href="https://github.com/moov-io" target="_blank" rel="noopener"><span class="vm o">MO</span><span class="vb"><span class="vnm">Moov<span class="ar">&#8599;</span></span><span class="vds">Go libraries for ACH, Fedwire, ISO 8583, Check21 and Metro 2</span></span></a>
+<a class="vcard" href="https://prowidesoftware.com" target="_blank" rel="noopener"><span class="vm o">PR</span><span class="vb"><span class="vnm">Prowide<span class="ar">&#8599;</span></span><span class="vds">Java libraries for every ISO 20022 MX message, plus legacy MT</span></span></a>
+<a class="vcard" href="https://temporal.io" target="_blank" rel="noopener"><span class="vm o">TE</span><span class="vb"><span class="vnm">Temporal<span class="ar">&#8599;</span></span><span class="vds">Durable workflow execution — Stripe standardised on it for payments</span></span></a>
+<a class="vcard" href="https://camunda.com" target="_blank" rel="noopener"><span class="vm c">CA</span><span class="vb"><span class="vnm">Camunda<span class="ar">&#8599;</span></span><span class="vds">BPMN orchestration with DMN decision tables</span></span></a>
+</div>
+<div class="vhead"><span class="vn">06</span><span class="vt">Identity, KYC &amp; KYB</span><span class="vd">buy the signals, own the router</span></div>
+<div class="vgrid">
+<a class="vcard" href="https://onfido.com" target="_blank" rel="noopener"><span class="vm c">ON</span><span class="vb"><span class="vnm">Onfido<span class="ar">&#8599;</span></span><span class="vds">Document and liveness verification, now Entrust IDV. Monzo and Revolut</span></span></a>
+<a class="vcard" href="https://jumio.com" target="_blank" rel="noopener"><span class="vm c">JU</span><span class="vb"><span class="vnm">Jumio<span class="ar">&#8599;</span></span><span class="vds">Broad document coverage and mature liveness detection</span></span></a>
+<a class="vcard" href="https://withpersona.com" target="_blank" rel="noopener"><span class="vm c">PE</span><span class="vb"><span class="vnm">Persona<span class="ar">&#8599;</span></span><span class="vds">Highly configurable onboarding flows</span></span></a>
+<a class="vcard" href="https://veriff.com" target="_blank" rel="noopener"><span class="vm c">VE</span><span class="vb"><span class="vnm">Veriff<span class="ar">&#8599;</span></span><span class="vds">Identity verification with strong regional coverage</span></span></a>
+<a class="vcard" href="https://sumsub.com" target="_blank" rel="noopener"><span class="vm c">SU</span><span class="vb"><span class="vnm">Sumsub<span class="ar">&#8599;</span></span><span class="vds">Verification plus no-code workflow orchestration</span></span></a>
+<a class="vcard" href="https://alloy.com" target="_blank" rel="noopener"><span class="vm c">AL</span><span class="vb"><span class="vnm">Alloy<span class="ar">&#8599;</span></span><span class="vds">Identity orchestration across 270+ data sources</span></span></a>
+<a class="vcard" href="https://complyadvantage.com" target="_blank" rel="noopener"><span class="vm c">CO</span><span class="vb"><span class="vnm">ComplyAdvantage<span class="ar">&#8599;</span></span><span class="vds">Screening, monitoring and financial crime data on one platform</span></span></a>
+<a class="vcard" href="https://opensanctions.org" target="_blank" rel="noopener"><span class="vm o">OP</span><span class="vb"><span class="vnm">OpenSanctions<span class="ar">&#8599;</span></span><span class="vds">Open sanctions and PEP data with the yente matching API — fully self-hostable</span></span></a>
+<a class="vcard" href="https://napier.ai" target="_blank" rel="noopener"><span class="vm c">NA</span><span class="vb"><span class="vnm">Napier<span class="ar">&#8599;</span></span><span class="vds">Screening and transaction monitoring</span></span></a>
+<a class="vcard" href="https://senzing.com" target="_blank" rel="noopener"><span class="vm c">SE</span><span class="vb"><span class="vnm">Senzing<span class="ar">&#8599;</span></span><span class="vds">Embedded entity resolution for KYB, fraud rings and sanctions</span></span></a>
+<a class="vcard" href="https://quantexa.com" target="_blank" rel="noopener"><span class="vm c">QU</span><span class="vb"><span class="vnm">Quantexa<span class="ar">&#8599;</span></span><span class="vds">Entity resolution plus network graph analytics</span></span></a>
+<a class="vcard" href="https://moj-analytical-services.github.io/splink" target="_blank" rel="noopener"><span class="vm o">SP</span><span class="vb"><span class="vnm">Splink<span class="ar">&#8599;</span></span><span class="vds">UK Ministry of Justice probabilistic record linkage — a million records a minute</span></span></a>
+</div>
+<div class="vhead"><span class="vn">07</span><span class="vt">Financial crime &amp; disputes</span><span class="vd">buy to launch, build detection</span></div>
+<div class="vgrid">
+<a class="vcard" href="https://unit21.ai" target="_blank" rel="noopener"><span class="vm c">UN</span><span class="vb"><span class="vnm">Unit21<span class="ar">&#8599;</span></span><span class="vds">No-code transaction monitoring and case management. Chime, Brex</span></span></a>
+<a class="vcard" href="https://feedzai.com" target="_blank" rel="noopener"><span class="vm c">FE</span><span class="vb"><span class="vnm">Feedzai<span class="ar">&#8599;</span></span><span class="vds">Enterprise fraud and AML at very large scale</span></span></a>
+<a class="vcard" href="https://hawk.ai" target="_blank" rel="noopener"><span class="vm c">HA</span><span class="vb"><span class="vnm">Hawk AI<span class="ar">&#8599;</span></span><span class="vds">Behavioural monitoring over existing real-time and batch flows</span></span></a>
+<a class="vcard" href="https://featurespace.com" target="_blank" rel="noopener"><span class="vm c">FE</span><span class="vb"><span class="vnm">Featurespace<span class="ar">&#8599;</span></span><span class="vds">ARIC adaptive behavioural analytics. NatWest, HSBC, Danske</span></span></a>
+<a class="vcard" href="https://sardine.ai" target="_blank" rel="noopener"><span class="vm c">SA</span><span class="vb"><span class="vnm">Sardine<span class="ar">&#8599;</span></span><span class="vds">Device fingerprinting, behavioural biometrics and consortium velocity data</span></span></a>
+<a class="vcard" href="https://checkmarble.com" target="_blank" rel="noopener"><span class="vm o">MA</span><span class="vb"><span class="vnm">Marble<span class="ar">&#8599;</span></span><span class="vds">Open-core real-time decision engine for fraud and AML</span></span></a>
+<a class="vcard" href="https://quavo.com" target="_blank" rel="noopener"><span class="vm c">QU</span><span class="vb"><span class="vnm">Quavo<span class="ar">&#8599;</span></span><span class="vds">Issuer dispute automation across the full chargeback lifecycle</span></span></a>
+<a class="vcard" href="https://pega.com" target="_blank" rel="noopener"><span class="vm c">PS</span><span class="vb"><span class="vnm">Pega Smart Dispute<span class="ar">&#8599;</span></span><span class="vds">Network dispute rules with VROL, MasterCom, Ethoca and Verifi integration</span></span></a>
+<a class="vcard" href="https://rivero.tech" target="_blank" rel="noopener"><span class="vm c">RI</span><span class="vb"><span class="vnm">Rivero<span class="ar">&#8599;</span></span><span class="vds">Amiko — dispute management built specifically for card issuers</span></span></a>
+<a class="vcard" href="https://ethoca.com" target="_blank" rel="noopener"><span class="vm c">ET</span><span class="vb"><span class="vnm">Ethoca<span class="ar">&#8599;</span></span><span class="vds">Mastercard-owned — flags disputes before they become chargebacks</span></span></a>
+<a class="vcard" href="https://www.verifi.com" target="_blank" rel="noopener"><span class="vm c">VE</span><span class="vb"><span class="vnm">Verifi<span class="ar">&#8599;</span></span><span class="vds">Visa-owned issuer-connected resolution, averaging around 24 hours</span></span></a>
+</div>
+<div class="vhead"><span class="vn">08</span><span class="vt">Credit &amp; decisioning</span><span class="vd">bureau, open banking, decision engines</span></div>
+<div class="vgrid">
+<a class="vcard" href="https://experian.co.uk" target="_blank" rel="noopener"><span class="vm c">EX</span><span class="vb"><span class="vnm">Experian<span class="ar">&#8599;</span></span><span class="vds">Credit bureau; launched a Credit + Cashflow Score in Nov 2025</span></span></a>
+<a class="vcard" href="https://equifax.co.uk" target="_blank" rel="noopener"><span class="vm c">EQ</span><span class="vb"><span class="vnm">Equifax<span class="ar">&#8599;</span></span><span class="vds">Credit bureau</span></span></a>
+<a class="vcard" href="https://transunion.co.uk" target="_blank" rel="noopener"><span class="vm c">TR</span><span class="vb"><span class="vnm">TransUnion<span class="ar">&#8599;</span></span><span class="vds">Credit bureau</span></span></a>
+<a class="vcard" href="https://truelayer.com" target="_blank" rel="noopener"><span class="vm c">TR</span><span class="vb"><span class="vnm">TrueLayer<span class="ar">&#8599;</span></span><span class="vds">UK and EU open banking data and payments, including VRP</span></span></a>
+<a class="vcard" href="https://tink.com" target="_blank" rel="noopener"><span class="vm c">TI</span><span class="vb"><span class="vnm">Tink<span class="ar">&#8599;</span></span><span class="vds">Visa-owned — 3,400+ institutions across 18 markets</span></span></a>
+<a class="vcard" href="https://yapily.com" target="_blank" rel="noopener"><span class="vm c">YA</span><span class="vb"><span class="vnm">Yapily<span class="ar">&#8599;</span></span><span class="vds">White-label open banking infrastructure across 19 countries</span></span></a>
+<a class="vcard" href="https://plaid.com" target="_blank" rel="noopener"><span class="vm c">PL</span><span class="vb"><span class="vnm">Plaid<span class="ar">&#8599;</span></span><span class="vds">The US data network; cash-flow UltraFICO is built on it</span></span></a>
+<a class="vcard" href="https://taktile.com" target="_blank" rel="noopener"><span class="vm c">TA</span><span class="vb"><span class="vnm">Taktile<span class="ar">&#8599;</span></span><span class="vds">Decision engine for risk teams to build and test policies</span></span></a>
+<a class="vcard" href="https://provenir.com" target="_blank" rel="noopener"><span class="vm c">PR</span><span class="vb"><span class="vnm">Provenir<span class="ar">&#8599;</span></span><span class="vds">Risk decisioning and data orchestration</span></span></a>
+<a class="vcard" href="https://oscilar.com" target="_blank" rel="noopener"><span class="vm c">OS</span><span class="vb"><span class="vnm">Oscilar<span class="ar">&#8599;</span></span><span class="vds">AI-native risk decisioning</span></span></a>
+<a class="vcard" href="https://gorules.io" target="_blank" rel="noopener"><span class="vm o">GO</span><span class="vb"><span class="vnm">GoRules<span class="ar">&#8599;</span></span><span class="vds">ZEN engine — decision tables over a JSON Decision Model</span></span></a>
+<a class="vcard" href="https://openpolicyagent.org" target="_blank" rel="noopener"><span class="vm o">OP</span><span class="vb"><span class="vnm">Open Policy Agent<span class="ar">&#8599;</span></span><span class="vds">Policy as code, embeddable as a library, returns structured risk scores</span></span></a>
+</div>
+<div class="vhead"><span class="vn">09</span><span class="vt">Data &amp; ML platform</span><span class="vd">streaming, warehouse, feature store</span></div>
+<div class="vgrid">
+<a class="vcard" href="https://confluent.io" target="_blank" rel="noopener"><span class="vm c">CO</span><span class="vb"><span class="vnm">Confluent<span class="ar">&#8599;</span></span><span class="vds">Managed Kafka and stream processing</span></span></a>
+<a class="vcard" href="https://redpanda.com" target="_blank" rel="noopener"><span class="vm o">RE</span><span class="vb"><span class="vnm">Redpanda<span class="ar">&#8599;</span></span><span class="vds">Kafka-compatible streaming without the JVM</span></span></a>
+<a class="vcard" href="https://flink.apache.org" target="_blank" rel="noopener"><span class="vm o">FL</span><span class="vb"><span class="vnm">Apache Flink<span class="ar">&#8599;</span></span><span class="vds">Stateful stream processing with exactly-once semantics</span></span></a>
+<a class="vcard" href="https://cloud.google.com/bigquery" target="_blank" rel="noopener"><span class="vm c">BI</span><span class="vb"><span class="vnm">BigQuery<span class="ar">&#8599;</span></span><span class="vds">Serverless warehouse — Monzo's, with 12,000+ dbt models on top</span></span></a>
+<a class="vcard" href="https://snowflake.com" target="_blank" rel="noopener"><span class="vm c">SN</span><span class="vb"><span class="vnm">Snowflake<span class="ar">&#8599;</span></span><span class="vds">Cloud warehouse — Chime and Remitly</span></span></a>
+<a class="vcard" href="https://databricks.com" target="_blank" rel="noopener"><span class="vm c">DA</span><span class="vb"><span class="vnm">Databricks<span class="ar">&#8599;</span></span><span class="vds">Lakehouse platform</span></span></a>
+<a class="vcard" href="https://getdbt.com" target="_blank" rel="noopener"><span class="vm o">DB</span><span class="vb"><span class="vnm">dbt<span class="ar">&#8599;</span></span><span class="vds">The transformation layer every warehouse in this research runs on</span></span></a>
+<a class="vcard" href="https://chronon.ai" target="_blank" rel="noopener"><span class="vm o">CH</span><span class="vb"><span class="vnm">Chronon<span class="ar">&#8599;</span></span><span class="vds">Airbnb's feature platform — powers 100% of Stripe's charge-path fraud models</span></span></a>
+<a class="vcard" href="https://feast.dev" target="_blank" rel="noopener"><span class="vm o">FE</span><span class="vb"><span class="vnm">Feast<span class="ar">&#8599;</span></span><span class="vds">Open-source feature store; sub-millisecond with Redis</span></span></a>
+<a class="vcard" href="https://tecton.ai" target="_blank" rel="noopener"><span class="vm c">TE</span><span class="vb"><span class="vnm">Tecton<span class="ar">&#8599;</span></span><span class="vds">Managed feature platform, sub-10ms p99 serving</span></span></a>
+<a class="vcard" href="https://hopsworks.ai" target="_blank" rel="noopener"><span class="vm c">HO</span><span class="vb"><span class="vnm">Hopsworks<span class="ar">&#8599;</span></span><span class="vds">Self-hostable feature store, favoured in regulated sectors</span></span></a>
+</div>
+<div class="vhead"><span class="vn">10</span><span class="vt">Resilience &amp; reporting</span><span class="vd">reconciliation, regulatory reporting, continuity</span></div>
+<div class="vgrid">
+<a class="vcard" href="https://du.co" target="_blank" rel="noopener"><span class="vm c">DU</span><span class="vb"><span class="vnm">Duco<span class="ar">&#8599;</span></span><span class="vds">Cloud-native reconciliation with self-service configuration</span></span></a>
+<a class="vcard" href="https://autorek.com" target="_blank" rel="noopener"><span class="vm c">AU</span><span class="vb"><span class="vnm">AutoRek<span class="ar">&#8599;</span></span><span class="vds">Financial controls and reconciliation, strong UK presence</span></span></a>
+<a class="vcard" href="https://smartstream-stp.com" target="_blank" rel="noopener"><span class="vm c">SM</span><span class="vb"><span class="vnm">SmartStream<span class="ar">&#8599;</span></span><span class="vds">TLM — reconciliation and transaction lifecycle control at bank scale</span></span></a>
+<a class="vcard" href="https://greshamtech.com" target="_blank" rel="noopener"><span class="vm c">GR</span><span class="vb"><span class="vnm">Gresham<span class="ar">&#8599;</span></span><span class="vds">Clareti — complex reconciliation for financial institutions</span></span></a>
+<a class="vcard" href="https://regnology.net" target="_blank" rel="noopener"><span class="vm c">RE</span><span class="vb"><span class="vnm">Regnology<span class="ar">&#8599;</span></span><span class="vds">Regulatory reporting; absorbed Wolters Kluwer FRR and Vermeg AGILE</span></span></a>
+<a class="vcard" href="https://suade.org" target="_blank" rel="noopener"><span class="vm c">SL</span><span class="vb"><span class="vnm">Suade Labs<span class="ar">&#8599;</span></span><span class="vds">Regulatory reporting on the open FIRE data standard</span></span></a>
+<a class="vcard" href="https://wolterskluwer.com" target="_blank" rel="noopener"><span class="vm c">WK</span><span class="vb"><span class="vnm">Wolters Kluwer<span class="ar">&#8599;</span></span><span class="vds">OneSumX — liquidity, COREP, FINREP and PRA 110</span></span></a>
+</div>
+</div>
 
 <div class="prose">
 <h2><span class="n">01–02</span>Licence, then two more memberships nobody warns you about</h2>
