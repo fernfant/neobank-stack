@@ -122,7 +122,9 @@
     font-family:ui-monospace,Menlo,monospace}
   .tag.no{color:var(--flag);border-color:var(--flag);background:var(--flag-soft)}
   .tag.yes{color:var(--recon);border-color:var(--recon);background:var(--recon-soft)}
-  .keynum{border-left:2px solid var(--money);background:var(--money-soft);
+  .ord2{margin:0 0 18px; padding-left:22px}
+.ord2 li{margin-bottom:9px; line-height:1.55}
+.keynum{border-left:2px solid var(--money);background:var(--money-soft);
     padding:18px 22px;margin:26px 0;border-radius:0 3px 3px 0}
   .keynum p:last-child{margin-bottom:0}
   .keynum .eyebrow{color:var(--money);margin-bottom:10px}
@@ -206,6 +208,93 @@
 </div>
 <figcaption><b>Authorisation is not settlement.</b> When the customer sees "approved", nothing has moved — an obligation exists and a hold sits against available balance. Clearing exchanges and nets the information, and is where the amount becomes final; it can differ from what was authorised (tips, fuel, hotels) or never arrive at all. Only settlement moves money. If your ledger posts once, you cannot answer <em>"why does available balance differ from cleared balance"</em>, and you cannot reconcile against the scheme's daily files.</figcaption>
 </figure>
+
+
+<div class="prose">
+<h2>First, four words that mean two different things</h2>
+<p class="lede">Scheme access, gateway, processor, orchestration. Every vendor uses all four, and half of them mean the opposite of what the other half mean &mdash; because the words describe a different stack depending on which side of the transaction you are standing on.</p>
+<p>This is not pedantry. It is the single most common source of a mis-scoped payments RFP: a bank asks five vendors for &ldquo;a payment gateway&rdquo; and gets back three merchant checkout products, one scheme-connectivity platform, and one orchestration layer that assumes you already have the other three.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 1000 430" role="img" aria-label="The same four words describe two different stacks. On the bank issuing side: the scheme or rail is not yours, the gateway speaks its protocol, the processor runs the card authorisation loop, and orchestration is your own service. On the merchant acquiring side: the gateway captures and tokenises card details, the processor and acquirer authorise and settle, and orchestration routes between multiple providers. Bank-side vendors are Form3, Icon, Volante for rails and Thredd, Marqeta, Galileo for cards. Merchant-side are Checkout, Adyen, Stripe for bundled gateway and acquiring, and Primer, Gr4vy, Spreedly for orchestration.">
+<text x="20" y="22" class="lbl">ONE SET OF WORDS &middot; TWO COMPLETELY DIFFERENT STACKS</text>
+
+<text x="20" y="58" class="gut">YOU ARE THE BANK &mdash; ISSUING SIDE</text>
+<line class="f2" x1="20" y1="66" x2="980" y2="66"/>
+<rect class="bx-v" x="20" y="78" width="228" height="76" rx="2"/>
+<text x="32" y="98" class="lbl">SCHEME / RAIL</text>
+<text x="32" y="114" class="lbl-2">Visa &middot; Mastercard &middot; FPS &middot; Bacs</text>
+<text x="32" y="128" class="lbl-2">CHAPS &middot; ACH &middot; SEPA</text>
+<text x="32" y="146" class="t-flag">NOT YOURS. YOU JOIN IT</text>
+
+<rect class="bx" x="264" y="78" width="228" height="76" rx="2"/>
+<text x="276" y="98" class="lbl">GATEWAY</text>
+<text x="276" y="114" class="lbl-2">The pipe that speaks the</text>
+<text x="276" y="128" class="lbl-2">scheme&rsquo;s protocol &amp; holds the keys</text>
+<text x="276" y="146" class="t-money">FORM3 &middot; ICON &middot; VOLANTE &middot; OR BUILD</text>
+
+<rect class="bx" x="508" y="78" width="228" height="76" rx="2"/>
+<text x="520" y="98" class="lbl">PROCESSOR</text>
+<text x="520" y="114" class="lbl-2">Cards only. Runs the</text>
+<text x="520" y="128" class="lbl-2">authorisation loop for you</text>
+<text x="520" y="146" class="t-money">THREDD &middot; MARQETA &middot; GALILEO</text>
+
+<rect class="bx-sor" x="752" y="78" width="228" height="76" rx="2"/>
+<text x="764" y="98" class="lbl">ORCHESTRATION</text>
+<text x="764" y="114" class="lbl-2">Which rail, what checks,</text>
+<text x="764" y="128" class="lbl-2">what happens when it fails</text>
+<text x="764" y="146" class="t-flag">NO VENDOR. YOU BUILD IT</text>
+
+<text x="20" y="212" class="gut">YOU ARE THE MERCHANT &mdash; ACQUIRING SIDE</text>
+<line class="f2" x1="20" y1="220" x2="980" y2="220"/>
+<rect class="bx-v" x="20" y="232" width="228" height="76" rx="2"/>
+<text x="32" y="252" class="lbl">SCHEME</text>
+<text x="32" y="268" class="lbl-2">The same networks, entered</text>
+<text x="32" y="282" class="lbl-2">from the other end</text>
+<text x="32" y="300" class="t-flag">NOT YOURS EITHER</text>
+
+<rect class="bx" x="264" y="232" width="472" height="76" rx="2"/>
+<text x="276" y="252" class="lbl">GATEWAY + PROCESSOR + ACQUIRER &mdash; USUALLY ONE CONTRACT</text>
+<text x="276" y="268" class="lbl-2">Capture and tokenise the card, authorise it, settle the funds, and hold the merchant</text>
+<text x="276" y="282" class="lbl-2">relationship. Sold bundled, which is why the three words blur together here</text>
+<text x="276" y="300" class="t-money">CHECKOUT &middot; ADYEN &middot; STRIPE &middot; WORLDPAY &middot; NUVEI</text>
+
+<rect class="bx-sor" x="752" y="232" width="228" height="76" rx="2"/>
+<text x="764" y="252" class="lbl">ORCHESTRATION</text>
+<text x="764" y="268" class="lbl-2">Routes between several</text>
+<text x="764" y="282" class="lbl-2">acquirers. Retry, cascade, vault</text>
+<text x="764" y="300" class="t-money">PRIMER &middot; GR4VY &middot; SPREEDLY</text>
+
+<line class="boundary" x1="20" y1="352" x2="980" y2="352"/>
+<text x="20" y="374" class="lbl">THE TRAP</text>
+<text x="20" y="392" class="lbl-2">A gateway <tspan class="em">moves messages</tspan>. Orchestration <tspan class="em">makes decisions</tspan>. The gateway knows nothing about your business rules;</text>
+<text x="20" y="408" class="lbl-2">your orchestration knows nothing about ISO 8583. Buy the first, build the second &mdash; and never let a vendor sell you one as the other.</text>
+<text x="500" y="428" class="t-money" text-anchor="middle">&ldquo;PAYMENT GATEWAY&rdquo; TO A MERCHANT IS A CHECKOUT PAGE. TO A BANK IT IS AN ISO 8583 CONNECTION TO VISA.</text>
+</svg>
+</div>
+<figcaption><b>The same four words, two stacks.</b> On the bank side they are four separate things you procure separately &mdash; and only the gateway and the processor have vendors. On the merchant side, the middle three arrive bundled in one contract, which is exactly why the vocabulary collapsed. When someone says &ldquo;we use Stripe as our payment processor&rdquo; and someone else says &ldquo;we use Form3 as our payment gateway&rdquo;, they are describing non-overlapping problems.</figcaption>
+</figure>
+
+<div class="prose">
+<h3>The relationship, in order</h3>
+<ol class="ord2">
+<li><strong>The scheme or rail is not yours.</strong> Visa, Mastercard, FPS, Bacs, CHAPS, ACH, SEPA. You join it &mdash; as a principal member, a sponsored participant, or indirectly through someone who is. That choice is made before any of the next three, and it constrains all of them.</li>
+<li><strong>The gateway is the pipe that speaks the scheme&rsquo;s protocol.</strong> ISO 8583 for cards, ISO 20022 or scheme-specific formats for domestic rails, plus the HSMs holding the keys. It is technically demanding, entirely undifferentiated, and the obvious thing to buy &mdash; Form3, Icon Solutions, Volante, ACI, Finastra. Monzo built its own for Faster Payments and it is a deliberately boring Go monolith, which tells you what kind of component this is.</li>
+<li><strong>The processor is a card-side concept with no clean rail equivalent.</strong> It sits behind the gateway and runs the authorisation loop &mdash; receives the message, applies limits and rules or calls your service, returns a decision inside the timeout. Thredd, Marqeta, Galileo. On domestic rails there is no separate processor: the gateway hands you the message and your own service does the rest.</li>
+<li><strong>Orchestration is yours, and there is no vendor for it.</strong> Which rail to use, in what order, with what checks, what to post to the ledger and when, what happens on failure, and how the whole thing reconciles. It is the only one of the four that encodes your product, which is precisely why nobody can sell it to you.</li>
+</ol>
+
+<div class="keynum">
+<p class="eyebrow">The distinction that survives every naming argument</p>
+<p><strong>A gateway moves messages. Orchestration makes decisions.</strong> The gateway knows nothing about your limits, your fraud posture or your ledger; your orchestration layer knows nothing about ISO 8583 framing. Keeping that line clean is what lets you change gateway vendors later without rewriting your payment logic &mdash; and blurring it is how banks end up unable to leave a vendor they have outgrown.</p>
+</div>
+
+<h3>Where the confusion actually bites</h3>
+<p><strong>&ldquo;Payment orchestration&rdquo; is the worst offender</strong>, because the merchant-side product of that name &mdash; Primer, Gr4vy, Spreedly &mdash; solves a genuinely different problem: routing one transaction across several acquirers to lift acceptance rates. A bank&rsquo;s orchestration layer routes across <em>rails</em>, owns the ledger posting, and has to survive a reversal window measured in months. Buying the former expecting the latter is a category error, not a procurement mistake.</p>
+<p><strong>And &ldquo;processor&rdquo; flips meaning entirely.</strong> An issuer processor works for the bank whose card is being used. An acquirer processor works for the merchant being paid. Same word, opposite ends of the same authorisation message.</p>
+</div>
 
 <div class="prose">
 <h2><span class="n">01</span>The tail is the design constraint</h2>

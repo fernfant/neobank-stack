@@ -194,6 +194,20 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .stamp{text-align:left}
 }
 
+.stk{display:grid; grid-template-columns:repeat(4,1fr); gap:0}
+.sk{border:1px solid var(--rule); border-right:none; padding:5px 8px; display:flex; flex-direction:column; gap:2px}
+.sk:last-child{border-right:1px solid var(--rule)}
+.sk.you{background:var(--accent-soft); border-color:var(--accent)}
+.sk.you + .sk{border-left-color:var(--accent)}
+.sk.nots{background:var(--bank)}
+.sk .kt{font-size:.65rem; font-weight:800; letter-spacing:-.005em; line-height:1.2}
+.sk .kd{font-size:.545rem; line-height:1.28; color:var(--ink-2)}
+.sk .kv{font-size:.52rem; line-height:1.25; font-weight:700; color:var(--accent); margin-top:1px}
+.sk .kv.no{color:var(--ink-3); font-weight:600}
+.sk .kv.own{color:var(--hard)}
+.warn{border-left:2px solid var(--hard); padding:3px 0 3px 8px; font-size:.575rem; line-height:1.33; color:var(--ink-2)}
+.warn b{color:var(--ink)}
+
 /* the inherited table{min-width:1000px} is for the layers grid inside a scroller — not these */
 .rt,.cmp,.mini{min-width:0}
 .rt{table-layout:fixed}
@@ -311,6 +325,11 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .gl{font-size:.48rem} .grp{margin-bottom:2px; grid-template-columns:58px 1fr}
   .foot{padding-top:3px; font-size:.51rem}
   .reg,.rlg{font-size:.46rem}
+  .sk{padding:4px 6px; gap:1px}
+  .sk .kt{font-size:.6rem}
+  .sk .kd{font-size:.5rem; line-height:1.24}
+  .sk .kv{font-size:.475rem}
+  .warn{font-size:.52rem; line-height:1.3; padding:2px 0 2px 7px}
 }
 </style>
 
@@ -341,30 +360,30 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
     </tbody>
   </table>
 
-  <div class="band"><h2>The two things that decide your design</h2><span class="ln"></span></div>
-  <div class="three">
-    <div class="card good">
-      <span class="eb">Direction</span>
-      <h3>Credit-push cannot debit anyone</h3>
-      <p><b>FPS, CHAPS, RTP, FedNow and SEPA Inst are push-only.</b> They cannot pull funds, so none of them can carry a subscription, a repayment or any collection you initiate.</p>
-      <p>For that you need <b>Bacs Direct Debit</b> in the UK, <b>ACH debit</b> in the US or <b>SEPA SDD</b> in the EU &mdash; and every one of those brings a long reversal tail with it.</p>
+  <div class="band"><h2>Scheme access &middot; gateway &middot; processor &middot; orchestration</h2><span class="ln"></span><span class="note">four words, and only two of them have vendors</span></div>
+  <div class="stk">
+    <div class="sk nots">
+      <span class="kt">1 &middot; Scheme / rail</span>
+      <span class="kd">Visa, FPS, Bacs, ACH, SEPA. On FPS you join as <b>DCSP</b> (settles itself at the BoE), <b>DCNSP</b> (a sponsor settles) or <b>Indirect Agency</b>. Bacs has only Direct and Indirect.</span>
+      <span class="kv no">NOT YOURS. YOU JOIN IT</span>
     </div>
-    <div class="card hot">
-      <span class="eb">Exposure</span>
-      <h3>Speed and finality move together</h3>
-      <p>The instant rails are <b>final on receipt</b> &mdash; there is no recall, which is exactly why scam interception has to happen <em>in flight</em>.</p>
-      <p>The slow rails reverse for <b>weeks or months</b>. A Bacs Direct Debit indemnity claim is effectively unbounded. Your ledger must hold a contingent position for the whole window, not until the payment clears.</p>
+    <div class="sk">
+      <span class="kt">2 &middot; Gateway</span>
+      <span class="kd">The pipe that speaks the scheme&rsquo;s protocol &mdash; ISO 8583 or ISO 20022 &mdash; and holds the keys. Demanding, and completely undifferentiated.</span>
+      <span class="kv">BUY: FORM3 &middot; ICON &middot; VOLANTE &middot; ACI</span>
     </div>
-    <div class="card">
-      <span class="eb">Access &mdash; Faster Payments only<span class="rlg uk">UK</span></span>
-      <h3>&ldquo;Direct&rdquo; describes the connection, not the settlement</h3>
-      <p><b>DCSP</b> &mdash; directly connected <em>and</em> settling, with its own account at the Bank of England.</p>
-      <p><b>DCNSP</b> &mdash; directly connected, but a sponsoring DCSP settles for it.</p>
-      <p><b>Indirect Agency</b> &mdash; reaches the rail through a DCSP or DCNSP.</p>
-      <p><b>FPS terms only.</b> Bacs has just Direct and Indirect Participant &mdash; no non-settling tier. CHAPS adds Indirect Access Provider.</p>
+    <div class="sk">
+      <span class="kt">3 &middot; Processor</span>
+      <span class="kd">Cards only. Runs the authorisation loop behind the gateway. <b>Domestic rails have no equivalent</b> &mdash; the gateway hands you the message.</span>
+      <span class="kv">BUY: THREDD &middot; MARQETA &middot; GALILEO</span>
+    </div>
+    <div class="sk you">
+      <span class="kt">4 &middot; Orchestration</span>
+      <span class="kd">Which rail, what checks, what posts to the ledger, what happens on failure. The only one that encodes your product.</span>
+      <span class="kv own">NO VENDOR. YOU BUILD IT</span>
     </div>
   </div>
-
+  <div class="warn"><b>Credit-push rails cannot debit anyone</b> &mdash; FPS, CHAPS, RTP, FedNow and SEPA Inst carry no subscription, repayment or collection you initiate; that needs Bacs DD, ACH debit or SEPA SDD, each with a long reversal tail. <b>A gateway moves messages; orchestration makes decisions.</b> Keep that line clean and you can change gateway vendors without rewriting payment logic. Blur it and you cannot leave a vendor you have outgrown. Beware the merchant-side homonyms: a &ldquo;payment gateway&rdquo; to a merchant is a checkout page, and merchant &ldquo;orchestration&rdquo; &mdash; Primer, Gr4vy, Spreedly &mdash; routes across <em>acquirers</em>, not rails. An <b>issuer</b> processor works for the bank; an <b>acquirer</b> processor works for the merchant. Same word, opposite ends of one message.</div>
 
   <div class="band"><h2>The rules you will meet in production</h2><span class="ln"></span></div>
   <div class="two">
