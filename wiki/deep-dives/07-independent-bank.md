@@ -230,6 +230,44 @@ without declining payments.
 
 ---
 
+## The same ten layers, three real banks
+
+| Layer | **Monzo** — UK bank, builds | **Revolut** — UK bank, mixed | **Chime** — no licence, builds tech |
+| --- | --- | --- | --- |
+| 01 Licence | UK bank (PRA/FCA) | UK bank + EU | **None** — Bancorp + Stride hold deposits |
+| 02 Scheme access | **Own FPS gateway**, Bacs direct, own BoE account | Own licence; scheme access not public | Via the sponsor banks |
+| 03 Core ledger | **Built** — `service.ledger` on Cassandra | **Built** — Postgres event store, `LISTEN`/`NOTIFY` | **Built** — ChimeCore; CoreDB is MySQL/RDS, 40TB |
+| 04 Cards | **Built own processor** (GPS only for old prepaid) | **Thredd** (+ Galileo for US) | Galileo → **ChimeCore**, 100% of credit since late 2024 |
+| 05 Payment orchestration | **Built** — adapter → deciders → effects | **Built** — event-driven microservices | Not public |
+| 06 Identity | **Onfido** | **Onfido** | Not public |
+| 07 Fincrime | **Built** — Starlark controls, multi-task NN | **Built** | **Unit21** |
+| 08 Credit | **Built** | **Built** — PRAGMA foundation model | Not public |
+| 09 Data & ML | BigQuery, dbt (12k models), Kafka | GCP, PostgreSQL | MySQL + Snowflake |
+| 10 Resilience | **Stand-in on GCP** — 18 services, ~1% of cost | Not public | EKS, ~1k deploys/day, `ha-nat` |
+
+**What it teaches:** licence and technology are **orthogonal** — Chime has no charter yet built its
+processor, while Revolut holds a licence and rents card processing. **Everyone builds the ledger**
+(the only universal build). **Everyone buys identity** — both UK banks use Onfido. **Fincrime
+splits on liability**: the two UK banks build detection because APP reimbursement makes fraud a
+direct P&L line; Chime, with no such regime, buys. And **only one built continuity** — Monzo's
+second-cloud Stand-in has no public counterpart anywhere in this research.
+
+## Chargebacks are a plane, not a layer
+
+Ask where disputes live and most teams point at layer 07. That is only where the *case* lives.
+
+| Layer | What a chargeback demands of it |
+| --- | --- |
+| **02 Scheme access** | **Sets the liability.** As your own principal member you are the issuer of record and the loss is yours, with no sponsor to absorb or contest it |
+| **03 Core ledger** | **Two postings, not one** — a provisional credit at intake (regulatory timelines force it, so the customer has the money while the case is open), then reversal or confirmation at resolution. Model it as a **contingent position** |
+| **04 Card processing** | **Delivers the message.** Thredd, Marqeta and Galileo expose the workflow by API — enough for a first programme, rarely enough at volume |
+| **07 Disputes** | **Where the case lives** — evidence, representment, pre-arbitration, hard scheme deadlines. Quavo · Pega · Rivero; Ethoca and Verifi to stop cases becoming chargebacks at all |
+| **10 Reconciliation** | **Closes the loop.** A won chargeback is money arriving that must match a scheme settlement file — its own break class, and easily left unreconciled for months |
+
+**The design consequence:** crossing five layers and four teams means **nobody owns it end to end
+by default**, and the failure surfaces not as a lost case but as an unexplained break months later
+in a reconciliation nobody connected to disputes. Name an owner for the **whole plane**.
+
 ## The decisions, ranked by regret cost
 
 1. **The ledger's invariants and checkpointing.** Retrofitting is an online migration of your most sensitive table.

@@ -137,7 +137,7 @@
   <p class="eyebrow">Neobank stack · deep dive</p>
   <h1>Building an independent bank</h1>
   <p class="standfirst">Own licence, own Bank of England settlement account, own scheme membership. No sponsor anywhere. Ten layers, every decision, and the vendors who can actually fill each one.</p>
-  <p class="meta"><span>19 Aug 2026</span><span><b>10</b> layers</span><span><b>60+</b> vendors</span><span><b>22</b> sources</span></p>
+  <p class="meta"><span>19 Aug 2026</span><span><b>10</b> layers</span><span><b>60+</b> vendors</span><span><b>3</b> worked examples</span><span><b>22</b> sources</span></p>
 </header>
 
 <div class="prose">
@@ -359,6 +359,269 @@
 </div>
 
 <div class="prose">
+</div>
+
+<div class="prose">
+<h2>The same ten layers, three real banks</h2>
+<p class="lede">Sophistication does not predict build-versus-buy. Read across any row and the assumption falls apart.</p>
+<p>Three deliberately different shapes: <strong>Monzo</strong> holds a licence and builds nearly everything. <strong>Revolut</strong> holds a licence and built its own ledger but buys card processing. <strong>Chime</strong> holds no banking licence at all — and built its own processor anyway.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 1000 934" role="img" aria-label="The same ten layers, filled in for three real banks. Monzo holds a UK licence and built almost everything including its own Faster Payments gateway, ledger on Cassandra, card processor and fraud control platform, plus a second-cloud Stand-in platform. Revolut holds a licence and built its own Postgres event-store ledger but buys card processing from Thredd. Chime holds no banking licence at all and relies on sponsor banks, yet built its own processor ChimeCore on a forty-terabyte MySQL cluster.">
+<text x="8" y="30" class="gut">LAYER</text>
+<text x="190" y="30" class="gut">MONZO</text><text x="252" y="30" class="lbl-2">UK bank · builds</text>
+<text x="460" y="30" class="gut">REVOLUT</text><text x="530" y="30" class="lbl-2">UK bank · mixed</text>
+<text x="730" y="30" class="gut">CHIME</text><text x="790" y="30" class="lbl-2">no licence · builds tech</text>
+<line class="f" x1="8" y1="40" x2="985" y2="40" stroke-opacity=".3"/>
+<rect class="bandbg" x="8" y="48" width="977" height="88"/>
+<text x="12" y="76" class="gut-n">01</text>
+<text x="38" y="76" class="gut">LICENCE</text>
+<rect class="bx" x="185" y="54" width="260" height="76" rx="2"/>
+<text x="197" y="76" class="lbl">UK bank licence</text>
+<text x="197" y="93" class="lbl-2">PRA + FCA</text>
+<text x="197" y="110" class="lbl-2">own balance sheet</text>
+<rect class="bx" x="455" y="54" width="260" height="76" rx="2"/>
+<text x="467" y="76" class="lbl">UK bank licence</text>
+<text x="467" y="93" class="lbl-2">+ EU (Lithuania)</text>
+<text x="467" y="110" class="lbl-2">own balance sheet</text>
+<rect class="bx-v" x="725" y="54" width="260" height="76" rx="2"/>
+<text x="737" y="76" class="lbl">NONE — not a bank</text>
+<text x="737" y="93" class="lbl-2">Bancorp + Stride</text>
+<text x="737" y="110" class="lbl-2">hold the deposits</text>
+<text x="12" y="160" class="gut-n">02</text>
+<text x="38" y="160" class="gut">SCHEME</text>
+<text x="38" y="173" class="gut">access</text>
+<rect class="bx-sor" x="185" y="138" width="260" height="76" rx="2"/>
+<text x="197" y="160" class="lbl">Own FPS gateway</text>
+<text x="197" y="177" class="lbl-2">Bacs direct participant</text>
+<text x="197" y="194" class="lbl-2">own BoE settlement a/c</text>
+<rect class="bx-sor" x="455" y="138" width="260" height="76" rx="2"/>
+<text x="467" y="160" class="lbl">Own licence;</text>
+<text x="467" y="177" class="lbl-2">scheme access not</text>
+<text x="467" y="194" class="lbl-2">publicly documented</text>
+<rect class="bx-v" x="725" y="138" width="260" height="76" rx="2"/>
+<text x="737" y="160" class="lbl">Via the sponsor banks</text>
+<text x="737" y="177" class="lbl-2">no direct participation</text>
+<rect class="bandbg" x="8" y="216" width="977" height="88"/>
+<text x="12" y="244" class="gut-n">03</text>
+<text x="38" y="244" class="gut">CORE</text>
+<text x="38" y="257" class="gut">ledger</text>
+<rect class="bx-sor" x="185" y="222" width="260" height="76" rx="2"/>
+<text x="197" y="244" class="lbl">BUILT — service.ledger</text>
+<text x="197" y="261" class="lbl-2">on Cassandra</text>
+<text x="197" y="278" class="lbl-2">300k reads/sec</text>
+<rect class="bx-sor" x="455" y="222" width="260" height="76" rx="2"/>
+<text x="467" y="244" class="lbl">BUILT — Postgres</text>
+<text x="467" y="261" class="lbl-2">event store using</text>
+<text x="467" y="278" class="lbl-2">LISTEN / NOTIFY</text>
+<rect class="bx-sor" x="725" y="222" width="260" height="76" rx="2"/>
+<text x="737" y="244" class="lbl">BUILT — ChimeCore</text>
+<text x="737" y="261" class="lbl-2">CoreDB: MySQL on RDS</text>
+<text x="737" y="278" class="lbl-2">40TB, 30k connections</text>
+<text x="12" y="328" class="gut-n">04</text>
+<text x="38" y="328" class="gut">CARDS</text>
+<text x="38" y="341" class="gut">processing</text>
+<rect class="bx-sor" x="185" y="306" width="260" height="76" rx="2"/>
+<text x="197" y="328" class="lbl">BUILT own processor</text>
+<text x="197" y="345" class="lbl-2">(GPS/Thredd for the</text>
+<text x="197" y="362" class="lbl-2">old prepaid card only)</text>
+<rect class="bx" x="455" y="306" width="260" height="76" rx="2"/>
+<text x="467" y="328" class="lbl">THREDD</text>
+<text x="467" y="345" class="lbl-2">+ Galileo for the</text>
+<text x="467" y="362" class="lbl-2">US business</text>
+<rect class="bx" x="725" y="306" width="260" height="76" rx="2"/>
+<text x="737" y="328" class="lbl">Galileo → ChimeCore</text>
+<text x="737" y="345" class="lbl-2">100% of credit-card</text>
+<text x="737" y="362" class="lbl-2">volume since late 2024</text>
+<rect class="bandbg" x="8" y="384" width="977" height="88"/>
+<text x="12" y="412" class="gut-n">05</text>
+<text x="38" y="412" class="gut">PAYMENT</text>
+<text x="38" y="425" class="gut">orchestration</text>
+<rect class="bx-sor" x="185" y="390" width="260" height="76" rx="2"/>
+<text x="197" y="412" class="lbl">BUILT — adapter →</text>
+<text x="197" y="429" class="lbl-2">deciders → effects;</text>
+<text x="197" y="446" class="lbl-2">40+ currencies via SWIFT</text>
+<rect class="bx-sor" x="455" y="390" width="260" height="76" rx="2"/>
+<text x="467" y="412" class="lbl">BUILT — event-driven</text>
+<text x="467" y="429" class="lbl-2">microservices over the</text>
+<text x="467" y="446" class="lbl-2">Postgres event store</text>
+<rect class="bx-v" x="725" y="390" width="260" height="76" rx="2"/>
+<text x="737" y="412" class="lbl">Not publicly documented</text>
+<text x="12" y="496" class="gut-n">06</text>
+<text x="38" y="496" class="gut">IDENTITY</text>
+<text x="38" y="509" class="gut">KYC / KYB</text>
+<rect class="bx" x="185" y="474" width="260" height="76" rx="2"/>
+<text x="197" y="496" class="lbl">ONFIDO</text>
+<text x="197" y="513" class="lbl-2">(+ in-house flow work:</text>
+<text x="197" y="530" class="lbl-2">73% fewer selfie errors)</text>
+<rect class="bx" x="455" y="474" width="260" height="76" rx="2"/>
+<text x="467" y="496" class="lbl">ONFIDO</text>
+<text x="467" y="513" class="lbl-2">+293% check volume,</text>
+<text x="467" y="530" class="lbl-2">38s faster</text>
+<rect class="bx-v" x="725" y="474" width="260" height="76" rx="2"/>
+<text x="737" y="496" class="lbl">Not publicly documented</text>
+<rect class="bandbg" x="8" y="552" width="977" height="88"/>
+<text x="12" y="580" class="gut-n">07</text>
+<text x="38" y="580" class="gut">FINCRIME</text>
+<text x="38" y="593" class="gut">+ disputes</text>
+<rect class="bx-sor" x="185" y="558" width="260" height="76" rx="2"/>
+<text x="197" y="580" class="lbl">BUILT — Starlark control</text>
+<text x="197" y="597" class="lbl-2">platform, multi-task NN,</text>
+<text x="197" y="614" class="lbl-2">LLM feature extraction</text>
+<rect class="bx-sor" x="455" y="558" width="260" height="76" rx="2"/>
+<text x="467" y="580" class="lbl">BUILT — in-house</text>
+<text x="467" y="597" class="lbl-2">real-time pipelines</text>
+<rect class="bx" x="725" y="558" width="260" height="76" rx="2"/>
+<text x="737" y="580" class="lbl">UNIT21</text>
+<text x="737" y="597" class="lbl-2">(founding member of its</text>
+<text x="737" y="614" class="lbl-2">Fintech Fraud DAO)</text>
+<text x="12" y="664" class="gut-n">08</text>
+<text x="38" y="664" class="gut">CREDIT</text>
+<text x="38" y="677" class="gut">decisioning</text>
+<rect class="bx-sor" x="185" y="642" width="260" height="76" rx="2"/>
+<text x="197" y="664" class="lbl">BUILT — credit risk,</text>
+<text x="197" y="681" class="lbl-2">utilisation forecasting,</text>
+<text x="197" y="698" class="lbl-2">shared feature store</text>
+<rect class="bx-sor" x="455" y="642" width="260" height="76" rx="2"/>
+<text x="467" y="664" class="lbl">BUILT — PRAGMA</text>
+<text x="467" y="681" class="lbl-2">foundation model on</text>
+<text x="467" y="698" class="lbl-2">banking event streams</text>
+<rect class="bx-v" x="725" y="642" width="260" height="76" rx="2"/>
+<text x="737" y="664" class="lbl">Not publicly documented</text>
+<rect class="bandbg" x="8" y="720" width="977" height="88"/>
+<text x="12" y="748" class="gut-n">09</text>
+<text x="38" y="748" class="gut">DATA</text>
+<text x="38" y="761" class="gut">and ML</text>
+<rect class="bx" x="185" y="726" width="260" height="76" rx="2"/>
+<text x="197" y="748" class="lbl">BigQuery · dbt (12,000+</text>
+<text x="197" y="765" class="lbl-2">models, 100+ teams)</text>
+<text x="197" y="782" class="lbl-2">Kafka · in-house features</text>
+<rect class="bx" x="455" y="726" width="260" height="76" rx="2"/>
+<text x="467" y="748" class="lbl">GCP · PostgreSQL</text>
+<text x="467" y="765" class="lbl-2">event store</text>
+<rect class="bx" x="725" y="726" width="260" height="76" rx="2"/>
+<text x="737" y="748" class="lbl">MySQL + Snowflake</text>
+<text x="737" y="765" class="lbl-2">(Galileo RDF files</text>
+<text x="737" y="782" class="lbl-2">moved off MySQL)</text>
+<text x="12" y="832" class="gut-n">10</text>
+<text x="38" y="832" class="gut">RESILIENCE</text>
+<text x="38" y="845" class="gut">and reporting</text>
+<rect class="bx-sor" x="185" y="810" width="260" height="76" rx="2"/>
+<text x="197" y="832" class="lbl">STAND-IN on GCP —</text>
+<text x="197" y="849" class="lbl-2">18 services vs ~3,000,</text>
+<text x="197" y="866" class="lbl-2">~1% of primary cost</text>
+<rect class="bx-v" x="455" y="810" width="260" height="76" rx="2"/>
+<text x="467" y="832" class="lbl">Not publicly documented</text>
+<rect class="bx" x="725" y="810" width="260" height="76" rx="2"/>
+<text x="737" y="832" class="lbl">EKS · ~1,000 deploys/day</text>
+<text x="737" y="849" class="lbl-2">Argo CD · open-sourced</text>
+<text x="737" y="866" class="lbl-2">ha-nat and Mani-Diffy</text>
+<text x="500" y="922" class="t-money" text-anchor="middle">SOLID = BUILT IT   ·   PLAIN = BOUGHT IT   ·   DASHED = SOMEBODY ELSE&#39;S, OR NOT PUBLIC</text>
+</svg>
+</div>
+<figcaption><b>Two rows break the naive story.</b> At <b>layer 01</b>, Chime has no licence while both others do — yet at <b>layer 04</b> Chime <em>built</em> its card processor while Revolut, a licensed bank, buys from Thredd. Owning the regulated entity and owning the technology are independent decisions, made for different reasons. Monzo insourced cards after vendor outages; Chime insourced them because processor fees were its largest cost line; Revolut concluded card processing was a solved problem worth renting. Dashed cells are honest gaps — several layers of Chime's and Revolut's stacks have never been publicly documented.</figcaption>
+</figure>
+
+<div class="prose">
+<h3>What the comparison actually teaches</h3>
+<ul>
+<li><strong>Licence and technology are orthogonal.</strong> Chime is the proof: no charter, but it owns the fee-bearing layer sitting directly above the regulated boundary.</li>
+<li><strong>Everyone builds the ledger.</strong> All three did — the only universal "build" in the table, and the layer with the least vendor substitution among serious operators.</li>
+<li><strong>Everyone buys identity.</strong> Monzo and Revolut both use Onfido. Nobody builds document verification; it is commodity data with a forensics problem attached.</li>
+<li><strong>Fincrime splits on liability.</strong> The two UK banks built their own detection — because APP reimbursement makes fraud a direct P&amp;L line. Chime, with no such regime, buys from Unit21.</li>
+<li><strong>Only one built continuity.</strong> Monzo's second-cloud Stand-in has no public counterpart anywhere in this research.</li>
+</ul>
+
+</div>
+<div class="prose">
+</div>
+
+<div class="prose">
+<h2>Where do chargebacks sit?</h2>
+<p class="lede">Not on one layer. A chargeback is a <em>plane</em> that cuts through five of them — which is exactly why it gets under-designed.</p>
+<p>Ask most teams where disputes live and they point at financial crime. That is only where the <em>case</em> lives. The <strong>liability</strong> is set three layers lower, the <strong>money</strong> moves through the ledger twice, and the <strong>recovery</strong> has to reconcile at the bottom. Every one of those is a different team.</p>
+</div>
+
+<figure class="bleed">
+<div class="scroller">
+<svg viewBox="0 0 1000 336" role="img" aria-label="A chargeback traced across five layers. It begins with the cardholder disputing a transaction, handled at layer 07. Liability is determined at layer 02 by scheme membership: as your own principal member you are the issuer of record. The processor at layer 04 receives the scheme message and exposes the workflow. The ledger at layer 03 posts a provisional credit and later reverses or confirms it. The case is worked to scheme deadlines at layer 07. Finally the recovery must reconcile at layer 10.">
+<defs><marker id="cb-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="h-money"/></marker></defs>
+
+<text x="20" y="26" class="lbl">A SINGLE CHARGEBACK, TRACED THROUGH THE STACK</text>
+
+<text x="106" y="62" class="t-money" text-anchor="middle">LAYER 07</text>
+<rect class="bx" x="20" y="70" width="172" height="88" rx="2"/>
+<text x="106" y="96" class="lbl" text-anchor="middle">1 · Cardholder</text><text x="106" y="111" class="lbl" text-anchor="middle">disputes</text>
+<text x="106" y="132" class="lbl-2" text-anchor="middle">intake, triage,</text><text x="106" y="146" class="lbl-2" text-anchor="middle">reason code</text>
+
+<text x="302" y="62" class="t-flag" text-anchor="middle">LAYER 02 — LIABILITY SET HERE</text>
+<rect class="bx-sor" x="216" y="70" width="172" height="88" rx="2" fill="var(--flag-soft)"/>
+<text x="302" y="96" class="lbl" text-anchor="middle">2 · Scheme routes</text><text x="302" y="111" class="lbl" text-anchor="middle">it to the issuer</text>
+<text x="302" y="132" class="lbl-2" text-anchor="middle">principal member =</text><text x="302" y="146" class="lbl-2" text-anchor="middle">issuer of record = you</text>
+
+<text x="498" y="62" class="t-money" text-anchor="middle">LAYER 04</text>
+<rect class="bx" x="412" y="70" width="172" height="88" rx="2"/>
+<text x="498" y="96" class="lbl" text-anchor="middle">3 · Processor</text><text x="498" y="111" class="lbl" text-anchor="middle">receives it</text>
+<text x="498" y="132" class="lbl-2" text-anchor="middle">Thredd · Marqeta ·</text><text x="498" y="146" class="lbl-2" text-anchor="middle">Galileo workflow API</text>
+
+<text x="694" y="62" class="t-money" text-anchor="middle">LAYER 03</text>
+<rect class="bx-sor" x="608" y="70" width="172" height="88" rx="2"/>
+<text x="694" y="96" class="lbl" text-anchor="middle">4 · Ledger posts</text><text x="694" y="111" class="lbl" text-anchor="middle">provisional credit</text>
+<text x="694" y="132" class="lbl-2" text-anchor="middle">customer sees money</text><text x="694" y="146" class="lbl-2" text-anchor="middle">back before you win</text>
+
+<text x="890" y="62" class="t-money" text-anchor="middle">LAYER 07 → 10</text>
+<rect class="bx" x="804" y="70" width="176" height="88" rx="2"/>
+<text x="892" y="96" class="lbl" text-anchor="middle">5 · Worked, won</text><text x="892" y="111" class="lbl" text-anchor="middle">or lost, reconciled</text>
+<text x="892" y="132" class="lbl-2" text-anchor="middle">Quavo · Pega · Rivero</text><text x="892" y="146" class="lbl-2" text-anchor="middle">then recovery recon</text>
+
+<line class="f-money" x1="194" y1="114" x2="212" y2="114" marker-end="url(#cb-ah)"/>
+<line class="f-money" x1="390" y1="114" x2="408" y2="114" marker-end="url(#cb-ah)"/>
+<line class="f-money" x1="586" y1="114" x2="604" y2="114" marker-end="url(#cb-ah)"/>
+<line class="f-money" x1="782" y1="114" x2="800" y2="114" marker-end="url(#cb-ah)"/>
+
+<line class="boundary" x1="20" y1="186" x2="980" y2="186"/>
+<text x="20" y="208" class="lbl">THE LEDGER IS TOUCHED TWICE — AND THE SECOND TIME IS THE ONE TEAMS FORGET</text>
+<rect class="bx-sor" x="20" y="220" width="470" height="56" rx="2"/>
+<text x="255" y="242" class="lbl" text-anchor="middle">Provisional credit, on intake</text>
+<text x="255" y="258" class="lbl-2" text-anchor="middle">Regulatory timelines force it. The customer&#39;s money is back</text>
+<text x="255" y="270" class="lbl-2" text-anchor="middle">while the case is still open — a real exposure on your book.</text>
+<rect class="bx-sor" x="510" y="220" width="470" height="56" rx="2"/>
+<text x="745" y="242" class="lbl" text-anchor="middle">Reversal or confirmation, at resolution</text>
+<text x="745" y="258" class="lbl-2" text-anchor="middle">Lose and you claw it back from a customer who has spent it.</text>
+<text x="745" y="270" class="lbl-2" text-anchor="middle">Win and the recovery must reconcile against the scheme file.</text>
+
+<text x="500" y="310" class="t-money" text-anchor="middle">FIVE LAYERS · FOUR TEAMS · ONE DISPUTE — WHICH IS WHY IT IS ALWAYS UNDER-DESIGNED</text>
+</svg>
+</div>
+<figcaption><b>A chargeback is a plane, not a layer.</b> Like reconciliation and the evidence trail, it cuts across the stack — which is why "who owns disputes?" rarely has a clean answer inside a company. The <b>case</b> lives at layer 07, but the <b>liability</b> was decided at layer 02 when you chose principal membership over a sponsor, the <b>money</b> moves through layer 03 twice, the <b>message</b> arrives via layer 04, and the <b>recovery</b> only closes at layer 10.</figcaption>
+</figure>
+
+<div class="prose">
+<h3>The layer-by-layer answer</h3>
+</div>
+
+<div class="tbl prose">
+<table>
+<thead><tr><th>Layer</th><th>What chargebacks demand of it</th></tr></thead>
+<tbody>
+<tr><td><strong>02 — Scheme access</strong></td><td><strong>Sets the liability.</strong> As your own principal member you are the issuer of record and the loss is yours, with no sponsor to absorb or contest it. With a BIN sponsor the sponsor is liable to the scheme, then recovers from you by contract with allocation by root cause</td></tr>
+<tr><td><strong>03 — Core ledger</strong></td><td><strong>Two postings, not one.</strong> A provisional credit at intake — regulatory timelines force it, so the customer has the money back while the case is open — then a reversal or confirmation at resolution. Your ledger must model a <em>contingent</em> balance, and reversal must be clean months later</td></tr>
+<tr><td><strong>04 — Card processing</strong></td><td><strong>Delivers the message.</strong> The processor receives the chargeback from the scheme and exposes the workflow. Thredd, Marqeta and Galileo all do this by API — enough for a first programme, rarely enough at volume</td></tr>
+<tr><td><strong>07 — Disputes</strong></td><td><strong>Where the case lives.</strong> Evidence, representment, pre-arbitration, and the hard scheme deadlines. Platforms: Quavo, Pega Smart Dispute, Rivero. Pre-dispute: Ethoca and Verifi, which stop cases becoming chargebacks at all</td></tr>
+<tr><td><strong>10 — Reconciliation</strong></td><td><strong>Closes the loop.</strong> A won chargeback is money arriving that must match a scheme settlement file. Dispute recoveries are their own break class — and one of the easiest to leave unreconciled for months</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="prose">
+<div class="keynum">
+<p class="eyebrow">The design consequence</p>
+<p>Because a chargeback crosses five layers and four teams, <strong>nobody owns it end to end by default</strong> — and the failure shows up not as a lost case but as an unexplained break, months later, in a reconciliation nobody connected to disputes.</p>
+<p>Name an owner for the <em>whole plane</em>, not for the case-management tool. And model the <strong>provisional credit as a contingent position</strong> on day one: it is real money, on your book, on a case you have not yet won.</p>
+</div>
+
 <h2>The decisions, ranked by regret cost</h2>
 <ol>
 <li><strong>The ledger's invariants and balance checkpointing.</strong> Retrofitting is an online migration of your most sensitive table.</li>
