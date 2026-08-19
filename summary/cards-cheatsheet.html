@@ -194,6 +194,10 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 .vwrap{display:flex; flex-direction:column; gap:4px}
 .eb2{font-size:.55rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); font-weight:700}
 
+/* the inherited table{min-width:1000px} is for the layers grid inside a scroller — not these */
+.rt,.cmp,.mini{min-width:0}
+.rt{table-layout:fixed}
+
 @media print{
   @page{size:A4 landscape; margin:8mm}
   /* flows to as many pages as the content needs; part 2 always starts a new page */

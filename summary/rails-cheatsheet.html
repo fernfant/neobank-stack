@@ -8,6 +8,7 @@
   --build:#1A6349; --build-soft:#E9F3EE;
   --hard:#9E3319; --hard-soft:#FBEDE8;
   --bank:#F6F7F9;
+  --uk:#1E3E7B; --uk-s:#EDF1F9; --us:#0F5C63; --us-s:#E6F2F3; --eu:#5B2E6E; --eu-s:#F3EBF7;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
@@ -17,6 +18,7 @@
     --build:#57BE93; --build-soft:#152A24;
     --hard:#E28763; --hard-soft:#2E1C16;
     --bank:#1B2028;
+    --uk:#84A6E2; --uk-s:#1A2436; --us:#4FB3BD; --us-s:#10262A; --eu:#BC93D2; --eu-s:#251A2E;
   }
 }
 :root[data-theme="dark"]{
@@ -26,6 +28,7 @@
   --build:#57BE93; --build-soft:#152A24;
   --hard:#E28763; --hard-soft:#2E1C16;
   --bank:#1B2028;
+  --uk:#84A6E2; --uk-s:#1A2436; --us:#4FB3BD; --us-s:#10262A; --eu:#BC93D2; --eu-s:#251A2E;
 }
 
 *{box-sizing:border-box}
@@ -191,6 +194,10 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .stamp{text-align:left}
 }
 
+/* the inherited table{min-width:1000px} is for the layers grid inside a scroller — not these */
+.rt,.cmp,.mini{min-width:0}
+.rt{table-layout:fixed}
+
 @media print{
   @page{size:A4 landscape; margin:8mm}
   /* flows to as many pages as the content needs; part 2 always starts a new page */
@@ -243,7 +250,20 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   border-bottom:1px solid var(--rule-2)}
 .rt thead th{font-size:.52rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-2);
   border-bottom:1px solid var(--rule); font-weight:700}
-.rt tbody td:first-child{border-bottom:2px solid var(--accent)}
+.rt tbody td:first-child{border-bottom:2px solid var(--accent); border-left:3px solid var(--rule); padding-left:7px}
+.rt tr.uk td:first-child{border-left-color:var(--uk)}
+.rt tr.us td:first-child{border-left-color:var(--us)}
+.rt tr.eu td:first-child{border-left-color:var(--eu)}
+.reg{display:inline-block; font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:.5rem;
+  font-weight:700; letter-spacing:.06em; padding:0 4px; border-radius:2px; line-height:1.6; margin-top:1px}
+.reg.uk{background:var(--uk); color:var(--sheet)}
+.reg.us{background:var(--us); color:var(--sheet)}
+.reg.eu{background:var(--eu); color:var(--sheet)}
+.rlg{display:inline-block; font-size:.5rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  padding:0 4px; border-radius:2px; line-height:1.6; margin-left:5px; vertical-align:1px}
+.rlg.uk{background:var(--uk-s); color:var(--uk); border:1px solid var(--uk)}
+.rlg.us{background:var(--us-s); color:var(--us); border:1px solid var(--us)}
+.rlg.eu{background:var(--eu-s); color:var(--eu); border:1px solid var(--eu)}
 .rt tbody td{border-bottom:1px solid var(--rule)}
 .rt tbody tr:last-child td{border-bottom:none}
 .rt .rn{font-weight:800; color:var(--ink); font-size:.635rem}
@@ -270,14 +290,14 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 @media print{
   /* placed after the component rules so the cascade actually applies */
   .sheet{gap:4px}
-  .rt th,.rt td{font-size:.515rem; padding:1.4px 5px; line-height:1.22}
+  .rt th,.rt td{font-size:.5rem; padding:1.2px 5px; line-height:1.2}
   .rt thead th{font-size:.48rem}
   .rt .rn{font-size:.555rem}
   .card{padding:4px 7px; gap:1.5px}
   .card p{font-size:.52rem; line-height:1.26}
   .card h3{font-size:.615rem}
   .card .eb{font-size:.48rem}
-  .mini td{font-size:.49rem; padding:1.1px 4px; line-height:1.23}
+  .mini td{font-size:.475rem; padding:1px 4px; line-height:1.21}
   .mini td:first-child{width:42px}
   .sg .sw{font-size:.56rem} .sg .sr{font-size:.48rem} .sg .sx{font-size:.45rem}
   .sg{padding:3px 5px}
@@ -290,6 +310,7 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   .ch{font-size:.555rem; line-height:1.45} .ch i{font-size:.46rem}
   .gl{font-size:.48rem} .grp{margin-bottom:2px; grid-template-columns:58px 1fr}
   .foot{padding-top:3px; font-size:.51rem}
+  .reg,.rlg{font-size:.46rem}
 }
 </style>
 
@@ -304,19 +325,19 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
     <div class="stamp">One page<br>Rails &amp; access<br>Aug 2026</div>
   </div>
 
-  <div class="band"><h2>The rails at a glance</h2><span class="ln"></span><span class="note">direction is the property that decides your architecture</span></div>
+  <div class="band"><h2>The rails at a glance</h2><span class="ln"></span><span class="note"><span class="rlg uk">UK</span> <span class="rlg us">USA</span> <span class="rlg eu">EURO AREA</span> &nbsp;a rail only works where its scheme runs</span></div>
   <table class="rt">
     <thead><tr><th style="width:13%">Rail</th><th style="width:13%">Speed</th><th style="width:11%">Direction</th><th style="width:15%">Ceiling</th><th>How long you stay exposed &mdash; shortest to longest risk</th></tr></thead>
     <tbody>
-<tr><td><span class="rn">Faster Payments</span><br><span class="rg">UK</span></td><td>Seconds, 24/7</td><td><span class="pill push">PUSH</span></td><td><span class='num2'>&pound;1m</span> scheme cap<br><span class='rg'>Feb 2022. PSPs set lower</span></td><td>Minutes to hours &mdash; a recall <em>attempt</em>, never a guarantee</td></tr>
-<tr><td><span class="rn">Bacs</span><br><span class="rg">UK</span></td><td><span class='num2'>3</span> working days<br><span class='rg'>input &middot; process &middot; entry</span></td><td><span class="pill push">PUSH</span> <span class="pill pull">PULL</span></td><td><span class='rg'>PSP-set</span></td><td><b>Direct Debit: effectively unbounded.</b> Indemnity claims under the Guarantee</td></tr>
-<tr><td><span class="rn">CHAPS</span><br><span class="rg">UK</span></td><td>Same day, <b>RTGS</b><br><span class='rg'>cut-off 17:40 scheme; banks earlier. Opens 01:30 from Sept 2027</span></td><td><span class="pill push">PUSH</span></td><td><span class='rg'>No scheme cap</span></td><td><b>None.</b> Final and irrevocable, settled individually in central bank money</td></tr>
-<tr><td><span class="rn">ACH</span><br><span class="rg">US</span></td><td><span class='num2'>1&ndash;2</span> banking days<br><span class='rg'>Same Day: 3 windows</span></td><td><span class="pill push">PUSH</span> <span class="pill pull">PULL</span></td><td><span class='num2'>$1m</span> Same Day<br><span class='rg'>&rarr; $10m Sept 2027</span></td><td><b>2 banking days</b> most codes. Consumer unauthorised: <b>60 calendar days</b> &mdash; and since Oct 2024 also 6 banking days after WSUD review, <b>whichever is first</b></td></tr>
-<tr><td><span class="rn">RTP</span><br><span class="rg">US</span></td><td>Seconds, 24/7</td><td><span class="pill push">PUSH</span></td><td><span class='num2'>$10m</span><br><span class='rg'>Feb 2025</span></td><td><b>None.</b> Final on receipt</td></tr>
-<tr><td><span class="rn">FedNow</span><br><span class="rg">US</span></td><td>Seconds, 24/7</td><td><span class="pill push">PUSH</span></td><td><span class='num2'>$10m</span> network max<br><span class='rg'>$100k default. Nov 2025</span></td><td><b>None.</b> Final on receipt</td></tr>
-<tr><td><span class="rn">SEPA SCT</span><br><span class="rg">EU</span></td><td><span class='num2'>1</span> business day</td><td><span class="pill push">PUSH</span></td><td><span class='rg'>No scheme cap</span></td><td>No scheme reversal right for authorised transfers</td></tr>
-<tr><td><span class="rn">SEPA SCT Inst</span><br><span class="rg">EU</span></td><td><span class='num2'>10</span> seconds, 24/7</td><td><span class="pill push">PUSH</span></td><td><span class='rg'>Cap removed</span><br><span class='rg'>5 Oct 2025</span></td><td><b>None.</b> If no confirmation in 10s the payer&rsquo;s PSP must restore the account</td></tr>
-<tr><td><span class="rn">SEPA SDD</span><br><span class="rg">EU</span></td><td>Scheduled collection</td><td><span class="pill push">PUSH</span> <span class="pill pull">PULL</span></td><td><span class='rg'>No scheme cap</span></td><td><b>Core: 8 weeks</b> no questions asked, <b>13 months</b> unauthorised. <b>B2B: no refund</b> for an <em>authorised</em> collection</td></tr>
+<tr class="uk"><td><span class="rn">Faster Payments</span><br><span class="reg uk">UK</span></td><td>Seconds, 24/7</td><td><span class="pill push">PUSH</span></td><td><span class='num2'>&pound;1m</span> scheme cap<br><span class='rg'>Feb 2022. PSPs set lower</span></td><td>Minutes to hours &mdash; a recall <em>attempt</em>, never a guarantee</td></tr>
+<tr class="uk"><td><span class="rn">Bacs</span><br><span class="reg uk">UK</span></td><td><span class='num2'>3</span> working days<br><span class='rg'>input &middot; process &middot; entry</span></td><td><span class="pill push">PUSH</span> <span class="pill pull">PULL</span></td><td><span class='rg'>PSP-set</span></td><td><b>Direct Debit: effectively unbounded.</b> Indemnity claims under the Guarantee</td></tr>
+<tr class="uk"><td><span class="rn">CHAPS</span><br><span class="reg uk">UK</span></td><td>Same day, <b>RTGS</b><br><span class='rg'>cut-off 17:40 scheme; banks earlier. Opens 01:30 from Sept 2027</span></td><td><span class="pill push">PUSH</span></td><td><span class='rg'>No scheme cap</span></td><td><b>None.</b> Final and irrevocable, settled individually in central bank money</td></tr>
+<tr class="us"><td><span class="rn">ACH</span><br><span class="reg us">USA</span></td><td><span class='num2'>1&ndash;2</span> banking days<br><span class='rg'>Same Day: 3 windows</span></td><td><span class="pill push">PUSH</span> <span class="pill pull">PULL</span></td><td><span class='num2'>$1m</span> Same Day<br><span class='rg'>&rarr; $10m Sept 2027</span></td><td><b>2 banking days</b> most codes. Consumer unauthorised: <b>60 calendar days</b> &mdash; and since Oct 2024 also 6 banking days after WSUD review, <b>whichever is first</b></td></tr>
+<tr class="us"><td><span class="rn">RTP</span><br><span class="reg us">USA</span></td><td>Seconds, 24/7</td><td><span class="pill push">PUSH</span></td><td><span class='num2'>$10m</span><br><span class='rg'>Feb 2025</span></td><td><b>None.</b> Final on receipt</td></tr>
+<tr class="us"><td><span class="rn">FedNow</span><br><span class="reg us">USA</span></td><td>Seconds, 24/7</td><td><span class="pill push">PUSH</span></td><td><span class='num2'>$10m</span> network max<br><span class='rg'>$100k default. Nov 2025</span></td><td><b>None.</b> Final on receipt</td></tr>
+<tr class="eu"><td><span class="rn">SEPA SCT</span><br><span class="reg eu">EURO AREA</span></td><td><span class='num2'>1</span> business day</td><td><span class="pill push">PUSH</span></td><td><span class='rg'>No scheme cap</span></td><td>No scheme reversal right for authorised transfers</td></tr>
+<tr class="eu"><td><span class="rn">SEPA SCT Inst</span><br><span class="reg eu">EURO AREA</span></td><td><span class='num2'>10</span> seconds, 24/7</td><td><span class="pill push">PUSH</span></td><td><span class='rg'>Cap removed</span><br><span class='rg'>5 Oct 2025</span></td><td><b>None.</b> If no confirmation in 10s the payer&rsquo;s PSP must restore the account</td></tr>
+<tr class="eu"><td><span class="rn">SEPA SDD</span><br><span class="reg eu">EURO AREA</span></td><td>Scheduled collection</td><td><span class="pill push">PUSH</span> <span class="pill pull">PULL</span></td><td><span class='rg'>No scheme cap</span></td><td><b>Core: 8 weeks</b> no questions asked, <b>13 months</b> unauthorised. <b>B2B: no refund</b> for an <em>authorised</em> collection</td></tr>
     </tbody>
   </table>
 
@@ -335,7 +356,7 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
       <p>The slow rails reverse for <b>weeks or months</b>. A Bacs Direct Debit indemnity claim is effectively unbounded. Your ledger must hold a contingent position for the whole window, not until the payment clears.</p>
     </div>
     <div class="card">
-      <span class="eb">Access &mdash; Faster Payments only</span>
+      <span class="eb">Access &mdash; Faster Payments only<span class="rlg uk">UK</span></span>
       <h3>&ldquo;Direct&rdquo; describes the connection, not the settlement</h3>
       <p><b>DCSP</b> &mdash; directly connected <em>and</em> settling, with its own account at the Bank of England.</p>
       <p><b>DCNSP</b> &mdash; directly connected, but a sponsoring DCSP settles for it.</p>
@@ -349,7 +370,7 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
   <div class="two">
     <div class="three" style="gap:11px">
       <div>
-        <span class="eb" style="display:block;margin-bottom:3px">Bacs messages</span>
+        <span class="eb" style="display:block;margin-bottom:3px">Bacs messages<span class="rlg uk">UK</span></span>
         <table class="mini">
           <tr><td>AUDDIS</td><td>Set up or cancel Direct Debit instructions at the paying PSP</td></tr>
           <tr><td>ADDACS</td><td>The PSP tells you an instruction was amended or cancelled</td></tr>
@@ -360,7 +381,7 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
         </table>
       </div>
       <div>
-        <span class="eb" style="display:block;margin-bottom:3px">Nacha return rates</span>
+        <span class="eb" style="display:block;margin-bottom:3px">Nacha return rates<span class="rlg us">USA</span></span>
         <table class="mini">
           <tr><td>0.5%</td><td><b>Unauthorized Return Rate <em>Threshold</em>.</b> The only enforceable one &mdash; triggers ODFI reporting and a duty to reduce. <span class="rg">R05 R07 R10 R11 R29 R51</span></td></tr>
           <tr><td>3.0%</td><td>Administrative Return <em>Level</em>. <b>Inquiry trigger only</b> &mdash; not automatically a violation</td></tr>
@@ -368,7 +389,7 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
         </table>
       </div>
       <div>
-        <span class="eb" style="display:block;margin-bottom:3px">SEPA instant &mdash; who is in scope</span>
+        <span class="eb" style="display:block;margin-bottom:3px">SEPA instant &mdash; who is in scope<span class="rlg eu">EURO AREA</span></span>
         <table class="mini">
           <tr><td>PASSED</td><td>Euro-area PSPs: receive <b>9 Jan 2025</b>, send <b>9 Oct 2025</b>. Verification of Payee <b>9 Oct 2025</b></td></tr>
           <tr><td>2027</td><td><b>Euro-area EMIs and payment institutions: 9 Apr 2027</b>, both directions. Not yet in scope</td></tr>
@@ -378,7 +399,7 @@ a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
     </div>
     <div>
       <span class="eb" style="display:block;margin-bottom:3px">Connectivity &mdash; every vendor linked</span>
-      <span class="grp"><span class="gl">Connectivity</span><span class="chips"><a class="ch" href="https://form3.tech" target="_blank" rel="noopener"><i>FO</i>Form3</a><a class="ch" href="https://iconsolutions.com" target="_blank" rel="noopener"><i>IS</i>Icon Solutions</a><a class="ch" href="https://volantetech.com" target="_blank" rel="noopener"><i>VO</i>Volante</a><a class="ch" href="https://aciworldwide.com" target="_blank" rel="noopener"><i>AW</i>ACI Worldwide</a><a class="ch" href="https://finastra.com" target="_blank" rel="noopener"><i>FI</i>Finastra</a></span></span><span class="grp"><span class="gl">Libraries</span><span class="chips"><a class="ch" href="https://jpos.org" target="_blank" rel="noopener"><i>JP</i>jPOS</a><a class="ch" href="https://github.com/moov-io" target="_blank" rel="noopener"><i>MO</i>Moov</a><a class="ch" href="https://prowidesoftware.com" target="_blank" rel="noopener"><i>PR</i>Prowide</a></span></span>
+      <span class="grp"><span class="gl">Gateway</span><span class="chips"><a class="ch" href="https://form3.tech" target="_blank" rel="noopener"><i>FO</i>Form3</a><a class="ch" href="https://iconsolutions.com" target="_blank" rel="noopener"><i>IS</i>Icon Solutions</a><a class="ch" href="https://volantetech.com" target="_blank" rel="noopener"><i>VO</i>Volante</a><a class="ch" href="https://aciworldwide.com" target="_blank" rel="noopener"><i>AW</i>ACI Worldwide</a><a class="ch" href="https://finastra.com" target="_blank" rel="noopener"><i>FI</i>Finastra</a></span></span><span class="grp"><span class="gl">Libraries</span><span class="chips"><a class="ch" href="https://jpos.org" target="_blank" rel="noopener"><i>JP</i>jPOS</a><a class="ch" href="https://github.com/moov-io" target="_blank" rel="noopener"><i>MO</i>Moov</a><a class="ch" href="https://prowidesoftware.com" target="_blank" rel="noopener"><i>PR</i>Prowide</a></span></span>
       <div class="card" style="margin-top:6px">
         <span class="eb">The sort code advantage</span>
         <p><b>You can hold your own sort code while still being an indirect participant.</b> Customers get permanent account details from day one, and you can go direct later without a single detail changing.</p>
